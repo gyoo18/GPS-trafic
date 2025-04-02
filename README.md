@@ -1,6 +1,9 @@
 # GPS-trafic
 Ceci est le répôt du projet du devoirII du cours de programmation II
 
+# Swing
+cette branche s'occupe d'implémenter la bibliothèque swing
+
 ## Construire (build)
 
 sur Windows
