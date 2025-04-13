@@ -6,16 +6,17 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Current File",
+            "name": "Launch Java Program",
             "request": "launch",
-            "mainClass": "${file}"
+            "mainClass": "org.Traffix.App",
+            "projectName": "app",
+            "preLaunchTask": "gradle: build"
         },
         {
             "type": "java",
-            "name": "App",
+            "name": "Current File",
             "request": "launch",
-            "mainClass": "org.Traffix.App",
-            "projectName": "app"
+            "mainClass": "${file}"
         }
     ]
 }
