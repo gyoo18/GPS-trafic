@@ -1,7 +1,7 @@
 <!-- Présent pour l'imprimage en pdf
 <style>
   *{
-    font-size: 0.75em;
+    font-size: 0.9em;
   }
 </style>
 -->
