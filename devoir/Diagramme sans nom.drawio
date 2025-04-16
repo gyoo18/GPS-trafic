@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64; rv:137.0) Gecko/20100101 Firefox/137.0" version="26.2.13">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64; rv:137.0) Gecko/20100101 Firefox/137.0" version="26.2.13" pages="2">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
-    <mxGraphModel dx="1902" dy="468" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="4531" dy="1613" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
@@ -499,6 +499,177 @@
               <mxPoint x="820" y="810" />
             </Array>
           </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="v_wx3RaNBUNNbscfcegj" name="Page-2">
+    <mxGraphModel dx="2040" dy="1037" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-1" value="Algorithme A*" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="304" y="100" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-2" value="noeudsÉtats: État[]" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.15000000000000172;" vertex="1" parent="1">
+          <mxGeometry x="540" y="390" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-3" value="noeudsActifs: Noeud[]" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.15000000000000172;" vertex="1" parent="1">
+          <mxGeometry x="540" y="470" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-4" value="curseur: int" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" vertex="1" parent="1">
+          <mxGeometry x="540" y="550" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-5" value="&lt;div&gt;poidCurseur:&amp;nbsp;&lt;/div&gt;&lt;div&gt;float&lt;/div&gt;" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.15000000000000172;" vertex="1" parent="1">
+          <mxGeometry x="540" y="630" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-8" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-1" target="HEgoxvFWjqnjc_G7mXjh-15">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="440" y="420" as="sourcePoint" />
+            <mxPoint x="354" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-15" target="HEgoxvFWjqnjc_G7mXjh-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="240" />
+              <mxPoint x="460" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-15" target="HEgoxvFWjqnjc_G7mXjh-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="240" />
+              <mxPoint x="460" y="500" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-15" target="HEgoxvFWjqnjc_G7mXjh-4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="240" />
+              <mxPoint x="460" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-15" target="HEgoxvFWjqnjc_G7mXjh-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="240" />
+              <mxPoint x="460" y="660" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-15" target="HEgoxvFWjqnjc_G7mXjh-23">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="240" />
+              <mxPoint x="460" y="270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-15" target="HEgoxvFWjqnjc_G7mXjh-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-15" target="HEgoxvFWjqnjc_G7mXjh-37">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="240" />
+              <mxPoint x="460" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-15" value="Initialisation" style="verticalLabelPosition=middle;verticalAlign=middle;html=1;shape=hexagon;perimeter=hexagonPerimeter2;arcSize=6;size=0.27;labelPosition=center;align=center;" vertex="1" parent="1">
+          <mxGeometry x="304" y="210" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-26" value="non" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-22" target="HEgoxvFWjqnjc_G7mXjh-56">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="354" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-22" target="HEgoxvFWjqnjc_G7mXjh-60">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="60" y="690" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-28" value="oui" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="HEgoxvFWjqnjc_G7mXjh-27">
+          <mxGeometry x="0.1826" y="-2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-22" value="Est arrivé à destination?" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="304" y="300" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-23" value="&lt;div&gt;chemins: &lt;br&gt;&lt;/div&gt;&lt;div&gt;Arralist&amp;lt;Arraylist&amp;lt;Noeud&amp;gt;&amp;gt;&lt;/div&gt;" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.15000000000000172;" vertex="1" parent="1">
+          <mxGeometry x="550" y="240" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-29" target="HEgoxvFWjqnjc_G7mXjh-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-29" value="Trouver noeud actif avec poid le plus faible" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="304" y="600" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-33" target="HEgoxvFWjqnjc_G7mXjh-44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-33" value="Ajouter noeuds adjascent passifs aux noeuds actifs" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="304" y="695" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-37" value="&lt;div&gt;noeudActifChemin: &lt;br&gt;&lt;/div&gt;&lt;div&gt;Arraylist&amp;lt;int&amp;gt;&lt;/div&gt;" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.15000000000000172;" vertex="1" parent="1">
+          <mxGeometry x="550" y="310" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-47" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-39" target="HEgoxvFWjqnjc_G7mXjh-42">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-39" value="Ajouter noeud-curseur au chemin du noeud-curseur" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="304" y="885" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-52" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-42" target="HEgoxvFWjqnjc_G7mXjh-51">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-42" value="Dupliquer le chemin du noeud-curseur pour chaque nouveau noeud" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="304" y="975" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-44" target="HEgoxvFWjqnjc_G7mXjh-39">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-50" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-44" target="HEgoxvFWjqnjc_G7mXjh-48">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-44" value="Calculer poids des nouveaux noeuds" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="304" y="795" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-48" value="Noeud.calculerPoid(NoeudA, NoeudB)" style="verticalLabelPosition=middle;verticalAlign=middle;html=1;shape=process;whiteSpace=wrap;rounded=1;size=0.14;arcSize=6;labelPosition=center;align=center;" vertex="1" parent="1">
+          <mxGeometry x="470" y="795" width="290" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-51" value="Mettre noeud-curseur dans l&#39;état visité" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="304" y="1095" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-55" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-51" target="HEgoxvFWjqnjc_G7mXjh-22">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="440" y="1095" />
+              <mxPoint x="440" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-57" value="oui" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-56" target="HEgoxvFWjqnjc_G7mXjh-29">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-58" value="non" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="HEgoxvFWjqnjc_G7mXjh-56" target="HEgoxvFWjqnjc_G7mXjh-59">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="220" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-56" value="&lt;div&gt;Reste des&amp;nbsp;&lt;/div&gt;&lt;div&gt;noeuds actifs?&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="304" y="440" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-59" value="&lt;div&gt;Impossible de trouver un chemin:&lt;/div&gt;&lt;div&gt;renvoie Null&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="150" y="605" width="110" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HEgoxvFWjqnjc_G7mXjh-60" value="Renvoyer le chemin du noeud-curseur" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="10" y="605" width="110" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
