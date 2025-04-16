@@ -3,8 +3,8 @@
   *{
     font-size: 0.9em;
   }
-</style>
--->
+</style>-->
+
 
 # Modélisation du programme
 
@@ -86,9 +86,58 @@
 | UsineRéseau               | Classe statique qui crée et initialise le réseau routier                                                                                  |                                                                                                                                                                           | `créerRéseau()` → un réseau routier généré aléatoirement                                                                                                                                                                                                                                                                                                                                                 |
 | ***(Potentiel)***         | Assortiment de classes OpenGL permettant de visualiser le réseau routier.                                                                 |                                                                                                                                                                           |                                                                                                                                                                                                                                                                                                                                                                                                          |
 
+<!--Sont présents pour l'impression en pdf
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>-->
+
 ### Diagramme UML
 
 ![Diagramme UML du projet](UML.svg)
+
+<!-- Sont présents pour l'impression en pdf
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>-->
 
 ### Diagramme de flux de A*
 
