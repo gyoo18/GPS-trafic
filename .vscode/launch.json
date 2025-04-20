@@ -10,7 +10,7 @@
             "request": "launch",
             "mainClass": "org.Traffix.App",
             "projectName": "app",
-            "preLaunchTask": "gradle: build"
+            "preLaunchTask": "gradle build"
         },
         {
             "type": "java",
