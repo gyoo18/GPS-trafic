@@ -25,6 +25,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ComponentAdapter;
@@ -243,42 +244,8 @@ public class UsineFenêtre {
         sectionParamètres.add(B, BorderLayout.CENTER);
         B.add(paramètresTrajets,BorderLayout.NORTH);
 
-        RoundPane destinationA = new RoundPane();
-        destinationA.borderRadius = 20;
-        destinationA.setBackground(Color.LIGHT_GRAY);
-        destinationA.setLayout(new BorderLayout());
-        destinationA.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        destinationA.setPreferredSize(new Dimension(60,60));
-        RoundPane cercleA = new RoundPane();
-        cercleA.borderRadius = 40;
-        cercleA.setPreferredSize(new Dimension(40,40));
-        cercleA.setBackground(Color.GREEN);
-        destinationA.add(cercleA, BorderLayout.WEST);
-        JPanel texteA = new JPanel();
-        texteA.setBackground(new Color(0,0,0,0));
-        texteA.setOpaque(false);
-        texteA.setLayout(new GridBagLayout());
-        JEditorPane nomA = new JEditorPane("text/html","");
-        nomA.setBackground(new Color(0,0,0,0));
-        nomA.setOpaque(false);
-        nomA.setText("<h3>Maison</h3>");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        texteA.add(nomA,gbc);
-        JEditorPane tempsA = new JEditorPane("text/html","");
-        tempsA.setBackground(new Color(0,0,0,0));
-        tempsA.setOpaque(false);
-        tempsA.setText("10:33<br>13h44");
-        gbc.gridx = 1;
-        texteA.add(tempsA,gbc);
-        destinationA.add(texteA, BorderLayout.CENTER);
-        JButton attrapeA = new JButton("≣");
-        attrapeA.setFont(new Font(Font.SANS_SERIF,Font.BOLD,20));
-        attrapeA.setBackground(new Color(0,0,0,0));
-        attrapeA.setOpaque(false);
-        destinationA.add(attrapeA,BorderLayout.EAST);
+        Destination destinationA = new Destination("Maison", Destination.TYPE.DÉPART);
+        destinationA.changerDurée(3665);
         paramètresTrajets.add(destinationA);
 
         JPanel espace2 = new JPanel();
@@ -287,42 +254,8 @@ public class UsineFenêtre {
         espace2.setPreferredSize(new Dimension(10,10));
         paramètresTrajets.add(espace2);
 
-        RoundPane destinationB = new RoundPane();
-        destinationB.borderRadius = 20;
-        destinationB.setBackground(Color.LIGHT_GRAY);
-        destinationB.setLayout(new BorderLayout());
-        destinationB.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        destinationB.setPreferredSize(new Dimension(60,60));
-        RoundPane cercleB = new RoundPane();
-        cercleB.borderRadius = 40;
-        cercleB.setPreferredSize(new Dimension(40,40));
-        cercleB.setBackground(Color.ORANGE);
-        destinationB.add(cercleB, BorderLayout.WEST);
-        JPanel texteB = new JPanel();
-        texteB.setBackground(new Color(0,0,0,0));
-        texteB.setOpaque(false);
-        texteB.setLayout(new GridBagLayout());
-        JEditorPane nomB = new JEditorPane("text/html","");
-        nomB.setBackground(new Color(0,0,0,0));
-        nomB.setOpaque(false);
-        nomB.setText("<h3>Maison</h3>");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        texteB.add(nomB,gbc);
-        JEditorPane tempsB = new JEditorPane("text/html","");
-        tempsB.setBackground(new Color(0,0,0,0));
-        tempsB.setOpaque(false);
-        tempsB.setText("10:33<br>13h44");
-        gbc.gridx = 1;
-        texteB.add(tempsB,gbc);
-        destinationB.add(texteB, BorderLayout.CENTER);
-        JButton attrapeB = new JButton("≣");
-        attrapeB.setFont(new Font(Font.SANS_SERIF,Font.BOLD,20));
-        attrapeB.setBackground(new Color(0,0,0,0));
-        attrapeB.setOpaque(false);
-        destinationB.add(attrapeB,BorderLayout.EAST);
+        Destination destinationB = new Destination("Maison", Destination.TYPE.ARRÊT);
+        destinationB.changerDurée(3665);
         paramètresTrajets.add(destinationB);
 
         JPanel espace3 = new JPanel();
@@ -331,42 +264,8 @@ public class UsineFenêtre {
         espace3.setPreferredSize(new Dimension(10,10));
         paramètresTrajets.add(espace3);
 
-        RoundPane destinationC = new RoundPane();
-        destinationC.borderRadius = 20;
-        destinationC.setBackground(Color.LIGHT_GRAY);
-        destinationC.setLayout(new BorderLayout());
-        destinationC.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        destinationC.setPreferredSize(new Dimension(60,60));
-        RoundPane cercleC = new RoundPane();
-        cercleC.borderRadius = 40;
-        cercleC.setPreferredSize(new Dimension(40,40));
-        cercleC.setBackground(Color.RED);
-        destinationC.add(cercleC, BorderLayout.WEST);
-        JPanel texteC = new JPanel();
-        texteC.setBackground(new Color(0,0,0,0));
-        texteC.setOpaque(false);
-        texteC.setLayout(new GridBagLayout());
-        JEditorPane nomC = new JEditorPane("text/html","");
-        nomC.setBackground(new Color(0,0,0,0));
-        nomC.setOpaque(false);
-        nomC.setText("<h3>Maison</h3>");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        texteC.add(nomC,gbc);
-        JEditorPane tempsC = new JEditorPane("text/html","");
-        tempsC.setBackground(new Color(0,0,0,0));
-        tempsC.setOpaque(false);
-        tempsC.setText("10:33<br>13h44");
-        gbc.gridx = 1;
-        texteC.add(tempsC,gbc);
-        destinationC.add(texteC, BorderLayout.CENTER);
-        JButton attrapeC = new JButton("≣");
-        attrapeC.setFont(new Font(Font.SANS_SERIF,Font.BOLD,20));
-        attrapeC.setBackground(new Color(0,0,0,0));
-        attrapeC.setOpaque(false);
-        destinationC.add(attrapeC,BorderLayout.EAST);
+        Destination destinationC = new Destination("Maison", Destination.TYPE.FIN);
+        destinationC.changerDurée(3665);
         paramètresTrajets.add(destinationC);
 
         //////////////////////////////////////////////////////////////////////////////////////////////
@@ -379,8 +278,7 @@ public class UsineFenêtre {
         coucheMiniCarte.add(miniCarteCouches);
 
         JPanel miniCarteConteneur = new JPanel();
-        miniCarteConteneur.setBackground(new Color(0f,1f,0f,0.5f));
-        // miniCarteConteneur.setOpaque(false);
+        miniCarteConteneur.setBackground(Color.GREEN);
         miniCarteCouches.add(miniCarteConteneur, Integer.valueOf(0));
 
         Canvas GLCanvas2 = new Canvas();
@@ -389,19 +287,22 @@ public class UsineFenêtre {
         JPanel boutonMiniCarteConteneur = new JPanel();
         boutonMiniCarteConteneur.setBackground(new Color(0,0,0,0));
         boutonMiniCarteConteneur.setOpaque(false);
-        boutonMiniCarteConteneur.setLayout(null); //new GridBagLayout());
-        coucheMiniCarte.add(boutonMiniCarteConteneur, Integer.valueOf(1));
+        boutonMiniCarteConteneur.setLayout(new GridBagLayout());
+        miniCarteCouches.add(boutonMiniCarteConteneur, Integer.valueOf(1));
 
-        // JButton boutonMiniCarte = new JButton("⛶");
-        // // boutonMiniCarte.setBackground(new Color(0f,0f,0f,0.5f));
-        // // boutonMiniCarte.setOpaque(false);
-        // gbc.gridx = 0;
-        // gbc.gridy = 0;
-        // gbc.gridwidth = 1;
-        // gbc.gridheight = 1;
-        // gbc.fill = GridBagConstraints.NONE;
-        // gbc.anchor = GridBagConstraints.FIRST_LINE_END;
-        // boutonMiniCarteConteneur.add(boutonMiniCarte);
+        JButton boutonMiniCarte = new JButton("⛶");
+        boutonMiniCarte.setBackground(new Color(0f,0f,0f,0.1f));
+        boutonMiniCarte.setFont(new Font(Font.SANS_SERIF,Font.BOLD,20));
+        boutonMiniCarte.setMargin(new Insets(5, 7, 5, 7));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.FIRST_LINE_END;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        boutonMiniCarteConteneur.add(boutonMiniCarte, gbc);
 
         // Les éléments qui ont une taille proportionnelle à leurs parents ne se mettent pas à jour automatiquement.
         fenêtre.jframe.getContentPane().addComponentListener(new ComponentAdapter(){
@@ -419,9 +320,8 @@ public class UsineFenêtre {
                 int minTaille = Math.min(coucheMiniCarte.getSize().width, coucheMiniCarte.getSize().height);
                 miniCarteCouches.setBounds( (int)(jfdim.width * 0.8f - (minTaille * 0.15f)), (int)(jfdim.height * 0.75f - (minTaille * 0.15f)), (int)(minTaille * 0.3f), (int)(minTaille * 0.3f) );
                 Dimension miniCarteDimension = new Dimension(miniCarteCouches.getSize().width-20, miniCarteCouches.getSize().height-20);
-                miniCarteConteneur.setSize(miniCarteDimension.width, miniCarteDimension.height);
-                boutonMiniCarteConteneur.setSize(miniCarteDimension.width, miniCarteDimension.height);
-                // boutonMiniCarte.setSize(30,30);
+                miniCarteConteneur.setBounds(10,10,miniCarteDimension.width, miniCarteDimension.height);
+                boutonMiniCarteConteneur.setBounds(10,10,miniCarteDimension.width, miniCarteDimension.height);
                 
                 // Changer la taille des sous-éléments ne prend effet que lors du prochain changement de taille de la fenêtre :
                 // les éléments sont alors en retard. La ligne suivante force la mise à jour de toutes les composantes.
