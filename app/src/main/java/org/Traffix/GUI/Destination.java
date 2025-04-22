@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.util.Calendar;
 
 import javax.swing.BorderFactory;
@@ -15,25 +16,29 @@ import javax.swing.JPanel;
 
 import org.checkerframework.checker.units.qual.t;
 
-public class Destination extends RoundPane {
+public class Destination extends JPanel {
 
-    enum TYPE{
+    enum Type{
         DÉPART,
         ARRÊT,
         FIN
     }
+
+    public JButton attraper;
+    public JButton détruire;
     
+    private RoundPane conteneurPrincipal;
     private RoundPane cercle;
     private JEditorPane nomPane;
     private JEditorPane tempsPane;
-    private JButton bouton;
+    private JPanel marge;
 
-    private TYPE type;
+    private Type type;
     private String nom;
     private int durée;
     private int heureArrivée;
 
-    public Destination(String nom, TYPE type){
+    public Destination(String nom, Type type){
         super();
 
         this.type = type;
@@ -42,11 +47,16 @@ public class Destination extends RoundPane {
         Calendar date = Calendar.getInstance();
         this.heureArrivée = date.get(Calendar.SECOND) + date.get(Calendar.MINUTE)*60 + date.get(Calendar.HOUR)*3600 + this.durée;
 
-        borderRadius = 20;
-        setBackground(Color.LIGHT_GRAY);
         setLayout(new BorderLayout());
-        setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        setPreferredSize(new Dimension(60,60));
+        setOpaque(false);
+
+        conteneurPrincipal = new RoundPane();
+        conteneurPrincipal.borderRadius = 20;
+        conteneurPrincipal.setBackground(Color.LIGHT_GRAY);
+        conteneurPrincipal.setLayout(new BorderLayout());
+        conteneurPrincipal.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        conteneurPrincipal.setPreferredSize(new Dimension(60,60));
+        add(conteneurPrincipal, BorderLayout.CENTER);
 
         cercle = new RoundPane();
         cercle.borderRadius = 40;
@@ -62,30 +72,48 @@ public class Destination extends RoundPane {
                 cercle.setBackground(Color.RED);
                 break;
         }
-        add(cercle,BorderLayout.WEST);
+        conteneurPrincipal.add(cercle,BorderLayout.WEST);
 
         JPanel texte = new JPanel();
-        texte.setBackground(new Color(0,0,0,0));
         texte.setOpaque(false);
         texte.setLayout(new GridLayout(1,2,0,10));
 
         nomPane = new JEditorPane("text/html","");
-        nomPane.setBackground(new Color(0,0,0,0));
         nomPane.setOpaque(false);
         nomPane.setText("<h3 style='text-align:center'>"+nom+"</h3>");
         texte.add(nomPane);
 
         tempsPane = new JEditorPane("text/html","");
-        tempsPane.setBackground(new Color(0,0,0,0));
         tempsPane.setOpaque(false);
         texte.add(tempsPane);
-        add(texte, BorderLayout.CENTER);
+        conteneurPrincipal.add(texte, BorderLayout.CENTER);
 
-        bouton = new JButton("≣");
-        bouton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
-        bouton.setBackground(new Color(0,0,0,0));
-        bouton.setOpaque(false);
-        add(bouton, BorderLayout.EAST);
+        JPanel boutons = new JPanel();
+        boutons.setOpaque(false);
+        boutons.setLayout(new GridLayout(1,2,0,10));
+        boutons.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+
+        détruire = new JButton("❌");
+        détruire.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        détruire.setBackground(new Color(0,0,0,0));
+        détruire.setOpaque(false);
+        détruire.setMargin(new Insets(5, 5, 5, 5));
+        boutons.add(détruire);
+
+        attraper = new JButton("≣");
+        attraper.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        attraper.setBackground(new Color(0,0,0,0));
+        attraper.setOpaque(false);
+        attraper.setMargin(new Insets(5, 5, 5, 5));
+        boutons.add(attraper);
+
+        conteneurPrincipal.add(boutons, BorderLayout.EAST);
+
+        marge = new JPanel();
+        marge.setBackground(new Color(0,0,0,0));
+        marge.setOpaque(false);
+        marge.setPreferredSize(new Dimension(10,10));
+        add(marge, BorderLayout.SOUTH);
     }
 
     public void changerDurée(int duréeSec){
@@ -101,5 +129,20 @@ public class Destination extends RoundPane {
         int tempsH = Math.floorMod(tempsSec/3600, 60); //Temps en heures
         char sép = formatHeure?'h':':';
         return ""+tempsH+sép+tempsMin;
+    }
+
+    public void changerType(Type n_type){
+        this.type = n_type;
+        switch(type){
+            case DÉPART:
+                cercle.setBackground(Color.GREEN);
+                break;
+            case ARRÊT:
+                cercle.setBackground(Color.ORANGE);
+                break;
+            case FIN:
+                cercle.setBackground(Color.RED);
+                break;
+        }
     }
 }

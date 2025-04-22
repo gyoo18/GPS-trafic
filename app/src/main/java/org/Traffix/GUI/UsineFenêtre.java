@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneLayout;
 import javax.swing.border.BevelBorder;
@@ -254,10 +255,21 @@ public class UsineFenêtre {
         B.add(paramètresTrajets,BorderLayout.NORTH);
         fenêtre.ajouterÉlémentParID(paramètresTrajets, "paramètresTrajets");
 
-        Destination destinationA = new Destination("Maison", Destination.TYPE.DÉPART);
-        destinationA.changerDurée(3665);
-        paramètresTrajets.add(destinationA);
-        fenêtre.ajouterÉlémentParID(destinationA, "destinationA");
+        JPanel adresseConteneur = new JPanel();
+        adresseConteneur.setOpaque(false);
+        adresseConteneur.setLayout(new BorderLayout());
+        paramètresTrajets.add(adresseConteneur);
+
+        JTextField adresseEntrée = new JTextField("Veuillez entrer une adresse.");
+        adresseConteneur.add(adresseEntrée, BorderLayout.CENTER);
+        fenêtre.ajouterÉlémentParID(adresseEntrée, "adresseEntrée");
+
+        JButton adresseChercherBouton = new JButton("🔍");
+        adresseChercherBouton.setBackground(new Color(0,0,0,0));
+        adresseChercherBouton.setMargin(new Insets(5, 5, 5, 5));
+        adresseChercherBouton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        adresseConteneur.add(adresseChercherBouton, BorderLayout.EAST);
+        fenêtre.ajouterÉlémentParID(adresseChercherBouton, "adresseChercherBouton");
 
         JPanel espace2 = new JPanel();
         espace2.setBackground(new Color(0,0,0,0));
@@ -265,18 +277,17 @@ public class UsineFenêtre {
         espace2.setPreferredSize(new Dimension(10,10));
         paramètresTrajets.add(espace2);
 
-        Destination destinationB = new Destination("Maison", Destination.TYPE.ARRÊT);
+        Destination destinationA = new Destination("Maison", Destination.Type.DÉPART);
+        destinationA.changerDurée(3665);
+        paramètresTrajets.add(destinationA);
+        fenêtre.ajouterÉlémentParID(destinationA, "destinationA");
+
+        Destination destinationB = new Destination("Maison", Destination.Type.ARRÊT);
         destinationB.changerDurée(3665);
         paramètresTrajets.add(destinationB);
         fenêtre.ajouterÉlémentParID(destinationB, "destinationB");
 
-        JPanel espace3 = new JPanel();
-        espace3.setBackground(new Color(0,0,0,0));
-        espace3.setOpaque(false);
-        espace3.setPreferredSize(new Dimension(10,10));
-        paramètresTrajets.add(espace3);
-
-        Destination destinationC = new Destination("Maison", Destination.TYPE.FIN);
+        Destination destinationC = new Destination("Maison", Destination.Type.FIN);
         destinationC.changerDurée(3665);
         paramètresTrajets.add(destinationC);
         fenêtre.ajouterÉlémentParID(destinationC, "destinationC");
@@ -307,7 +318,7 @@ public class UsineFenêtre {
         JButton boutonMiniCarte = new JButton("⛶");
         boutonMiniCarte.setBackground(new Color(0f,0f,0f,0.1f));
         boutonMiniCarte.setFont(new Font(Font.SANS_SERIF,Font.BOLD,20));
-        boutonMiniCarte.setMargin(new Insets(5, 7, 5, 7));
+        boutonMiniCarte.setMargin(new Insets(4, 7, 4, 7));
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -331,7 +342,7 @@ public class UsineFenêtre {
                 sectionCarte.setPreferredSize(sectionCarteTaille);
                 carteCoucheCarte.setSize(sectionCarteTaille);
                 carteCoucheGUI.setSize(sectionCarteTaille);
-                sectionParamètres.setPreferredSize( new Dimension( Math.max((int)(coucheBase.getSize().width * 0.2f),250), coucheBase.getSize().height ) );
+                sectionParamètres.setPreferredSize( new Dimension( Math.max((int)(coucheBase.getSize().width * 0.2f),300), coucheBase.getSize().height ) );
                 int minTaille = Math.min(coucheMiniCarte.getSize().width, coucheMiniCarte.getSize().height);
                 miniCarteCouches.setBounds( (int)(jfdim.width * 0.8f - (minTaille * 0.15f)), (int)(jfdim.height * 0.75f - (minTaille * 0.15f)), (int)(minTaille * 0.3f), (int)(minTaille * 0.3f) );
                 Dimension miniCarteDimension = new Dimension(miniCarteCouches.getSize().width-20, miniCarteCouches.getSize().height-20);
