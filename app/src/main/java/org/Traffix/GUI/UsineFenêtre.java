@@ -86,9 +86,11 @@ public class UsineFenêtre {
         JPanel coucheBase = new JPanel();
         coucheBase.setLayout(new BorderLayout());
         couchesPrincipales.add(coucheBase,Integer.valueOf(0));
+        fenêtre.ajouterÉlémentParID(coucheBase, "coucheBase");
 
         JPanel coucheDéplacement = new JPanel();
         couchesPrincipales.add(coucheDéplacement, Integer.valueOf(1));
+        fenêtre.ajouterÉlémentParID(coucheDéplacement, "coucheDéplacement");
         
         JPanel coucheMiniCarte = new JPanel();
         coucheMiniCarte.setOpaque(false);
@@ -150,6 +152,7 @@ public class UsineFenêtre {
             "</html>"
             );
         carteInfoTournantBoîte.add(carteInfoTournant);
+        fenêtre.ajouterÉlémentParID(carteInfoTournant, "carteInfoTournant");
         carteInfosGaucheHaut.add(carteInfoTournantBoîte);
 
         // Crée un espace entre les deux boîtes de contenu
@@ -174,6 +177,7 @@ public class UsineFenêtre {
             "</html>"
             );
         carteInfoTempsBoîte.add(carteInfoTemps);
+        fenêtre.ajouterÉlémentParID(carteInfoTemps, "carteInfoTemps");
         carteInfosGaucheHaut.add(carteInfoTempsBoîte);
 
         JPanel carteInfosGaucheBas = new JPanel();
@@ -193,6 +197,7 @@ public class UsineFenêtre {
         gbc.gridwidth = 2;
         gbc.gridheight = 1;
         carteInfosGaucheBas.add(boutonHaut,gbc);
+        fenêtre.ajouterÉlémentParID(boutonHaut, "boutonAccélérer");
 
         JButton boutonGauche = new JButton("←");
         gbc.gridx = 0;
@@ -200,6 +205,7 @@ public class UsineFenêtre {
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         carteInfosGaucheBas.add(boutonGauche,gbc);
+        fenêtre.ajouterÉlémentParID(boutonGauche, "boutonTournerGauche");
         
         JButton boutonDroite = new JButton("→");
         gbc.gridx = 1;
@@ -207,6 +213,7 @@ public class UsineFenêtre {
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         carteInfosGaucheBas.add(boutonDroite,gbc);
+        fenêtre.ajouterÉlémentParID(boutonDroite, "boutonTournerDroit");
 
         JButton boutonBas = new JButton("↓");
         gbc.gridx = 0;
@@ -214,6 +221,7 @@ public class UsineFenêtre {
         gbc.gridwidth = 2;
         gbc.gridheight = 1;
         carteInfosGaucheBas.add(boutonBas,gbc);
+        fenêtre.ajouterÉlémentParID(boutonBas, "boutonRalentir");
 
         //////////////////////////////////////////////////////////////////////////////////////////////
         /// Paramètres                                                                             ///
@@ -231,6 +239,7 @@ public class UsineFenêtre {
         JButton menuDétailléBouton = new JButton("☰");
         menuDétailléBoîte.add(menuDétailléBouton, BorderLayout.EAST);
         sectionParamètres.add(menuDétailléBoîte,BorderLayout.NORTH);
+        fenêtre.ajouterÉlémentParID(menuDétailléBouton, "menuDétailléBouton");
 
         JPanel B = new JPanel();                // Peu importe ce que j'essaie, les composantes à l'intérieur de BorderLayout.CENTER vont toujours être étiré pour prendre
         B.setBackground(new Color(0,0,0,0));    // le maximum de place possible. Afin d'y remédier, je met un nouveau BorderLayout et je met les éléments dans sa case NORTH
@@ -243,10 +252,12 @@ public class UsineFenêtre {
         paramètresTrajets.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         sectionParamètres.add(B, BorderLayout.CENTER);
         B.add(paramètresTrajets,BorderLayout.NORTH);
+        fenêtre.ajouterÉlémentParID(paramètresTrajets, "paramètresTrajets");
 
         Destination destinationA = new Destination("Maison", Destination.TYPE.DÉPART);
         destinationA.changerDurée(3665);
         paramètresTrajets.add(destinationA);
+        fenêtre.ajouterÉlémentParID(destinationA, "destinationA");
 
         JPanel espace2 = new JPanel();
         espace2.setBackground(new Color(0,0,0,0));
@@ -257,6 +268,7 @@ public class UsineFenêtre {
         Destination destinationB = new Destination("Maison", Destination.TYPE.ARRÊT);
         destinationB.changerDurée(3665);
         paramètresTrajets.add(destinationB);
+        fenêtre.ajouterÉlémentParID(destinationB, "destinationB");
 
         JPanel espace3 = new JPanel();
         espace3.setBackground(new Color(0,0,0,0));
@@ -267,6 +279,7 @@ public class UsineFenêtre {
         Destination destinationC = new Destination("Maison", Destination.TYPE.FIN);
         destinationC.changerDurée(3665);
         paramètresTrajets.add(destinationC);
+        fenêtre.ajouterÉlémentParID(destinationC, "destinationC");
 
         //////////////////////////////////////////////////////////////////////////////////////////////
         /// Mini-Carte                                                                             ///
@@ -280,6 +293,7 @@ public class UsineFenêtre {
         JPanel miniCarteConteneur = new JPanel();
         miniCarteConteneur.setBackground(Color.GREEN);
         miniCarteCouches.add(miniCarteConteneur, Integer.valueOf(0));
+        fenêtre.ajouterÉlémentParID(miniCarteConteneur, "miniCarteConteneur");
 
         Canvas GLCanvas2 = new Canvas();
         miniCarteConteneur.add(GLCanvas2);
@@ -303,6 +317,7 @@ public class UsineFenêtre {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         boutonMiniCarteConteneur.add(boutonMiniCarte, gbc);
+        fenêtre.ajouterÉlémentParID(boutonMiniCarte, "boutonMiniCarte");
 
         // Les éléments qui ont une taille proportionnelle à leurs parents ne se mettent pas à jour automatiquement.
         fenêtre.jframe.getContentPane().addComponentListener(new ComponentAdapter(){
