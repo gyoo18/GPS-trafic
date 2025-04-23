@@ -117,7 +117,7 @@ public class UsineFenêtre {
         carteCouches.add(carteCoucheCarte, Integer.valueOf(0));
 
         GLCanvas carte = new GLCanvas();    // TODO remplacer par GLCanvas
-        carteCoucheCarte.add(carte);
+        carteCoucheCarte.add(carte,BorderLayout.CENTER);
         
         JPanel carteCoucheGUI = new JPanel();
         carteCoucheGUI.setBackground(new Color(1f,1f,1f,1f));
@@ -350,8 +350,6 @@ public class UsineFenêtre {
                 Dimension miniCarteDimension = new Dimension(miniCarteCouches.getSize().width-20, miniCarteCouches.getSize().height-20);
                 miniCarteConteneur.setBounds(10,10,miniCarteDimension.width, miniCarteDimension.height);
                 boutonMiniCarteConteneur.setBounds(10,10,miniCarteDimension.width, miniCarteDimension.height);
-
-                carte.dessiner();
                 
                 // Changer la taille des sous-éléments ne prend effet que lors du prochain changement de taille de la fenêtre :
                 // les éléments sont alors en retard. La ligne suivante force la mise à jour de toutes les composantes.
