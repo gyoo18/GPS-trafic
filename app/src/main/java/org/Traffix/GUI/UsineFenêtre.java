@@ -14,6 +14,8 @@ import javax.swing.ScrollPaneLayout;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
+import org.Traffix.OpenGL.GLCanvas;
+
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -101,6 +103,7 @@ public class UsineFenêtre {
         //////////////////////////////////////////////////////////////////////////////////////////////
         JPanel sectionCarte = new JPanel();
         sectionCarte.setBackground(Color.RED);
+        //sectionCarte.setOpaque(false);
         sectionCarte.setLayout(new BorderLayout());
         coucheBase.add(sectionCarte, BorderLayout.CENTER);
 
@@ -109,10 +112,11 @@ public class UsineFenêtre {
 
         JPanel carteCoucheCarte = new JPanel();
         carteCoucheCarte.setBackground(Color.BLUE);
+        //carteCoucheCarte.setOpaque(false);
         carteCoucheCarte.setLayout(new BorderLayout());
         carteCouches.add(carteCoucheCarte, Integer.valueOf(0));
 
-        Canvas carte = new Canvas();    // TODO remplacer par GLCanvas
+        GLCanvas carte = new GLCanvas();    // TODO remplacer par GLCanvas
         carteCoucheCarte.add(carte);
         
         JPanel carteCoucheGUI = new JPanel();
@@ -346,6 +350,8 @@ public class UsineFenêtre {
                 Dimension miniCarteDimension = new Dimension(miniCarteCouches.getSize().width-20, miniCarteCouches.getSize().height-20);
                 miniCarteConteneur.setBounds(10,10,miniCarteDimension.width, miniCarteDimension.height);
                 boutonMiniCarteConteneur.setBounds(10,10,miniCarteDimension.width, miniCarteDimension.height);
+
+                carte.dessiner();
                 
                 // Changer la taille des sous-éléments ne prend effet que lors du prochain changement de taille de la fenêtre :
                 // les éléments sont alors en retard. La ligne suivante force la mise à jour de toutes les composantes.
