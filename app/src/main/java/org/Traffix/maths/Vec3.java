@@ -1,6 +1,6 @@
 package org.Traffix.maths;
 
-import animations.Animable;
+import org.Traffix.animations.Animable;
 
 /**
  * Vecteur de 3 dimension à coordonées cartésiennes (x,y,z)

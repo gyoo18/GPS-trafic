@@ -2,10 +2,8 @@ package org.Traffix.maths;
 
 import java.util.ArrayList;
 
-import org.lwjgl.system.windows.MONITORINFOEX;
-
-import animations.Animable;
-import maths.Mat4.MOrdre;
+import org.Traffix.animations.Animable;
+import org.Traffix.maths.Mat4.MOrdre;
 
 public class Transformée implements Animable{
     
