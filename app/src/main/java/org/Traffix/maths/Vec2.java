@@ -1,7 +1,7 @@
 package org.Traffix.maths;
 
 
-import animations.Animable;
+import org.Traffix.animations.Animable;
 
 /**
  * Vecteur à deux dimensions en coordonées cartésiennes (x,y)

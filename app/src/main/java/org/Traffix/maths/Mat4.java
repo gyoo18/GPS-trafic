@@ -3,7 +3,7 @@ package org.Traffix.maths;
 import java.lang.Math;
 import java.security.InvalidParameterException;
 
-import animations.Animable;
+import org.Traffix.animations.Animable;
 
 public class Mat4 implements Animable{
     public enum MOrdre{
