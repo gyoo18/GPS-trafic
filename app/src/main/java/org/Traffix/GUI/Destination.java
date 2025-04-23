@@ -10,7 +10,6 @@ import java.awt.Insets;
 import java.util.Calendar;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 
@@ -24,8 +23,8 @@ public class Destination extends JPanel {
         FIN
     }
 
-    public JButton attraper;
-    public JButton détruire;
+    public Bouton attraper;
+    public Bouton détruire;
     
     private RoundPane conteneurPrincipal;
     private RoundPane cercle;
@@ -93,14 +92,14 @@ public class Destination extends JPanel {
         boutons.setLayout(new GridLayout(1,2,0,10));
         boutons.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
-        détruire = new JButton("❌");
+        détruire = new Bouton("❌");
         détruire.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         détruire.setBackground(new Color(0,0,0,0));
         détruire.setOpaque(false);
         détruire.setMargin(new Insets(5, 5, 5, 5));
         boutons.add(détruire);
 
-        attraper = new JButton("≣");
+        attraper = new Bouton("≣");
         attraper.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         attraper.setBackground(new Color(0,0,0,0));
         attraper.setOpaque(false);

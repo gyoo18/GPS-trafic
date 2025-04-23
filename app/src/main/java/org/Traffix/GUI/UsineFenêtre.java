@@ -3,14 +3,12 @@ package org.Traffix.GUI;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneLayout;
 import javax.swing.border.BevelBorder;
@@ -192,7 +190,7 @@ public class UsineFenêtre {
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        JButton boutonHaut = new JButton("↑");
+        Bouton boutonHaut = new Bouton("↑");
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -200,7 +198,7 @@ public class UsineFenêtre {
         carteInfosGaucheBas.add(boutonHaut,gbc);
         fenêtre.ajouterÉlémentParID(boutonHaut, "boutonAccélérer");
 
-        JButton boutonGauche = new JButton("←");
+        Bouton boutonGauche = new Bouton("←");
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -208,7 +206,7 @@ public class UsineFenêtre {
         carteInfosGaucheBas.add(boutonGauche,gbc);
         fenêtre.ajouterÉlémentParID(boutonGauche, "boutonTournerGauche");
         
-        JButton boutonDroite = new JButton("→");
+        Bouton boutonDroite = new Bouton("→");
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -216,7 +214,7 @@ public class UsineFenêtre {
         carteInfosGaucheBas.add(boutonDroite,gbc);
         fenêtre.ajouterÉlémentParID(boutonDroite, "boutonTournerDroit");
 
-        JButton boutonBas = new JButton("↓");
+        Bouton boutonBas = new Bouton("↓");
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 2;
@@ -237,7 +235,7 @@ public class UsineFenêtre {
         menuDétailléBoîte.setOpaque(false);
         menuDétailléBoîte.setLayout(new BorderLayout());
         menuDétailléBoîte.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        JButton menuDétailléBouton = new JButton("☰");
+        Bouton menuDétailléBouton = new Bouton("☰");
         menuDétailléBoîte.add(menuDétailléBouton, BorderLayout.EAST);
         sectionParamètres.add(menuDétailléBoîte,BorderLayout.NORTH);
         fenêtre.ajouterÉlémentParID(menuDétailléBouton, "menuDétailléBouton");
@@ -260,11 +258,11 @@ public class UsineFenêtre {
         adresseConteneur.setLayout(new BorderLayout());
         paramètresTrajets.add(adresseConteneur);
 
-        JTextField adresseEntrée = new JTextField("Veuillez entrer une adresse.");
+        TexteEntrée adresseEntrée = new TexteEntrée("Veuillez entrer une adresse.");
         adresseConteneur.add(adresseEntrée, BorderLayout.CENTER);
         fenêtre.ajouterÉlémentParID(adresseEntrée, "adresseEntrée");
 
-        JButton adresseChercherBouton = new JButton("🔍");
+        Bouton adresseChercherBouton = new Bouton("🔍");
         adresseChercherBouton.setBackground(new Color(0,0,0,0));
         adresseChercherBouton.setMargin(new Insets(5, 5, 5, 5));
         adresseChercherBouton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
@@ -315,7 +313,7 @@ public class UsineFenêtre {
         boutonMiniCarteConteneur.setLayout(new GridBagLayout());
         miniCarteCouches.add(boutonMiniCarteConteneur, Integer.valueOf(1));
 
-        JButton boutonMiniCarte = new JButton("⛶");
+        Bouton boutonMiniCarte = new Bouton("⛶");
         boutonMiniCarte.setBackground(new Color(0f,0f,0f,0.1f));
         boutonMiniCarte.setFont(new Font(Font.SANS_SERIF,Font.BOLD,20));
         boutonMiniCarte.setMargin(new Insets(4, 7, 4, 7));
