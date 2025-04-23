@@ -1,31 +1,30 @@
-GestionnaireAccidents 
-    
+package org.Traffix.circulation;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-
 public class GestionnaireAccidents {
 
     private static List<Accident> listeAccidents = new ArrayList<>();
     private static List<LocalDateTime> listeTempsAccidents = new ArrayList<>();
-    private static List<Integer> listeDureeAccidents = new ArrayList<>();
+    private static List<Integer> listeDuréeAccidents = new ArrayList<>();
     
     // Random pour la génération aléatoire
     private static final Random random = new Random();
     
-    public enum TypeEvenement {
-        ACCIDENT_VEHICULE("Accident de véhicule"),
+    public enum TypeÉvénement {
+        ACCIDENT_VÉHICULE("Accident de véhicule"),
         TRAVAUX("Travaux de construction"),
-        INTEMPERIE("Intempérie"),
+        INTEMPÉRIE("Intempérie"),
         MANIFESTATION("Manifestation"),
-        VEHICULE_EN_PANNE("Véhicule en panne");
+        VÉHICULE_EN_PANNE("Véhicule en panne");
         
         private final String description;
         
-        TypeEvenement(String description) {
+        TypeÉvénement(String description) {
             this.description = description;
         }
         
@@ -36,43 +35,43 @@ public class GestionnaireAccidents {
     
    
     public static class Accident {
-        private TypeEvenement type;
+        private TypeÉvénement type;
         private Route route;
-        private double position;     // Position sur la route en mètres
+        private float position;      // Position sur la route en mètres
         private int gravite;         // Échelle de 1 à 5
         private boolean actif;
         private String description;
         
-        public Accident(TypeEvenement type, Route route, double position, int gravite) {
+        public Accident(TypeÉvénement type, Route route, float position, int gravite) {
             this.type = type;
             this.route = route;
             this.position = position;
             this.gravite = Math.max(1, Math.min(5, gravite)); // Entre 1 et 5
             this.actif = true;
-            genererDescription();
+            générerDescription();
         }
         
-        private void genererDescription() {
+        private void générerDescription() {
             StringBuilder sb = new StringBuilder();
             sb.append(type.getDescription()).append(" sur ").append(route.getNom());
             sb.append(" à ").append(String.format("%.1f", position / 1000)).append(" km");
             
             switch (type) {
-                case ACCIDENT_VEHICULE:
+                case ACCIDENT_VÉHICULE:
                     sb.append(". ").append(getDescriptionGravite());
                     sb.append(". ").append(random.nextInt(1, 5)).append(" véhicule(s) impliqué(s)");
                     break;
                 case TRAVAUX:
                     sb.append(". Durée estimée: ").append(random.nextInt(1, 10)).append(" jour(s)");
                     break;
-                case INTEMPERIE:
-                    String[] intemperies = {"Neige", "Pluie intense", "Verglas", "Brouillard"};
-                    sb.append(". ").append(intemperies[random.nextInt(intemperies.length)]);
+                case INTEMPÉRIE:
+                    String[] intempéries = {"Neige", "Pluie intense", "Verglas", "Brouillard"};
+                    sb.append(". ").append(intempéries[random.nextInt(intempéries.length)]);
                     break;
                 case MANIFESTATION:
                     sb.append(". Circulation fortement perturbée");
                     break;
-                case VEHICULE_EN_PANNE:
+                case VÉHICULE_EN_PANNE:
                     sb.append(". Véhicule sur la voie de droite");
                     break;
             }
@@ -92,7 +91,7 @@ public class GestionnaireAccidents {
         }
         
         // Getters et setters
-        public TypeEvenement getType() {
+        public TypeÉvénement getType() {
             return type;
         }
         
@@ -100,11 +99,11 @@ public class GestionnaireAccidents {
             return route;
         }
         
-        public double getPosition() {
+        public float getPosition() {
             return position;
         }
         
-        public int getGravite() {
+        public int getGravité() {
             return gravite;
         }
         
@@ -126,48 +125,48 @@ public class GestionnaireAccidents {
     }
     
    
-    public static Accident genererAccidentAleatoire(Route route) {
-        TypeEvenement typeEvenement = TypeEvenement.values()[random.nextInt(TypeEvenement.values().length)];
-        double position = random.nextDouble() * route.getLongueur(); // Position aléatoire sur la route
+    public static Accident générerAccidentAléatoire(Route route) {
+        TypeÉvénement typeÉvénement = TypeÉvénement.values()[random.nextInt(TypeÉvénement.values().length)];
+        float position = random.nextFloat() * route.getLongueur(); // Position aléatoire sur la route
         int gravite = random.nextInt(1, 6); // Gravité entre 1 et 5
         
-        Accident accident = new Accident(typeEvenement, route, position, gravite);
+        Accident accident = new Accident(typeÉvénement, route, position, gravite);
         
         // Enregistrement de l'accident
         listeAccidents.add(accident);
         listeTempsAccidents.add(LocalDateTime.now());
-        listeDureeAccidents.add(calculerDureeAccident(accident));
+        listeDuréeAccidents.add(calculerDuréeAccident(accident));
         
         return accident;
     }
     
     
-    private static int calculerDureeAccident(Accident accident) {
+    private static int calculerDuréeAccident(Accident accident) {
     
-        int dureeBase;
+        int duréeBase;
         
         switch (accident.getType()) {
-            case ACCIDENT_VEHICULE:
-                dureeBase = accident.getGravite() * 30; // 30 min à 2h30 selon gravité
+            case ACCIDENT_VÉHICULE:
+                duréeBase = accident.getGravité() * 30; // 30 min à 2h30 selon gravité
                 break;
             case TRAVAUX:
-                dureeBase = 240; // 4 heures minimum pour des travaux
+                duréeBase = 240; // 4 heures minimum pour des travaux
                 break;
-            case INTEMPERIE:
-                dureeBase = 120; // 2 heures pour les intempéries
+            case INTEMPÉRIE:
+                duréeBase = 120; // 2 heures pour les intempéries
                 break;
             case MANIFESTATION:
-                dureeBase = 180; // 3 heures pour une manifestation
+                duréeBase = 180; // 3 heures pour une manifestation
                 break;
-            case VEHICULE_EN_PANNE:
-                dureeBase = 45; // 45 minutes pour un véhicule en panne
+            case VÉHICULE_EN_PANNE:
+                duréeBase = 45; // 45 minutes pour un véhicule en panne
                 break;
             default:
-                dureeBase = 60;
+                duréeBase = 60;
         }
         
         // Ajout d'une variation aléatoire de ±30%
-        return dureeBase + random.nextInt(-dureeBase * 3 / 10, dureeBase * 3 / 10 + 1);
+        return duréeBase + random.nextInt(-duréeBase * 3 / 10, duréeBase * 3 / 10 + 1);
     }
     
     
@@ -177,13 +176,13 @@ public class GestionnaireAccidents {
         for (int i = 0; i < listeAccidents.size(); i++) {
             if (listeAccidents.get(i).isActif()) {
                 LocalDateTime tempsDebut = listeTempsAccidents.get(i);
-                int duree = listeDureeAccidents.get(i);
+                int durée = listeDuréeAccidents.get(i);
                 
     
-                long tempsEcoule = java.time.Duration.between(tempsDebut, maintenant).toMinutes();
+                long tempsÉcoulé = java.time.Duration.between(tempsDebut, maintenant).toMinutes();
                 
             
-                if (tempsEcoule >= duree) {
+                if (tempsÉcoulé >= durée) {
                     listeAccidents.get(i).setActif(false);
                     System.out.println("Événement terminé: " + listeAccidents.get(i).getDescription());
                 }
@@ -192,12 +191,12 @@ public class GestionnaireAccidents {
     }
     
   
-    public static List<Accident> genererAccidentsAleatoires(List<Route> routes, double probabilite) {
+    public static List<Accident> générerAccidentsAléatoires(List<Route> routes, float probabilité) {
         List<Accident> nouveauxAccidents = new ArrayList<>();
         
         for (Route route : routes) {
-            if (random.nextDouble() < probabilite) {
-                Accident accident = genererAccidentAleatoire(route);
+            if (random.nextFloat() < probabilité) {
+                Accident accident = générerAccidentAléatoire(route);
                 nouveauxAccidents.add(accident);
                 System.out.println("Nouvel événement: " + accident);
             }
@@ -220,46 +219,46 @@ public class GestionnaireAccidents {
     }
     
     
-    public static double calculerImpactSurVitesse(Vehicule vehicule, Accident accident) {
-        if (!vehicule.getRouteActuelle().equals(accident.getRoute()) || !accident.isActif()) {
-            return 1.0; // Pas d'impact
+    public static float calculerImpactSurVitesse(Véhicule véhicule, Accident accident) {
+        if (!véhicule.getRouteActuelle().equals(accident.getRoute()) || !accident.isActif()) {
+            return 1f; // Pas d'impact
         }
         
         // Distance entre le véhicule et l'accident
-        double distance = Math.abs(vehicule.getPosition() - accident.getPosition());
+        float distance = Math.abs(véhicule.getPosition() - accident.getPosition());
         
         // Si le véhicule est très loin de l'accident, pas d'impact
         if (distance > 1000) {
-            return 1.0;
+            return 1f;
         }
         
         // L'impact dépend de la gravité et de la distance
-        double impactBase;
+        float impactBase;
         switch (accident.getType()) {
-            case ACCIDENT_VEHICULE:
-                impactBase = 0.2 * accident.getGravite(); // 0.2 à 1.0 selon gravité
+            case ACCIDENT_VÉHICULE:
+                impactBase = 0.2f * accident.getGravité(); // 0.2 à 1.0 selon gravité
                 break;
             case TRAVAUX:
-                impactBase = 0.5;
+                impactBase = 0.5f;
                 break;
-            case INTEMPERIE:
-                impactBase = 0.4;
+            case INTEMPÉRIE:
+                impactBase = 0.4f;
                 break;
             case MANIFESTATION:
-                impactBase = 0.7;
+                impactBase = 0.7f;
                 break;
-            case VEHICULE_EN_PANNE:
-                impactBase = 0.3;
+            case VÉHICULE_EN_PANNE:
+                impactBase = 0.3f;
                 break;
             default:
-                impactBase = 0.3;
+                impactBase = 0.3f;
         }
         
         // Plus on est proche, plus l'impact est fort
-        double facteurDistance = Math.min(1.0, distance / 1000);
+        float facteurDistance = (float)Math.min(1.0, distance / 1000);
         
         // Calcul du facteur final (entre 0 et 1, où 0 = arrêt complet et 1 = pas d'impact)
-        return Math.max(0.1, 1.0 - impactBase * (1.0 - facteurDistance));
+        return (float)Math.max(0.1, 1.0 - impactBase * (1.0 - facteurDistance));
     }
     
    
@@ -271,8 +270,8 @@ public class GestionnaireAccidents {
             Accident accident = listeAccidents.get(i);
             if (accident.isActif()) {
                 LocalDateTime debut = listeTempsAccidents.get(i);
-                int duree = listeDureeAccidents.get(i);
-                LocalDateTime fin = debut.plusMinutes(duree);
+                int durée = listeDuréeAccidents.get(i);
+                LocalDateTime fin = debut.plusMinutes(durée);
                 
                 System.out.println(accident);
                 System.out.println("  Début: " + debut.format(formatter));
@@ -290,7 +289,7 @@ public class GestionnaireAccidents {
             if (!listeAccidents.get(i).isActif()) {
                 listeAccidents.remove(i);
                 listeTempsAccidents.remove(i);
-                listeDureeAccidents.remove(i);
+                listeDuréeAccidents.remove(i);
             }
         }
         System.out.println("Nettoyage effectué. " + listeAccidents.size() + " événements actifs restants.");
