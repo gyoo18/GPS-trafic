@@ -1,4 +1,4 @@
-package org.example.maths;
+package org.Traffix.maths;
 
 
 import animations.Animable;

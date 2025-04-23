@@ -1,4 +1,4 @@
-package org.example.maths;
+package org.Traffix.maths;
 
 import java.lang.Math;
 import java.security.InvalidParameterException;

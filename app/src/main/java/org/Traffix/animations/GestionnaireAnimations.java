@@ -1,4 +1,4 @@
-package animations;
+package org.Traffix.animations;
 
 import java.util.ArrayList;
 

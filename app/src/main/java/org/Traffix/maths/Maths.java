@@ -1,4 +1,4 @@
-package org.example.maths;
+package org.Traffix.maths;
 
 public class Maths {
     public static Vec3 intersectionPlan(Vec3 planPos, Vec3 planNorm, Vec3 rayonDir, Vec3 rayonOrigine){
