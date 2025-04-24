@@ -8,7 +8,7 @@ public abstract class Intersection {
 
     public Vec2 position;
 
-    private ArrayList<Route> routes;
+    protected ArrayList<Route> routes;
 
     public Intersection(Vec2 pos){
         this.position = pos.copier();
@@ -41,5 +41,16 @@ public abstract class Intersection {
         return routes;
     }
 
+    /**
+     * Indique si un véhicule a le droit de passer à travers l'intersection en direction de la route indiquée
+     * @param routeDépart Route que le véhicule quitte
+     * @param routeDestination Route sur laquelle le véhicule veut embarquer
+     * @return boolean indiquant si le véhicule a le droit de passer.
+     */
     public abstract boolean peutPasser(Route routeDépart, Route routeDestination);
+
+    /**
+     * Met à jour les systèmes dynamiques à l'intérieur de l'intersection
+     */
+    public abstract void miseÀJour();
 }

@@ -6,7 +6,7 @@ public abstract class Véhicule {
 
     private float longueur;
     private float position;
-    private float vitesse;
+    private float vitesse; //TODO changer la vitesse en m/s
     private Route routeActuelle;
     private Navigateur navigateur;
     

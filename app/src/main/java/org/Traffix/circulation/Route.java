@@ -215,6 +215,30 @@ public class Route {
     }
 
     /**
+     * Renvoie le véhicule à la tête de la file sur la voie A
+     * @return Véhicule
+     */
+    public Véhicule avoirPremierVéhiculeSensA(){
+        if(véhiculesSensA.size() > 0){
+            return véhiculesSensA.get(0);
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * Renvoie le véhicule à la tête de la file sur la voie B
+     * @return Véhicule
+     */
+    public Véhicule avoirPremierVéhiculeSensB(){
+        if(véhiculesSensB.size() > 0){
+            return véhiculesSensB.get(0);
+        }else{
+            return null;
+        }
+    }
+
+    /**
      * Renvoie le véhicule en avant du véhicule fournit et `null` si aucun véhicule ne se trouve en avant.
      * Lance une erreur élégante si le véhicule fournit ne se trouve pas sur la route.
      * @param véhicule véhicule fournit.
