@@ -33,7 +33,6 @@ public class GestionnaireAccidents {
         }
     }
     
-   
     public static class Accident {
         private TypeÉvénement type;
         private Route route;
