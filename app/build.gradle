@@ -26,17 +26,16 @@ dependencies {
 
     // OpenGL
     implementation "org.lwjgl:lwjgl:${lwjglVersion}"
-    implementation "org.lwjgl:lwjgl-glfw:${lwjglVersion}"
     implementation "org.lwjgl:lwjgl-opengl:${lwjglVersion}"
+    implementation "org.lwjgl:lwjgl-jawt:${lwjglVersion}"
     runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-linux"
     runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-macos"
     runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-windows"
-    runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-linux"
-    runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-macos"
-    runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-windows"
     runtimeOnly "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-linux"
     runtimeOnly "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-macos"
     runtimeOnly "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-windows"
+
+    implementation fileTree(dir: "src/lib/lwjgl-awt/", include:"*.jar")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

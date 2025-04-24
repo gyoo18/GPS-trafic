@@ -6,15 +6,20 @@ import javax.swing.BoxLayout;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.OverlayLayout;
 import javax.swing.ScrollPaneLayout;
+import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
 import org.Traffix.OpenGL.GLCanvas;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.awt.AWTGLCanvas;
+import org.lwjgl.opengl.awt.GLData;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
@@ -73,77 +78,98 @@ public class UsineFenêtre {
         ///////////////////////////////////////////////////////////////////////////////////////////////
         Fenêtre fenêtre = new Fenêtre();
         fenêtre.jframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        fenêtre.jframe.setSize(800,800);
+        fenêtre.jframe.setPreferredSize(new Dimension(800,800));
+        fenêtre.jframe.setLayout(new BorderLayout());
+        fenêtre.jframe.getContentPane().setBackground(new Color(1f,0f,1f));
         fenêtre.jframe.addWindowListener(new WindowAdapter(){
             @Override
             public void windowClosing(WindowEvent event){
                 fenêtre.active = false;
             }
         });
-
-        JLayeredPane couchesPrincipales = new JLayeredPane();
+        
+        JPanel couchesPrincipales = new JPanel();
+        couchesPrincipales.setOpaque(false);
+        couchesPrincipales.setLayout(new OverlayLayout(couchesPrincipales));
         fenêtre.jframe.add(couchesPrincipales);
 
         JPanel coucheBase = new JPanel();
+        coucheBase.setOpaque(false);
+        coucheBase.setPreferredSize(fenêtre.jframe.getPreferredSize());
         coucheBase.setLayout(new BorderLayout());
-        couchesPrincipales.add(coucheBase,Integer.valueOf(0));
+        couchesPrincipales.add(coucheBase);
         fenêtre.ajouterÉlémentParID(coucheBase, "coucheBase");
-
+        
         JPanel coucheDéplacement = new JPanel();
-        couchesPrincipales.add(coucheDéplacement, Integer.valueOf(1));
+        coucheDéplacement.setOpaque(false);
+        coucheDéplacement.setPreferredSize(fenêtre.jframe.getPreferredSize());
+        coucheDéplacement.setLayout(new BorderLayout());
+        coucheDéplacement.setMixingCutoutShape(coucheDéplacement.getBounds());  // Empêche les couches supérieures de cacher les objets « Heavyweight » des couches inférieures
+        couchesPrincipales.add(coucheDéplacement);
         fenêtre.ajouterÉlémentParID(coucheDéplacement, "coucheDéplacement");
         
         JPanel coucheMiniCarte = new JPanel();
         coucheMiniCarte.setOpaque(false);
         coucheMiniCarte.setLayout(null);
-        couchesPrincipales.add(coucheMiniCarte,Integer.valueOf(2));
-        
+        coucheMiniCarte.setMixingCutoutShape(coucheMiniCarte.getBounds());
+        couchesPrincipales.add(coucheMiniCarte);
+
+        // Réordonne les couches. Elles sont dessinée en ordre de z décroissant, donc 0 est en avant et +∞ est en arrière.
+        couchesPrincipales.setComponentZOrder(coucheBase, 2);
+        couchesPrincipales.setComponentZOrder(coucheDéplacement, 1);
+        couchesPrincipales.setComponentZOrder(coucheMiniCarte, 0);
+
         //////////////////////////////////////////////////////////////////////////////////////////////
         /// Carte                                                                                  ///
         //////////////////////////////////////////////////////////////////////////////////////////////
         JPanel sectionCarte = new JPanel();
-        sectionCarte.setBackground(Color.RED);
-        //sectionCarte.setOpaque(false);
+        sectionCarte.setOpaque(false);
         sectionCarte.setLayout(new BorderLayout());
         coucheBase.add(sectionCarte, BorderLayout.CENTER);
 
-        JLayeredPane carteCouches = new JLayeredPane();
+        JPanel carteCouches = new JPanel();
+        carteCouches.setLayout(new OverlayLayout(carteCouches));
         sectionCarte.add(carteCouches, BorderLayout.CENTER);
 
         JPanel carteCoucheCarte = new JPanel();
-        carteCoucheCarte.setBackground(Color.BLUE);
-        //carteCoucheCarte.setOpaque(false);
+        carteCoucheCarte.setOpaque(false);
+        //carteCoucheCarte.setBackground(Color.RED);
         carteCoucheCarte.setLayout(new BorderLayout());
-        carteCouches.add(carteCoucheCarte, Integer.valueOf(0));
+        carteCouches.add(carteCoucheCarte);
 
-        GLCanvas carte = new GLCanvas();    // TODO remplacer par GLCanvas
+        GLCanvas carte = new GLCanvas();
+        carte.setOpaque(false);
         carteCoucheCarte.add(carte,BorderLayout.CENTER);
         
         JPanel carteCoucheGUI = new JPanel();
-        carteCoucheGUI.setBackground(new Color(1f,1f,1f,1f));
         carteCoucheGUI.setOpaque(false);
         carteCoucheGUI.setLayout(new BorderLayout());
-        carteCouches.add(carteCoucheGUI, Integer.valueOf(1));
+        carteCoucheGUI.setMixingCutoutShape(carteCoucheGUI.getBounds());
+        carteCouches.add(carteCoucheGUI);
+
+        carteCouches.setComponentZOrder(carteCoucheCarte, 1);
+        carteCouches.setComponentZOrder(carteCoucheGUI, 0);
 
         JPanel carteInfosGauche = new JPanel();
         carteInfosGauche.setBackground(new Color(0,0,0,0));
         carteInfosGauche.setOpaque(false);
+        carteInfosGauche.setMixingCutoutShape(carteInfosGauche.getBounds());
         carteInfosGauche.setLayout(new BorderLayout());
         carteCoucheGUI.add(carteInfosGauche, BorderLayout.WEST);
 
         JPanel carteInfosGaucheHaut = new JPanel();
-        carteInfosGaucheHaut.setBackground(new Color(0,0,0,0));
         carteInfosGaucheHaut.setOpaque(false);
         carteInfosGaucheHaut.setLayout(new BoxLayout(carteInfosGaucheHaut, BoxLayout.Y_AXIS));
         carteInfosGaucheHaut.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        carteInfosGaucheHaut.setMixingCutoutShape(carteInfosGaucheHaut.getBounds());
         carteInfosGauche.add(carteInfosGaucheHaut, BorderLayout.NORTH);
 
-        RoundPane carteInfoTournantBoîte = new RoundPane();
-        carteInfoTournantBoîte.borderRadius = 50;
+        JPanel carteInfoTournantBoîte = new JPanel();
+        //carteInfoTournantBoîte.borderRadius = 50;
         carteInfoTournantBoîte.setBackground(Color.GREEN);
+        //carteInfoTournantBoîte.setMixingCutoutShape(carteInfoTournantBoîte.getBounds());  // TODO trouver un moyen d'acoir des coins ronds
         JEditorPane carteInfoTournant = new JEditorPane("text/html","");
         carteInfoTournant.setOpaque(false);
-        carteInfoTournant.setBackground(new Color(0,0,0,0));
         carteInfoTournant.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));       // Crée un espace entre le contenu et les bords du contenant
         String path = UsineFenêtre.class.getClassLoader().getResource("test.png").toString();
         carteInfoTournant.setText(
@@ -163,11 +189,13 @@ public class UsineFenêtre {
         espace.setPreferredSize(new Dimension(0, 10));
         espace.setBackground(new Color(0,0,0,0));
         espace.setOpaque(false);
+        espace.setMixingCutoutShape(espace.getBounds());
         carteInfosGaucheHaut.add(espace);
 
-        RoundPane carteInfoTempsBoîte = new RoundPane();
-        carteInfoTempsBoîte.borderRadius = 50;
+        JPanel carteInfoTempsBoîte = new JPanel();
+        //carteInfoTempsBoîte.borderRadius = 50;
         carteInfoTempsBoîte.setBackground(Color.GREEN);
+        carteInfoTempsBoîte.setMixingCutoutShape(carteInfoTempsBoîte.getBounds());
         JEditorPane carteInfoTemps = new JEditorPane("text/html","");
         carteInfoTemps.setOpaque(false);
         carteInfoTemps.setBackground(new Color(0,0,0,0));
@@ -186,6 +214,7 @@ public class UsineFenêtre {
         JPanel carteInfosGaucheBas = new JPanel();
         carteInfosGaucheBas.setBackground(new Color(0,0,0,0));
         carteInfosGaucheBas.setOpaque(false);
+        carteInfosGaucheBas.setMixingCutoutShape(carteInfosGaucheBas.getBounds());
         carteInfosGaucheBas.setBorder(BorderFactory.createEmptyBorder(25,25,25,25));
         carteInfosGaucheBas.setLayout(new GridBagLayout());
         carteInfosGauche.add(carteInfosGaucheBas, BorderLayout.SOUTH);
@@ -297,28 +326,36 @@ public class UsineFenêtre {
         //////////////////////////////////////////////////////////////////////////////////////////////
         /// Mini-Carte                                                                             ///
         //////////////////////////////////////////////////////////////////////////////////////////////
-        JLayeredPane miniCarteCouches = new JLayeredPane();
+        JPanel miniCarteCouches = new JPanel();
+        miniCarteCouches.setLayout(new OverlayLayout(miniCarteCouches));
         miniCarteCouches.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 10, true));
         miniCarteCouches.setBackground(new Color(0,0,0,0));
         miniCarteCouches.setOpaque(false);
         coucheMiniCarte.add(miniCarteCouches);
 
         JPanel miniCarteConteneur = new JPanel();
-        miniCarteConteneur.setBackground(Color.GREEN);
-        miniCarteCouches.add(miniCarteConteneur, Integer.valueOf(0));
+        miniCarteConteneur.setOpaque(false);
+        miniCarteConteneur.setLayout(new BorderLayout());
+        miniCarteCouches.add(miniCarteConteneur);
         fenêtre.ajouterÉlémentParID(miniCarteConteneur, "miniCarteConteneur");
 
-        Canvas GLCanvas2 = new Canvas();
-        miniCarteConteneur.add(GLCanvas2);
+        GLCanvas GLCanvas2 = new GLCanvas();
+        GLCanvas2.setOpaque(false);
+        miniCarteConteneur.add(GLCanvas2,BorderLayout.CENTER);
 
         JPanel boutonMiniCarteConteneur = new JPanel();
         boutonMiniCarteConteneur.setBackground(new Color(0,0,0,0));
         boutonMiniCarteConteneur.setOpaque(false);
+        boutonMiniCarteConteneur.setMixingCutoutShape(boutonMiniCarteConteneur.getBounds());
         boutonMiniCarteConteneur.setLayout(new GridBagLayout());
-        miniCarteCouches.add(boutonMiniCarteConteneur, Integer.valueOf(1));
+        miniCarteCouches.add(boutonMiniCarteConteneur);
+
+        miniCarteCouches.setComponentZOrder(miniCarteConteneur, 1);
+        miniCarteCouches.setComponentZOrder(boutonMiniCarteConteneur, 0);
 
         Bouton boutonMiniCarte = new Bouton("⛶");
         boutonMiniCarte.setBackground(new Color(0f,0f,0f,0.1f));
+        //boutonMiniCarte.setMixingCutoutShape(boutonMiniCarte.getBounds());
         boutonMiniCarte.setFont(new Font(Font.SANS_SERIF,Font.BOLD,20));
         boutonMiniCarte.setMargin(new Insets(4, 7, 4, 7));
         gbc.gridx = 0;
@@ -349,7 +386,7 @@ public class UsineFenêtre {
                 miniCarteCouches.setBounds( (int)(jfdim.width * 0.8f - (minTaille * 0.15f)), (int)(jfdim.height * 0.75f - (minTaille * 0.15f)), (int)(minTaille * 0.3f), (int)(minTaille * 0.3f) );
                 Dimension miniCarteDimension = new Dimension(miniCarteCouches.getSize().width-20, miniCarteCouches.getSize().height-20);
                 miniCarteConteneur.setBounds(10,10,miniCarteDimension.width, miniCarteDimension.height);
-                boutonMiniCarteConteneur.setBounds(10,10,miniCarteDimension.width, miniCarteDimension.height);
+                //boutonMiniCarteConteneur.setBounds(10,10,miniCarteDimension.width, miniCarteDimension.height);
                 
                 // Changer la taille des sous-éléments ne prend effet que lors du prochain changement de taille de la fenêtre :
                 // les éléments sont alors en retard. La ligne suivante force la mise à jour de toutes les composantes.
@@ -358,6 +395,22 @@ public class UsineFenêtre {
 
         });
 
+        fenêtre.jframe.pack();
+        fenêtre.jframe.setVisible(true);
+        Runnable renderLoop = new Runnable() {
+			@Override
+            public void run() {
+				if (carte.canvas.isValid()) {
+                    carte.canvas.render();
+                }
+
+                if (GLCanvas2.canvas.isValid()) {
+                    GLCanvas2.canvas.render();
+                }
+                SwingUtilities.invokeLater(this);
+			}
+		};
+		SwingUtilities.invokeLater(renderLoop);
         return fenêtre;
     }
 }
