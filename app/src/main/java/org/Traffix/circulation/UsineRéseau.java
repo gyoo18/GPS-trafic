@@ -15,13 +15,13 @@ public class UsineRéseau {
     private static final int MAX_ITÉRATIONS = 30;
 
     // En mètres
-    private static final float RAYON_INITIAL = 100f;
-    private static final float RAYON_VILLE = 3000f;
-    private static final float DISTANCE_POUSSE_MIN = 10f;
-    private static final float DISTANCE_POUSSE_MAX = 200f;
-
     private static final float LARGEUR_MAISON = 15f;
     private static final float ESPACEMENT_AVANT_MAISON = 5f;
+
+    private static final float RAYON_INITIAL = 100f;
+    private static final float RAYON_VILLE = 3000f;
+    private static final float DISTANCE_POUSSE_MIN = LARGEUR_MAISON;
+    private static final float DISTANCE_POUSSE_MAX = 200f;
 
     private static Réseau réseau;
 
@@ -52,7 +52,7 @@ public class UsineRéseau {
 
             float anglePousse = (float)(Math.random()*2*Math.PI);
             float distancePousse = (float)(Math.random()*(DISTANCE_POUSSE_MAX-DISTANCE_POUSSE_MIN) + DISTANCE_POUSSE_MIN);
-            fairePousserRoute(new Vec2((float)Math.cos(anglePousse), (float)Math.sin(anglePousse)), distancePousse, false, "Autoroute", 100, interA, intersectionsActives);
+            fairePousserRoute(new Vec2((float)Math.cos(anglePousse), (float)Math.sin(anglePousse)), distancePousse, false, "autoroute", 100, interA, intersectionsActives);
         }
 
         // Phase 1 partie 2 faire pousser les autoroutes
@@ -92,7 +92,7 @@ public class UsineRéseau {
                         case 1: dir = dirC; break;
                     }
 
-                    fairePousserRoute(dir, distancePousse, false,"Bd", 70, interA, intersectionsActives);
+                    fairePousserRoute(dir, distancePousse, false,"bd", 70, interA, intersectionsActives);
                 }
             }
         }
@@ -133,7 +133,7 @@ public class UsineRéseau {
                         case 1: dir = dirC; break;
                     }
 
-                    fairePousserRoute(dir, distancePousse, false,"Bd", 70, interA, intersectionsActives);
+                    fairePousserRoute(dir, distancePousse, false,"bd", 70, interA, intersectionsActives);
                 }
             }
         }
@@ -163,7 +163,7 @@ public class UsineRéseau {
                         case 2: dir = dirC; break;
                     }
 
-                    fairePousserRoute(dir, distancePousse, false, "rue", 40, interA, intersectionsActives);
+                    fairePousserRoute(dir, distancePousse, k==0, "rue", 40, interA, intersectionsActives);
                 }
             }
         }
@@ -221,7 +221,7 @@ public class UsineRéseau {
         }
 
         // TODO phase 5: placement des voitures.
-        
+
         return réseau;
     }
 
@@ -248,18 +248,42 @@ public class UsineRéseau {
             intersectionsActives.add(interB);
         }else{
             // S'il y a intersection avec une route existante.
-            // Couper la route en deux
-            Intersection interB = new IntersectionLaissezPasser(interPos);
-            Intersection interTmp = routeIntersecté.intersectionB;
-            routeIntersecté.intersectionB = interB;
-            interTmp.retirerRoute(routeIntersecté);
-            Route routeIntersecté2 = new Route(routeIntersecté.nom, routeIntersecté.avoirLimiteKmH(), interB, interTmp);
-            // Nouvelle route
-            Route nouvelleRoute = new Route(continuerRoute?origine.routes.get(0).nom:nomPréfixe+" "+générerNom(), continuerRoute?origine.routes.get(0).avoirLimiteKmH():limiteVitesse, origine, interB);
-            
-            réseau.intersections.add(interB);
-            réseau.routes.add(nouvelleRoute);
-            réseau.routes.add(routeIntersecté2);
+            // On ne veut pas des routes trop courtes pour accueillir des maisons.
+            if(Vec2.distance(interPos, origine.position) > DISTANCE_POUSSE_MIN){
+                // Couper la route en deux
+                Intersection interB = new IntersectionLaissezPasser(interPos);
+                Intersection interTmp = routeIntersecté.intersectionB;
+                routeIntersecté.intersectionB = interB;
+                interB.ajouterRoute(routeIntersecté);
+                interTmp.retirerRoute(routeIntersecté);
+                Route routeIntersecté2 = new Route(routeIntersecté.nom, routeIntersecté.avoirLimiteKmH(), interB, interTmp);
+                // Nouvelle route
+                Route nouvelleRoute = new Route(continuerRoute?origine.routes.get(0).nom:nomPréfixe+" "+générerNom(), continuerRoute?origine.routes.get(0).avoirLimiteKmH():limiteVitesse, origine, interB);
+                
+                réseau.intersections.add(interB);
+                réseau.routes.add(nouvelleRoute);
+                réseau.routes.add(routeIntersecté2);
+            }else if(Vec2.distance(interPos, origine.position) < DISTANCE_POUSSE_MIN && continuerRoute){
+                // Si la route devait s'étendre, la rejoindre avec l'intersection.
+                // Couper la route en deux
+                Intersection interB = new IntersectionLaissezPasser(interPos);
+                Intersection interTmp = routeIntersecté.intersectionB;
+                routeIntersecté.intersectionB = interB;
+                interB.ajouterRoute(routeIntersecté);
+                interTmp.retirerRoute(routeIntersecté);
+                Route routeIntersecté2 = new Route(routeIntersecté.nom, routeIntersecté.avoirLimiteKmH(), interB, interTmp);
+                // Étendre la route d'origine
+                if(origine.routes.get(0).intersectionA == origine){
+                    origine.routes.get(0).intersectionA = interB;
+                }else{
+                    origine.routes.get(0).intersectionB = interB;
+                }
+                interB.ajouterRoute(origine.routes.get(0));
+                
+                réseau.intersections.add(interB);
+                réseau.intersections.remove(origine);
+                réseau.routes.add(routeIntersecté2);
+            }
         }
     }
 
