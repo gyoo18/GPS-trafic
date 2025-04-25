@@ -2,6 +2,10 @@ package org.Traffix.OpenGL;
 
 import java.util.Map;
 
+import org.Traffix.OpenGL.Maillage.TypeDonnée;
+import org.Traffix.circulation.Réseau;
+import org.Traffix.maths.Vec2;
+
 public class GénérateurMaillage {
     
     public static Maillage générerGrille(int nSomX, int nSomY){
@@ -39,6 +43,46 @@ public class GénérateurMaillage {
         maillage.ajouterAttributListe(positions, 3);
         maillage.ajouterAttributListe(normales, 3);
         maillage.ajouterAttributListe(uv, 2);
+        maillage.ajouterIndexesListe(indexes);
+        return maillage;
+    }
+
+    public static Maillage faireMaillageRéseau(Réseau réseau){
+        float[] positions = new float[réseau.routes.size()*4*3];
+        int[] indexes = new int[réseau.routes.size()*6]; 
+        for (int i = 0; i < réseau.routes.size(); i++) {
+            Vec2 posA = réseau.routes.get(i).intersectionA.position;
+            Vec2 posB = réseau.routes.get(i).intersectionB.position;
+            Vec2 tan = Vec2.sous(posA,posB).norm();
+            Vec2 cotan = new Vec2(tan.y,-tan.x);
+            float largeur = (float)réseau.routes.get(i).avoirLimiteKmH()/100f;
+
+            positions[i*12 + 0] = posA.x + cotan.x*largeur;
+            positions[i*12 + 1] = 0;
+            positions[i*12 + 2] = posA.y + cotan.y*largeur;
+
+            positions[i*12 + 3] = posB.x + cotan.x*largeur;
+            positions[i*12 + 4] = 0;
+            positions[i*12 + 5] = posB.y + cotan.y*largeur;
+
+            positions[i*12 + 6] = posA.x - cotan.x*largeur;
+            positions[i*12 + 7] = 0;
+            positions[i*12 + 8] = posA.y - cotan.y*largeur;
+
+            positions[i*12 + 9] = posB.x - cotan.x*largeur;
+            positions[i*12 +10] = 0;
+            positions[i*12 +11] = posB.y - cotan.y*largeur;
+
+            indexes[i*6 + 0] = i*4 + 0;
+            indexes[i*6 + 1] = i*4 + 1;
+            indexes[i*6 + 2] = i*4 + 3;
+            indexes[i*6 + 3] = i*4 + 3;
+            indexes[i*6 + 4] = i*4 + 0;
+            indexes[i*6 + 5] = i*4 + 2;
+        }
+
+        Maillage maillage = new Maillage(Map.of(TypeDonnée.FLOAT, 1), true);
+        maillage.ajouterAttributListe(positions, 3);
         maillage.ajouterIndexesListe(indexes);
         return maillage;
     }

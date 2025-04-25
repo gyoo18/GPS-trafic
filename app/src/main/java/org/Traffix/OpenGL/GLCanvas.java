@@ -142,6 +142,7 @@ public class GLCanvas extends JPanel {
 
         setLayout(new BorderLayout());
         GLData data = new GLData();
+        data.samples = 4;
         canvas = new GLSubCanvas(data);
         add(canvas, BorderLayout.CENTER);
 

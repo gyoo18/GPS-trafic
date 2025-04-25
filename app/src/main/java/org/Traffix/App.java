@@ -29,17 +29,15 @@ public class App {
         }catch(Exception e){
             e.printStackTrace();
         }
-        Objet plancher = new Objet("plancher", maillage, nuanceur, new Vec4(0.8f,0.7f,0.5f,1f), null, new Transformée(new Vec3(-10,-10,-10),new Vec3(0),new Vec3(20)));
-        Objet plafond =  plancher.copier();
-        plafond.donnerCouleur(new Vec4(1f,0,0,1f));
-        plafond.avoirTransformée().positionner(new Vec3(-10,10,-10));
+        Objet plancher = new Objet("plancher", maillage, nuanceur, new Vec4(0.8f,0.7f,0.5f,1f), null, new Transformée(new Vec3(-3000,-1,-3000),new Vec3(0),new Vec3(6000)));
+        Objet réseau = new Objet("réseau", GénérateurMaillage.faireMaillageRéseau(UsineRéseau.générerRéseau()), nuanceur, new Vec4(0.1f), null, new Transformée());
 
         Fenêtre fenêtre = UsineFenêtre.faireFenêtreGPS();
         GLCanvas carte = (GLCanvas)fenêtre.obtenirÉlémentParID("GLCarte");
         carte.scène.ajouterObjet(plancher);
-        carte.scène.ajouterObjet(plafond);
-        carte.scène.caméra.positionner(new Vec3(-5,10,0));
-        //carte.scène.caméra.faireRotation(new Vec3((float)Math.toRadians(-40f),0,0));
+        carte.scène.ajouterObjet(réseau);
+        carte.scène.caméra.positionner(new Vec3(0,50,0));
+        carte.scène.caméra.faireRotation(new Vec3((float)Math.toRadians(-45f),0,0));
         carte.scène.caméra.planProche = 0.01f;
         carte.scène.caméra.planLoin = 1000f;
         carte.scène.caméra.avoirVue().estOrbite = true;
@@ -50,7 +48,7 @@ public class App {
             }catch(Exception e){
                 e.printStackTrace();
             }
-            carte.scène.caméra.faireRotation(new Vec3(-(float)Math.toRadians(((double)System.currentTimeMillis()/100.0)%360f),0,0));
+            carte.scène.caméra.tourner(new Vec3(0,(float)Math.toRadians(1f),0));
         }
 
         System.out.println("Goodbye World!");
