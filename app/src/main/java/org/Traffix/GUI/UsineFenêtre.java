@@ -140,6 +140,7 @@ public class UsineFenêtre {
         GLCanvas carte = new GLCanvas();
         carte.setOpaque(false);
         carteCoucheCarte.add(carte,BorderLayout.CENTER);
+        fenêtre.ajouterÉlémentParID(carte, "GLCarte");
         
         JPanel carteCoucheGUI = new JPanel();
         carteCoucheGUI.setOpaque(false);
