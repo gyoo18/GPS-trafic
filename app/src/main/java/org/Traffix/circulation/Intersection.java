@@ -38,7 +38,15 @@ public abstract class Intersection {
     }
 
     /**
-     * Indique si un véhicule a le droit de passer à travers l'intersection en direction de la route indiquée
+     * Indique si un véhicule a le droit de s'engager à travers l'intersection en direction de la route indiquée
+     * @param routeDépart Route que le véhicule quitte
+     * @param routeDestination Route sur laquelle le véhicule veut embarquer
+     * @return boolean indiquant si le véhicule a le droit de passer.
+     */
+    public abstract boolean peutEngager(Route routeDépart, Route routeDestination);
+
+    /**
+     * Indique si un véhicule pourra passer tout droit à travers l'intersection sans ralentir pendant les 20 prochaines secondes, en direction de la route indiquée.
      * @param routeDépart Route que le véhicule quitte
      * @param routeDestination Route sur laquelle le véhicule veut embarquer
      * @return boolean indiquant si le véhicule a le droit de passer.
