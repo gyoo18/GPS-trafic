@@ -10,6 +10,8 @@ public abstract class Véhicule {
     public boolean estSensA = false; // définit si le véhicule se trouve sur la voie A ou la voie B.
     public Route routeActuelle;
     private Navigateur navigateur;
+
+    public final float ACCÉLÉRATION = -6f; // en m/s²
     
     public Véhicule(float longueur, Route routeActuelle) {
         this.longueur = longueur;
@@ -25,12 +27,18 @@ public abstract class Véhicule {
     public void avancer(float deltaTempsSecondes) {
         float distanceRelativeParcourue = (vitesse * deltaTempsSecondes)/routeActuelle.avoirLongueur();
         
+        // Effectuer la collision avec le véhicule en avant
         Véhicule v = routeActuelle.avoirVéhiculeEnAvant(this);
         if(v.positionRelative - v.longueur/(2f*routeActuelle.avoirLongueur()) > distanceRelativeParcourue+positionRelative){
             positionRelative += distanceRelativeParcourue;
         }else{
             positionRelative = v.positionRelative - v.longueur/(2f*routeActuelle.avoirLongueur()) - longueur/(2f*routeActuelle.avoirLongueur());
             vitesse = v.vitesse;
+        }
+
+        if(positionRelative+distanceRelativeParcourue >= 1f){
+            positionRelative = 1f;
+            vitesse = 0f;
         }
     }
     

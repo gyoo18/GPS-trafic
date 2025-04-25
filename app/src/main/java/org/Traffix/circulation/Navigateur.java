@@ -2,6 +2,9 @@ package org.Traffix.circulation;
 
 import java.util.ArrayList;
 
+import org.Traffix.maths.Maths;
+import org.Traffix.maths.Vec2;
+
 /**
  * 
  * Classe de Navigateur temporaire, à remplacer
@@ -11,14 +14,41 @@ import java.util.ArrayList;
 public class Navigateur {
     private ArrayList<Route> itinéraire;
     private int indexRouteActuelle;
+
+    private Véhicule véhicule = null;
+    private Route prochainTournant = null;
+
+    private final float ESPACEMENT_VOITURES = 3f; // en mètres
     
-    public Navigateur() {
+    public Navigateur(Véhicule véhicule) {
         this.itinéraire = new ArrayList<>();
         this.indexRouteActuelle = 0;
+        this.véhicule = véhicule;
     }
 
-    public void miseÀJour(){
-        
+    public void miseÀJour(float deltaTempsSecondes){
+
+        Intersection interB = véhicule.estSensA?véhicule.routeActuelle.intersectionA:véhicule.routeActuelle.intersectionB;
+
+        if (prochainTournant == null){
+            prochainTournant = interB.routes.get(Maths.randint(0, interB.routes.size()-1));
+        }
+
+        Véhicule avant = véhicule.routeActuelle.avoirVéhiculeEnAvant(véhicule);
+        if(avant != null){
+            if(avant.vitesse <= véhicule.vitesse){
+                véhicule.vitesse -= véhicule.ACCÉLÉRATION*deltaTempsSecondes;
+            }
+        }else if(Math.abs(véhicule.vitesse) > 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse <= 20f){
+            // est premier à l'intersection et passera dans les 20 prochaines secondes.
+            if(!véhicule.estSensA?véhicule.routeActuelle.intersectionA.peutPasser(véhicule.routeActuelle, prochainTournant):véhicule.routeActuelle.intersectionA.peutPasser(véhicule.routeActuelle, prochainTournant)){
+                // Si on ne peut pas passer
+                véhicule.vitesse -= véhicule.ACCÉLÉRATION*deltaTempsSecondes;
+            }else if()
+        }else if(Math.abs(véhicule.vitesse) < 0.01f && interB.)
+
+
+        véhicule.avancer(deltaTempsSecondes);
     }
     
     
