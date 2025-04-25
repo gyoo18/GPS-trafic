@@ -52,7 +52,7 @@ public class GestionnaireAccidents {
         
         private void générerDescription() {
             StringBuilder sb = new StringBuilder();
-            sb.append(type.getDescription()).append(" sur ").append(route.getNom());
+            sb.append(type.getDescription()).append(" sur ").append(route.nom);
             sb.append(" à ").append(String.format("%.1f", position / 1000)).append(" km");
             
             switch (type) {
@@ -126,7 +126,7 @@ public class GestionnaireAccidents {
    
     public static Accident générerAccidentAléatoire(Route route) {
         TypeÉvénement typeÉvénement = TypeÉvénement.values()[random.nextInt(TypeÉvénement.values().length)];
-        float position = random.nextFloat() * route.getLongueur(); // Position aléatoire sur la route
+        float position = random.nextFloat() * route.avoirLongueur(); // Position aléatoire sur la route
         int gravite = random.nextInt(1, 6); // Gravité entre 1 et 5
         
         Accident accident = new Accident(typeÉvénement, route, position, gravite);
@@ -275,7 +275,7 @@ public class GestionnaireAccidents {
                 System.out.println(accident);
                 System.out.println("  Début: " + debut.format(formatter));
                 System.out.println("  Fin estimée: " + fin.format(formatter));
-                System.out.println("  Route: " + accident.getRoute().getNom() + 
+                System.out.println("  Route: " + accident.getRoute().nom + 
                                   " à " + String.format("%.1f", accident.getPosition() / 1000) + " km");
                 System.out.println();
             }

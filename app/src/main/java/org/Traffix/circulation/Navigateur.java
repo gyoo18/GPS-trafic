@@ -48,7 +48,7 @@ public class Navigateur {
     public float getDistanceTotale() {
         float distanceTotale = 0;
         for (Route route : itinéraire) {
-            distanceTotale += route.getLongueur();
+            distanceTotale += route.avoirLongueur();
         }
         return distanceTotale;
     }
@@ -72,8 +72,8 @@ public class Navigateur {
         for (int i = 0; i < itinéraire.size(); i++) {
             Route route = itinéraire.get(i);
             sb.append(i + 1).append(". ");
-            sb.append(route.getNom()).append(" (");
-            sb.append(String.format("%.1f", route.getLongueur() / 1000)).append(" km)\n");
+            sb.append(route.nom).append(" (");
+            sb.append(String.format("%.1f", route.avoirLongueur() / 1000)).append(" km)\n");
         }
         
         return sb.toString();

@@ -12,6 +12,7 @@ public abstract class Intersection {
 
     public Intersection(Vec2 pos){
         this.position = pos.copier();
+        routes = new ArrayList<>();
     }
 
     public Intersection(Vec2 pos, ArrayList routes){

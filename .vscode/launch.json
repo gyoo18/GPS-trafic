@@ -15,7 +15,8 @@
             "name": "App",
             "request": "launch",
             "mainClass": "org.Traffix.App",
-            "projectName": "app"
+            "projectName": "app",
+            "preLaunchTask": "gradle build"
         }
     ]
 }

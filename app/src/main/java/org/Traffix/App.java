@@ -2,12 +2,13 @@ package org.Traffix;
 
 import javax.swing.JFrame;
 
+import org.Traffix.circulation.UsineRéseau;
+
 public class App {
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
-        JFrame jframe = new JFrame();
-        jframe.setVisible(true);
+        UsineRéseau.enregistrerRéseauEnOBJ(UsineRéseau.générerRéseau());
         System.out.println("Goodbye World!");
     }
 }
