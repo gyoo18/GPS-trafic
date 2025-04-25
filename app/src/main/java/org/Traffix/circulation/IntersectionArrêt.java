@@ -24,7 +24,7 @@ public class IntersectionArrêt extends Intersection {
     }
 
     @Override
-    public boolean peutPasser(Route routeDépart, Route routeDestination) {
+    public boolean peutEngager(Route routeDépart, Route routeDestination) {
         if (routeDépart == null || routeDestination == null){
             System.err.println("[ERREUR] routeDépart et routeDestination ne peuvent pas être null");
             System.err.println(Thread.currentThread().getStackTrace());
@@ -38,6 +38,11 @@ public class IntersectionArrêt extends Intersection {
             demandesPassage.add(routeDépart);
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean peutPasser(Route routeDépart, Route routeDestination){
         return false;
     }
 

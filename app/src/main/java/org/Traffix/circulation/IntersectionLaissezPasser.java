@@ -31,7 +31,7 @@ public class IntersectionLaissezPasser extends Intersection {
     }
 
     @Override
-    public boolean peutPasser(Route routeDépart, Route routeDestination) {
+    public boolean peutEngager(Route routeDépart, Route routeDestination) {
         if(!estConstruit){
             construire();
         }
@@ -73,6 +73,26 @@ public class IntersectionLaissezPasser extends Intersection {
 
         // Devrait être impossible à atteindre.
         return false;
+    }
+
+    @Override
+    public boolean peutPasser(Route routeDépart, Route routeDestination){
+        if(!estConstruit){
+            construire();
+        }
+
+        if (routeDépart == null || routeDestination == null){
+            System.err.println("[ERREUR] routeDépart et routeDestination ne peuvent pas être null");
+            System.err.println(Thread.currentThread().getStackTrace());
+            return false;
+        }
+
+        // Si les véhicules sont et continuent sur le tronçon prioritaire.
+        if ((routeDépart == routeA && routeDestination == routeB) || (routeDépart == routeB && routeDestination == routeA)){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /**

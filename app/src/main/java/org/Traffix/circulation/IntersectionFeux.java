@@ -63,7 +63,7 @@ public class IntersectionFeux extends Intersection{
     }
 
     @Override
-    public boolean peutPasser(Route routeDépart, Route routeDestination) {
+    public boolean peutEngager(Route routeDépart, Route routeDestination) {
         if(!testerValidité()){
             return false;
         }
@@ -89,6 +89,37 @@ public class IntersectionFeux extends Intersection{
             // On tourne à droite pour entrer sur A depuis C et sur B depuis D.
             case B_PASSER:  return (routeDépart == routeC && routeDestination == routeD) || (routeDépart == routeD && routeDestination == routeC) || (routeDépart == routeC && routeDestination == routeA) || (routeDépart == routeD && routeDestination == routeB);
             case B_TOURNER: return (routeDépart == routeC && routeDestination == routeB) || (routeDépart == routeD && routeDestination == routeA) || (routeDépart == routeC && routeDestination == routeA) || (routeDépart == routeD && routeDestination == routeB);
+            default: throw new IllegalArgumentException("Aucun comportement défini pour état = État."+état.name());
+        }
+    }
+
+    @Override
+    public boolean peutPasser(Route routeDépart, Route routeDestination){
+        if(!testerValidité()){
+            return false;
+        }
+
+        // S'assurer qu'on a les routes A, B, C et D
+        if(!construit){
+            construire();
+        }
+
+        if (routeDépart == null || routeDestination == null){
+            System.err.println("[ERREUR] routeDépart et routeDestination ne peuvent pas être null");
+            for (StackTraceElement s : Thread.currentThread().getStackTrace()) {
+                System.err.println(s);
+            }
+            return false;
+        }
+
+        switch (état) {
+            // Si D n'existe pas (si l'intersection est un T), on ne pourra jamais tourner dessus, puisque routeDestination n'est pas null.
+            // On tourne à droite pour entrer sur C depuis B et sur D depuis A.
+            case A_PASSER:  return ((routeDépart == routeA && routeDestination == routeB) || (routeDépart == routeB && routeDestination == routeA)) && (duréeCycleMin*60000)-(System.currentTimeMillis()-tempCycleMillis) > 20000;
+            case A_TOURNER: return false;
+            // On tourne à droite pour entrer sur A depuis C et sur B depuis D.
+            case B_PASSER:  return ((routeDépart == routeC && routeDestination == routeD) || (routeDépart == routeD && routeDestination == routeC)) && (duréeCycleMin*60000)-(System.currentTimeMillis()-tempCycleMillis) > 20000;
+            case B_TOURNER: return false;
             default: throw new IllegalArgumentException("Aucun comportement défini pour état = État."+état.name());
         }
     }
