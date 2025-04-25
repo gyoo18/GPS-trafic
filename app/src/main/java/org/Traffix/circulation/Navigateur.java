@@ -18,6 +18,11 @@ public class Navigateur {
     private Véhicule véhicule = null;
     private Route prochainTournant = null;
 
+    private boolean ralentisPourIntersection = false;
+    private float ralentissementPourIntersection = 0f;
+
+    private boolean estBrisé = false;
+
     private final float ESPACEMENT_VOITURES = 3f; // en mètres
     
     private long tempsDebug = System.currentTimeMillis();
@@ -32,8 +37,16 @@ public class Navigateur {
 
         Intersection interB = véhicule.estSensA?véhicule.routeActuelle.intersectionA:véhicule.routeActuelle.intersectionB;
 
+        if(estBrisé){return;}
+
         if (prochainTournant == null){
-            prochainTournant = interB.routes.get(Maths.randint(0, interB.routes.size()-1));
+            int nbEssais = 0;
+            do{
+                prochainTournant = interB.routes.get(Maths.randint(0, interB.routes.size()-1));
+                nbEssais++;
+            }while(prochainTournant == véhicule.routeActuelle && nbEssais < interB.routes.size()*4);
+            if(nbEssais >= interB.routes.size()*4){
+                estBrisé = true;System.err.println("Brisé");return;}
             if(debug){System.out.println("Choisit prochain tournant");}
         }
 
@@ -49,7 +62,7 @@ public class Navigateur {
                 ((interB==prochainTournant.intersectionA && prochainTournant.sensBPossèdePlace(véhicule.longueur)) || // Si le prochain tournant a la place restante
                  (interB==prochainTournant.intersectionB && prochainTournant.sensAPossèdePlace(véhicule.longueur)))  // nécessaire pour que le véhicule s'engage.
             ){
-                if(debug){System.out.println("Tourne dans l'intersection");}
+                if(debug){System.out.println("Passe dans l'intersection");}
                 if(véhicule.estSensA){
                     véhicule.routeActuelle.retirerVéhiculeSensA();
                 }else{
@@ -66,27 +79,36 @@ public class Navigateur {
                 véhicule.positionRelative = 0;
                 véhicule.routeActuelle = prochainTournant;
                 prochainTournant = null;
+                ralentisPourIntersection = false;
             }
         }else if(
             Math.abs(véhicule.vitesse) > 0f &&
-            distanceInter/véhicule.vitesse < 20f &&
+            distanceInter/véhicule.vitesse < 5f &&
             !interB.peutPasser(véhicule.routeActuelle, prochainTournant) &&
             avant == null
         ){
             // Si on est à moins de 20 secondes de passer l'intersection, qu'on est les premiers et qu'on ne peut pas simplement passer tout droit,
             // Ralentir pour s'arrêter à l'intersection.
-            accélération -= (véhicule.vitesse*véhicule.vitesse)/(2f*distanceInter);
-            if(debug){System.out.println("Ralentis pour s'arrêter à l'intersection");}
+            if(!ralentisPourIntersection){
+                ralentissementPourIntersection = (véhicule.vitesse*véhicule.vitesse)/(2f*distanceInter);
+                accélération -= ralentissementPourIntersection;
+                ralentisPourIntersection = true;
+                if(debug){System.out.println("Ralentis pour s'arrêter à l'intersection");}
+            }else if(véhicule.vitesse > 0.1f){
+                accélération -= ralentissementPourIntersection;
+            }else if(véhicule.vitesse < 0.1f){
+                véhicule.vitesse = 0.1f;
+            }
         }else if(avant != null && (avant.vitesse < véhicule.vitesse || véhicule.routeActuelle.avoirLimiteEffective() < véhicule.vitesse)){
-            accélération -= (Math.min(avant.vitesse,véhicule.routeActuelle.avoirLimiteEffective())-véhicule.vitesse)/deltaTempsSecondes;
+            accélération += (Math.min(avant.vitesse,véhicule.routeActuelle.avoirLimiteEffective())-véhicule.vitesse)/deltaTempsSecondes;
             if(debug){System.out.println("Ralentis à cause d'un véhicule ou de la limite de vitesse");}
 
         }else if(avant != null && avant.vitesse > véhicule.vitesse && véhicule.routeActuelle.avoirLimiteEffective() > véhicule.vitesse){
-            accélération -= (Math.min(avant.vitesse,véhicule.routeActuelle.avoirLimiteEffective())-véhicule.vitesse)/deltaTempsSecondes;
+            accélération += (Math.min(avant.vitesse,véhicule.routeActuelle.avoirLimiteEffective())-véhicule.vitesse)/deltaTempsSecondes;
             if(debug){System.out.println("Accélère à la vitesse d'un véhicule ou de la limite de vitesse");}
 
         }else if(avant == null && véhicule.routeActuelle.avoirLimiteEffective()+1f < véhicule.vitesse){
-            accélération -= (véhicule.routeActuelle.avoirLimiteEffective()-véhicule.vitesse)/deltaTempsSecondes;
+            accélération += (véhicule.routeActuelle.avoirLimiteEffective()-véhicule.vitesse)/deltaTempsSecondes;
             if(debug){System.out.println("Ralentis à la limite de vitesse");}
 
         }else if(avant == null && véhicule.routeActuelle.avoirLimiteEffective()-1f > véhicule.vitesse){
@@ -106,8 +128,8 @@ public class Navigateur {
 
         véhicule.vitesse += Math.min(véhicule.ACCÉLÉRATION,Math.abs(accélération))*Math.signum(accélération)*deltaTempsSecondes;
         véhicule.avancer(deltaTempsSecondes);
-        if(debug){System.out.println(deltaTempsSecondes);}
-        if(debug && System.currentTimeMillis()-tempsDebug > 500){System.out.println("Position : "+véhicule.position().x+";"+véhicule.position().y+" Vitesse : "+véhicule.vitesse+" rue : "+véhicule.routeActuelle.nom);tempsDebug=System.currentTimeMillis();}
+        //if(debug){System.out.println(deltaTempsSecondes);}
+        if(debug && System.currentTimeMillis()-tempsDebug > 500){System.out.println("Position : "+véhicule.position().x+";"+véhicule.position().y+" Position relative :"+véhicule.positionRelative+" Vitesse : "+véhicule.vitesse*3.6f+" rue : "+véhicule.routeActuelle.nom);tempsDebug=System.currentTimeMillis();}
     }
     
     

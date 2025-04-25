@@ -19,6 +19,35 @@ public class App {
         System.out.println("Hello World!");
         Réseau réseau = UsineRéseau.générerRéseau();
         // UsineRéseau.enregistrerRéseauEnOBJ(réseau);
+
+        // for (int i = 0; i < réseau.intersections.size(); i++) {
+        //     if(réseau.intersections.get(i).avoirRoutes().size() == 0){
+        //         throw new RuntimeException("Une intersection sans routes a été trouvée.");
+        //     }
+
+        //     for (int j = 0; j < réseau.intersections.get(i).avoirRoutes().size(); j++) {
+        //         if (
+        //             réseau.intersections.get(i).avoirRoutes().get(j).intersectionA != réseau.intersections.get(i) &&
+        //             réseau.intersections.get(i).avoirRoutes().get(j).intersectionB != réseau.intersections.get(i)
+        //         ){
+        //             throw new RuntimeException("Une intersection pointant vers une route qui ne pointe pas en retour a été trouvée");
+        //         }
+        //     }
+        // }
+
+        // for (int i = 0; i < réseau.routes.size(); i++) {
+        //     if(réseau.routes.get(i).intersectionA == null && réseau.routes.get(i).intersectionB == null){
+        //         throw new RuntimeException("Une route sans intersections a été trouvée.");
+        //     }
+
+        //     if(
+        //         !réseau.routes.get(i).intersectionA.avoirRoutes().contains(réseau.routes.get(i))||
+        //         !réseau.routes.get(i).intersectionB.avoirRoutes().contains(réseau.routes.get(i))
+        //     ){
+        //         throw new RuntimeException("Une route qui pointe vers une intersection qui ne pointe pas en retour à été trouvée");
+        //     }
+        // }
+        
         // try {
         //     String[] adresses = new String[1000];
         //     Vec2[] positions = new Vec2[adresses.length];

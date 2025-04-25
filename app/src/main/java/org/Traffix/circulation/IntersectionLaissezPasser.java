@@ -16,7 +16,7 @@ public class IntersectionLaissezPasser extends Intersection {
     private Route routeB = null;
 
     // Temps minimum pour lequel l'intersection doit être libre pour que les véhicules non-prioritaires puissent passer, en secondes.
-    private final float TEMPS_MANŒUVRE = 20f;
+    private final float TEMPS_MANŒUVRE = 5f;
 
     public IntersectionLaissezPasser(Vec2 pos){
         super(pos);

@@ -11,7 +11,7 @@ public class Véhicule {
     public Route routeActuelle;
     private Navigateur navigateur;
 
-    public final float ACCÉLÉRATION = -6f; // en m/s²
+    public final float ACCÉLÉRATION = 6f; // en m/s²
     
     public Véhicule(float longueur, Route routeActuelle) {
         this.longueur = longueur;
@@ -42,7 +42,6 @@ public class Véhicule {
 
         if(positionRelative+distanceRelativeParcourue >= 1f){
             positionRelative = 1f;
-            vitesse = 0f;
         }
     }
     
