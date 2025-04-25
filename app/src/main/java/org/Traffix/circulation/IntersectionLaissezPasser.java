@@ -103,16 +103,20 @@ public class IntersectionLaissezPasser extends Intersection {
     private boolean estIntersectionLibre(Route exception){
         if (exception != routeA){
             Véhicule premierVéhicule = this==routeA.intersectionA?routeA.avoirPremierVéhiculeSensA():routeA.avoirPremierVéhiculeSensB();
-            float distance = Vec2.distance(null, position); // TODO changer la position du véhicule en Vec2
-            if (distance/premierVéhicule.getVitesse() < TEMPS_MANŒUVRE){
-                return false;
+            if(premierVéhicule != null){
+                float distance = Vec2.distance(premierVéhicule.position(), position);
+                if (distance/premierVéhicule.vitesse < TEMPS_MANŒUVRE){
+                    return false;
+                }
             }
         }
         if(exception != routeB){
             Véhicule premierVéhicule = this==routeB.intersectionA?routeB.avoirPremierVéhiculeSensA():routeB.avoirPremierVéhiculeSensB();
-            float distance = Vec2.distance(null, position); //TODO changer la position du véhicule en Vec2
-            if(distance/premierVéhicule.getVitesse() < TEMPS_MANŒUVRE){
-                return false;
+            if(premierVéhicule != null){
+                float distance = Vec2.distance(premierVéhicule.position(), position);
+                if(distance/premierVéhicule.vitesse < TEMPS_MANŒUVRE){
+                    return false;
+                }
             }
         }
         return true;

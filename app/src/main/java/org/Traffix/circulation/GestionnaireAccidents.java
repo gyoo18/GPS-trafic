@@ -219,12 +219,12 @@ public class GestionnaireAccidents {
     
     
     public static float calculerImpactSurVitesse(Véhicule véhicule, Accident accident) {
-        if (!véhicule.getRouteActuelle().equals(accident.getRoute()) || !accident.isActif()) {
+        if (!véhicule.routeActuelle.equals(accident.getRoute()) || !accident.isActif()) {
             return 1f; // Pas d'impact
         }
         
         // Distance entre le véhicule et l'accident
-        float distance = Math.abs(véhicule.getPosition() - accident.getPosition());
+        float distance = Math.abs(véhicule.positionRelative - accident.getPosition());
         
         // Si le véhicule est très loin de l'accident, pas d'impact
         if (distance > 1000) {

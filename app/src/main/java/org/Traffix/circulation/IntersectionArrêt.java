@@ -32,7 +32,9 @@ public class IntersectionArrêt extends Intersection {
         }
 
         if (demandesPassage.size() == 0 || demandesPassage.get(0) == routeDépart){
-            demandesPassage.remove(0);
+            if(demandesPassage.size() != 0){
+                demandesPassage.remove(0);
+            }
             return true;
         }else if(!demandesPassage.contains(routeDépart)){
             demandesPassage.add(routeDépart);

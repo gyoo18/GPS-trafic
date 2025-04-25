@@ -47,7 +47,7 @@ public class UsineRéseau {
         for (int i = 0; i < Maths.randint(1,10); i++) {
             float angle = (float)(Math.random()*2*Math.PI);
             float rayon = (float)(Math.random()*RAYON_INITIAL);
-            Intersection interA = new IntersectionFeux( new Vec2( (float)(Math.cos(angle)*rayon), (float)(Math.sin(angle)*rayon) ) );
+            Intersection interA = new IntersectionLaissezPasser( new Vec2( (float)(Math.cos(angle)*rayon), (float)(Math.sin(angle)*rayon) ) );
             réseau.intersections.add( interA );
 
             float anglePousse = (float)(Math.random()*2*Math.PI);
@@ -240,7 +240,12 @@ public class UsineRéseau {
         Vec2 interPos = intersectionRoutes;
         if(interPos == null){
             // S'il n'y a pas d'intersection.
-            Intersection interB = new IntersectionFeux( Vec2.mult(dir,dist).addi(origine.position));
+            Intersection interB = null;
+            if(continuerRoute){
+                interB = new IntersectionLaissezPasser(Vec2.mult(dir,dist).addi(origine.position));
+            }else{
+                interB = new IntersectionArrêt( Vec2.mult(dir,dist).addi(origine.position));
+            }
             Route nouvelleRoute = new Route(continuerRoute?origine.routes.get(0).nom:nomPréfixe+" "+générerNom(), continuerRoute?origine.routes.get(0).avoirLimiteKmH():limiteVitesse, origine, interB);
             
             réseau.intersections.add(interB);
