@@ -29,7 +29,7 @@ public class GestionnaireAccidents {
     
     public static class Accident {
         private TypeAccident type;
-        private ArrayList<Route> route;
+        private ArrayList<Route> routes;
         private float position;      // Position sur la route en mètres
         private double pourcentageRalentissement;         // Échelle de 1 à 5
         private boolean actif;
@@ -42,12 +42,12 @@ public class GestionnaireAccidents {
             // Pourcentage entre 0.0 (pas de ralentissement) et 1.0 (arrêt complet)
             this.pourcentageRalentissement = Math.max(0.0, Math.min(1.0, pourcentageRalentissement));
             this.actif = true;
-            genererDescription();
+            générerDescription();
         }
 
 
         // Constructeur pour compatibilité avec le code existant qui n'utilise qu'une route
-        public Accident(TypeAccident type, ArrayList<Route> routes, float position, double pourcentageRalentissement) {
+        public Accident(TypeAccident type, Route route, float position, double pourcentageRalentissement) {
             this.type = type;
             this.routes = new ArrayList<>();
             this.routes.add(route);
@@ -59,14 +59,14 @@ public class GestionnaireAccidents {
         
         private void générerDescription() {
             StringBuilder sb = new StringBuilder();
-            sb.append(type.description()).append(" sur ");
+            //sb.append(type.description()).append(" sur ");
             if (routes.size() == 1) {
-                sb.append(routes.get(0).getNom());
+                sb.append(routes.get(0).nom);
             } else {
                 sb.append("plusieurs routes: ");
                 for (int i = 0; i < routes.size();  i++) {
                     if (i > 0) sb.append(",");
-                    sb.append(routes.get(i).getNom());
+                    sb.append(routes.get(i).nom);
                 }
             }
             sb.append(" à ").append(String.format("%.1f", position / 1000)).append(" km");
@@ -116,7 +116,7 @@ public class GestionnaireAccidents {
         public ArrayList<Route>  getRoutes() {
             return routes;
         }
-        public Route getRouteprincipale() {
+        public Route getRoutePrincipale() {
             return routes.isEmpty() ? null : routes.get(0);
         }
 
@@ -151,33 +151,33 @@ public class GestionnaireAccidents {
 
     
     public static void miseAJour() {
-        // Mise à jour des accidents actifs
-        LocalDateTime maintenant = LocalDateTime.now();
+        // // Mise à jour des accidents actifs
+        // LocalDateTime maintenant = LocalDateTime.now();
         
-        for (int i = 0; i < listeAccidents.size(); i++) {
-            Accident accident = listeAccidents.get(i);
+        // for (int i = 0; i < listeAccidents.size(); i++) {
+        //     Accident accident = listeAccidents.get(i);
             
-            if (accident.isActif()) {
-                // Mise à jour spécifique à l'accident
-                accident.miseAJour();
+        //     if (accident.isActif()) {
+        //         // Mise à jour spécifique à l'accident
+        //         accident.miseAJour();
                 
-                // Vérification si l'accident est terminé
-                LocalDateTime tempsDebut = listeTempsAccidents.get(i);
-                int duree = listeDureeAccidents.get(i);
+        //         // Vérification si l'accident est terminé
+        //         LocalDateTime tempsDebut = listeTempsAccidents.get(i);
+        //         //int duree = listeDureeAccidents.get(i);
                 
-                long tempsEcoule = java.time.Duration.between(tempsDebut, maintenant).toMinutes();
+        //         long tempsEcoule = java.time.Duration.between(tempsDebut, maintenant).toMinutes();
                 
-                if (tempsEcoule >= duree) {
-                    accident.setActif(false);
-                }
-            }
-        }
+        //         if (tempsEcoule >= duree) {
+        //             accident.setActif(false);
+        //         }
+        //     }
+        // }
     }
     
    
     public static Accident générerAccidentAléatoire(Route route) {
         TypeAccident typeAccident = TypeAccident.values()[(int)(Math.random() * TypeAccident.values().length)];
-        float position = (float)(Math.random() * route.getLongueur()); // Position aléatoire sur la route
+        float position = (float)(Math.random() * route.avoirLongueur()); // Position aléatoire sur la route
         double pourcentageRalentissement = Math.random() * 0.8 + 0.1;//  Entre 0.1 et 0.9
 
         ArrayList<Route> routes = new ArrayList<>();
@@ -187,10 +187,10 @@ public class GestionnaireAccidents {
         if (Math.random() < 0.3) {
             // Simulons une route supplémentaire - à adapter selon votre structure
             // Ici, on suppose que route.getConnexions() renvoie les routes connectées
-            List<Route> connexions = route.getConnexions();
-            if (connexions != null && !connexions.isEmpty()) {
-                routes.add(connexions.get((int)(Math.random() * connexions.size())));
-            }
+            // List<Route> connexions = route.getConnexions();
+            // if (connexions != null && !connexions.isEmpty()) {
+            //     routes.add(connexions.get((int)(Math.random() * connexions.size())));
+            // }
         }
         
         Accident accident = new Accident(typeAccident, routes, position, pourcentageRalentissement);
@@ -210,7 +210,7 @@ public class GestionnaireAccidents {
         
         switch (accident.getType()) {
             case ACCIDENT_VÉHICULE:
-                duréeBase = accident.getPourcentageRalentissement() * 150; // 15 min à 2h30 selon importance
+                //duréeBase = accident.getPourcentageRalentissement() * 150; // 15 min à 2h30 selon importance
                 break;
             case TRAVAUX:
                 duréeBase = 240; // 4 heures minimum pour des travaux
@@ -229,22 +229,23 @@ public class GestionnaireAccidents {
         }
         
         // Ajout d'une variation aléatoire de ±30%
-        int variation = (int)(dureeBase * 0.3);
-        return dureeBase + (int)(Math.random() * (2 * variation + 1)) - variation;
+         //int variation = (int)(duréeBase * 0.3);
+        //return duréeBase + (int)(Math.random() * (2 * variation + 1)) - variation;
+        return 0;
     }
 
-    public static ArrayList<Accident> genererAccidentsAleatoires(List<Route> routes, double probabilite) {
-        ArrayList<Accident> nouveauxAccidents = new ArrayList<>();
+    // public static ArrayList<Accident> genererAccidentsAleatoires(List<Route> routes, double probabilite) {
+    //     ArrayList<Accident> nouveauxAccidents = new ArrayList<>();
         
-        for (Route route : routes) {
-            if (Math.random() < probabilite) {
-                Accident accident = genererAccidentAleatoire(route);
-                nouveauxAccidents.add(accident);
-            }
-        }
+    //     for (Route route : routes) {
+    //         if (Math.random() < probabilite) {
+    //             Accident accident = genererAccidentAleatoire(route);
+    //             nouveauxAccidents.add(accident);
+    //         }
+    //     }
         
-        return nouveauxAccidents;
-    }
+    //     return nouveauxAccidents;
+    // }
 
     public static ArrayList<Accident> getAccidentsActifsSurRoute(Route route) {
         ArrayList<Accident> accidentsActifs = new ArrayList<>();
@@ -258,24 +259,25 @@ public class GestionnaireAccidents {
         return accidentsActifs;
     }
     
-    public static double calculerImpactSurVitesse(Vehicule vehicule, Accident accident) {
-        if (!accident.affecteRoute(vehicule.getRouteActuelle()) || !accident.isActif()) {
-            return 1.0; // Pas d'impact
-        }
+    public static double calculerImpactSurVitesse(Véhicule vehicule, Accident accident) {
+        // if (!accident.affecteRoute(vehicule.getRouteActuelle()) || !accident.isActif()) {
+        //     return 1.0; // Pas d'impact
+        // }
         
-        // Distance entre le véhicule et l'accident
-        double distance = Math.abs(vehicule.getPosition() - accident.getPosition());
+        // // Distance entre le véhicule et l'accident
+        // double distance = Math.abs(vehicule.getPosition() - accident.getPosition());
         
-        // Si le véhicule est très loin de l'accident, pas d'impact
-        if (distance > 1000) {
-            return 1.0;
-        }
+        // // Si le véhicule est très loin de l'accident, pas d'impact
+        // if (distance > 1000) {
+        //     return 1.0;
+        // }
         
-        // Plus on est proche, plus l'impact est fort
-        double facteurDistance = Math.min(1.0, distance / 1000);
+        // // Plus on est proche, plus l'impact est fort
+        // double facteurDistance = Math.min(1.0, distance / 1000);
         
-        // Calcul du facteur final (entre 0 et 1, où 0 = arrêt complet et 1 = pas d'impact)
-        return Math.max(0.1, 1.0 - accident.getPourcentageRalentissement() * (1.0 - facteurDistance));
+        // // Calcul du facteur final (entre 0 et 1, où 0 = arrêt complet et 1 = pas d'impact)
+        // return Math.max(0.1, 1.0 - accident.getPourcentageRalentissement() * (1.0 - facteurDistance));
+        return 0;
     }
 
     public static void nettoyerAccidentsTermines() {
@@ -283,7 +285,7 @@ public class GestionnaireAccidents {
             if (!listeAccidents.get(i).isActif()) {
                 listeAccidents.remove(i);
                 listeTempsAccidents.remove(i);
-                listeDureeAccidents.remove(i);
+                //listeDureeAccidents.remove(i);
             }
         }
     }
