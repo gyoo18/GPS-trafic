@@ -36,6 +36,8 @@ public class Route {
         this.facteurRalentissement = 1f;
         this.intersectionA = intersectionA;
         this.intersectionB = intersectionB;
+        intersectionA.ajouterRoute(this);
+        intersectionB.ajouterRoute(this);
     }
 
     public void donnerAdresses(int[] listeAdressesSensANuméro, Vec2[] listeAdresseSensAPosition, int[] listeAdressesSensBNuméro, Vec2[] listeAdresseSensBPosition){

@@ -54,7 +54,9 @@ public class IntersectionFeux extends Intersection{
     @Override public void ajouterRoute(Route route){
         if(routes.size() == 4){
             System.err.println("[ERREUR] IntersectionFeux ne supporte pas la gestion de plus de 4 routes. Veuillez ne fournir que 3 ou 4 routes.");
-            System.err.println(Thread.currentThread().getStackTrace());
+            for (StackTraceElement s : Thread.currentThread().getStackTrace()) {
+                System.err.println(s);
+            }
             return;
         }
         super.ajouterRoute(route);
@@ -73,7 +75,9 @@ public class IntersectionFeux extends Intersection{
 
         if (routeDépart == null || routeDestination == null){
             System.err.println("[ERREUR] routeDépart et routeDestination ne peuvent pas être null");
-            System.err.println(Thread.currentThread().getStackTrace());
+            for (StackTraceElement s : Thread.currentThread().getStackTrace()) {
+                System.err.println(s);
+            }
             return false;
         }
 
@@ -202,7 +206,9 @@ public class IntersectionFeux extends Intersection{
     private boolean testerValidité(){
         if(routes.size() > 4 || routes.size() < 3){
             System.err.println("[ERREUR] IntersectionFeux ne supporte que la gestion de 3 ou 4 routes. Nombre de routes actuel : "+routes.size());
-            System.err.println(Thread.currentThread().getStackTrace());
+            for (StackTraceElement s : Thread.currentThread().getStackTrace()) {
+                System.err.println(s);
+            }
             return false;
         }else{
             return true;

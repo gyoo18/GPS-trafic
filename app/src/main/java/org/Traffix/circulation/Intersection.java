@@ -29,13 +29,8 @@ public abstract class Intersection {
         routes.add(route);
     }
 
-    public Route retirerRoute(String nom){
-        for (int i = 0 ; i < routes.size(); i++){
-            if (routes.get(i).nom == nom){
-                return routes.remove(i);
-            }
-        }
-        return null;
+    public void retirerRoute(Route route){
+        routes.remove(route);
     }
 
     public ArrayList<Route> avoirRoutes(){
