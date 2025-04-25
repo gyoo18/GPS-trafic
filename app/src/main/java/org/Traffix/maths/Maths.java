@@ -31,7 +31,7 @@ public class Maths {
      */
     public static Vec2 intersectionLignes(Vec2 mA, Vec2 bA, Vec2 mB, Vec2 bB){
         // Si les deux lignes sont parallèles
-        if(Math.abs(Vec2.scal(mA,mB)) < 0.0001f ){
+        if(Math.abs(mA.x*mB.y-mA.y*mB.x) < 0.0001f ){
             return null;
         }
 
