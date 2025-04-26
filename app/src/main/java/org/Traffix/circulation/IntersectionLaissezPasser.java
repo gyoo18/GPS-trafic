@@ -105,7 +105,7 @@ public class IntersectionLaissezPasser extends Intersection {
             Véhicule premierVéhicule = this==routeA.intersectionA?routeA.avoirPremierVéhiculeSensA():routeA.avoirPremierVéhiculeSensB();
             if(premierVéhicule != null){
                 float distance = Vec2.distance(premierVéhicule.position(), position);
-                if (distance/premierVéhicule.vitesse < TEMPS_MANŒUVRE){
+                if (premierVéhicule.vitesse != 0 && distance/premierVéhicule.vitesse < TEMPS_MANŒUVRE){
                     return false;
                 }
             }
@@ -114,7 +114,7 @@ public class IntersectionLaissezPasser extends Intersection {
             Véhicule premierVéhicule = this==routeB.intersectionA?routeB.avoirPremierVéhiculeSensA():routeB.avoirPremierVéhiculeSensB();
             if(premierVéhicule != null){
                 float distance = Vec2.distance(premierVéhicule.position(), position);
-                if(distance/premierVéhicule.vitesse < TEMPS_MANŒUVRE){
+                if(premierVéhicule.vitesse != 0 && distance/premierVéhicule.vitesse < TEMPS_MANŒUVRE){
                     return false;
                 }
             }

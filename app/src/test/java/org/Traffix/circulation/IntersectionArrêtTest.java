@@ -225,6 +225,10 @@ public class IntersectionArrêtTest {
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
         assertEquals(véhicule2.routeActuelle, réseau.routes.get(0));
+        while (!réseau.routes.get(1).sensBPossèdePlace(véhicule.longueur)) {
+            véhicule.miseÀJour(0.1f, true);
+            véhicule2.miseÀJour(0.1f, true);
+        }
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
         assertEquals(véhicule2.routeActuelle, réseau.routes.get(1));
@@ -262,6 +266,10 @@ public class IntersectionArrêtTest {
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
         assertEquals(véhicule2.routeActuelle, réseau.routes.get(0));
+        while (!réseau.routes.get(1).sensBPossèdePlace(véhicule.longueur)) {
+            véhicule.miseÀJour(0.1f, true);
+            véhicule2.miseÀJour(0.1f, true);
+        }
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
         assertEquals(véhicule2.routeActuelle, réseau.routes.get(1));
@@ -301,6 +309,10 @@ public class IntersectionArrêtTest {
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
         assertEquals(véhicule2.routeActuelle, réseau.routes.get(0));
+        while (!réseau.routes.get(1).sensBPossèdePlace(véhicule.longueur)) {
+            véhicule.miseÀJour(0.1f, true);
+            véhicule2.miseÀJour(0.1f, true);
+        }
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
         assertEquals(véhicule2.routeActuelle, réseau.routes.get(1));

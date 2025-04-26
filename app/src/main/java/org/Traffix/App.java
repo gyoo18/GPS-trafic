@@ -65,6 +65,10 @@ public class App {
                 throw new RuntimeException("Une route sans intersections a été trouvée.");
             }
 
+            if(réseau.routes.get(i).avoirLongueur() == 0){
+                throw new RuntimeException("Unr route de longueur 0 a été trouvée.");
+            }
+
             if(
                 !réseau.routes.get(i).intersectionA.avoirRoutes().contains(réseau.routes.get(i))||
                 !réseau.routes.get(i).intersectionB.avoirRoutes().contains(réseau.routes.get(i))
@@ -89,7 +93,7 @@ public class App {
             distances[i] = Vec2.distance(p, positions[i]);
         }
 
-        Véhicule[] v = new Véhicule[1000];
+        Véhicule[] v = new Véhicule[100];
         for (int i = 0; i < v.length; i++) {
             String[] routine = new String[5];
             for (int j = 0; j < routine.length;j++) {
@@ -155,6 +159,7 @@ public class App {
             for (int i = 0; i < v.length; i++) {
                 v[i].miseÀJour(2f*(float)(deltaTempsMillis)/1000f, i==0);
             }
+            réseau.nettoyer();
             carte.scène.caméra.positionner(v[0].objetRendus.avoirTransformée().avoirPos());
             carte.scène.caméra.faireRotation( new Vec3((float)Math.toRadians(-45f), v[0].objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f));
             //carte.scène.caméra.tourner(new Vec3(0,(float)Math.toRadians(1f),0));

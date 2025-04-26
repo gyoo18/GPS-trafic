@@ -49,19 +49,17 @@ public class Véhicule {
         // Effectuer la collision avec le véhicule en avant
         Véhicule v = routeActuelle.avoirVéhiculeEnAvant(this);
         if(v != null){
-            if(v.positionRelative - v.longueur/(2f*routeActuelle.avoirLongueur()) > distanceRelativeParcourue+positionRelative){
+            if(v.positionRelative - v.longueur/(2f*routeActuelle.avoirLongueur()) > distanceRelativeParcourue+positionRelative + longueur/(2f*routeActuelle.avoirLongueur()) + 2f/routeActuelle.avoirLongueur()){
                 positionRelative += distanceRelativeParcourue;
             }else{
-                positionRelative = v.positionRelative - v.longueur/(2f*routeActuelle.avoirLongueur()) - longueur/(2f*routeActuelle.avoirLongueur());
+                positionRelative = v.positionRelative - v.longueur/(2f*routeActuelle.avoirLongueur()) - longueur/(2f*routeActuelle.avoirLongueur()) - 2f/routeActuelle.avoirLongueur();
                 vitesse = v.vitesse;
             }
         }else{
             positionRelative += distanceRelativeParcourue;
         }
 
-        if(positionRelative+distanceRelativeParcourue >= 1f){
-            positionRelative = 1f;
-        }
+        positionRelative = Math.clamp(positionRelative, 0f, 1f);
     }
     
     public float distance(Véhicule autreVéhicule) {

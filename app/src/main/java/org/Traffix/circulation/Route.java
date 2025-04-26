@@ -21,8 +21,8 @@ public class Route {
     public float facteurRalentissement; // facteur de ralentissement dû aux accidents, en %
 
     // La voie A est la voie en direction de l'intersection A et vice-versa.
-    private ArrayList<Véhicule> véhiculesSensA = new ArrayList<>();
-    private ArrayList<Véhicule> véhiculesSensB = new ArrayList<>();
+    public ArrayList<Véhicule> véhiculesSensA = new ArrayList<>();
+    public ArrayList<Véhicule> véhiculesSensB = new ArrayList<>();
 
     // Les adresses du sens A sont du côté droit lorsqu'en direction vers A et vice-versa.
     public int[] adressesSensANuméro;
@@ -71,11 +71,30 @@ public class Route {
      */
     public float avoirLimiteEffective(){
         // TODO gestionnaireAccidents
+
         return limiteVitesse*facteurRalentissement;
     }
 
+    public float avoirVitesseVéhicules(boolean dansSensA){
+        float vitesseVéhicules = Float.MAX_VALUE;
+        if(dansSensA && véhiculesSensA.size() > 2){
+            vitesseVéhicules = 0;
+            for (int i = 0; i < véhiculesSensA.size(); i++) {
+                vitesseVéhicules += véhiculesSensA.get(i).vitesse;
+            }
+            vitesseVéhicules = vitesseVéhicules/véhiculesSensA.size();
+        }else if(!dansSensA && véhiculesSensB.size() > 2){
+            vitesseVéhicules = 0;
+            for (int i = 0; i < véhiculesSensA.size(); i++) {
+                vitesseVéhicules += véhiculesSensA.get(i).vitesse;
+            }
+            vitesseVéhicules = vitesseVéhicules/véhiculesSensA.size();
+        }
+        return vitesseVéhicules;
+    }
+
     /**
-     * Renvoie la limite de vitesse effective en km/h. Voir `avoirLimiteEffective()`.
+     * Renvoie la limite de vitesse effective en km/h. Voir `avoirLimiteEffective()
      * @return int limite effective en km/h
      */
     public int avoirLimiteEffectiveKmH(){
@@ -152,7 +171,7 @@ public class Route {
         return (
             dernierVéhicule.positionRelative - (dernierVéhicule.longueur/(2f*avoirLongueur())) -
             espace -
-            longueur
+            (longueur/(2f*avoirLongueur()))
             > 0f);
     }
 
@@ -264,6 +283,30 @@ public class Route {
     public Véhicule avoirPremierVéhiculeSensB(){
         if(véhiculesSensB.size() > 0){
             return véhiculesSensB.get(0);
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * Renvoie le véhicule à la tête de la file sur la voie A
+     * @return Véhicule
+     */
+    public Véhicule avoirDernierVéhiculeSensA(){
+        if(véhiculesSensA.size() > 0){
+            return véhiculesSensA.getLast();
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * Renvoie le véhicule à la tête de la file sur la voie B
+     * @return Véhicule
+     */
+    public Véhicule avoirDernierVéhiculeSensB(){
+        if(véhiculesSensB.size() > 0){
+            return véhiculesSensB.getLast();
         }else{
             return null;
         }

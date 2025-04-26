@@ -3,6 +3,7 @@ package org.Traffix.circulation;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.Traffix.maths.Maths;
 import org.Traffix.maths.Vec2;
 
 public class Réseau {
@@ -176,6 +177,46 @@ public class Réseau {
             System.out.println("Aucune adresse correspondante sur cette rue");
         }
         return null;
+    }
+
+    public void nettoyer(){
+        for (int i = 0; i < routes.size(); i++) {
+            for (int j = 0; j < routes.get(i).véhiculesSensA.size(); j++) {
+                if(routes.get(i).véhiculesSensA.get(j).avoirNavigateur().estBrisé){
+                    recyclerVéhicule(routes.get(i).véhiculesSensA.get(j));
+                }
+            }
+            for (int j = 0; j < routes.get(i).véhiculesSensB.size(); j++) {
+                if(routes.get(i).véhiculesSensB.get(j).avoirNavigateur().estBrisé){
+                    recyclerVéhicule(routes.get(i).véhiculesSensB.get(j));
+                }
+            }
+        }
+    }
+
+    private void recyclerVéhicule(Véhicule v){
+        String[] routine = new String[5];
+        for (int k = 0; k < routine.length; k++) {
+            while(true){
+                String adresse = avoirAdresse(new Vec2((float)(Math.random()*2.0 -1.0)*3000f,(float)(Math.random()*2.0 -1.0)*3000f));
+                for (int k2 = 0; k2 < k; k2++) {
+                    if(routine[k2] == adresse){
+                        adresse = "";
+                        break;
+                    }
+                }
+                if(adresse.equals("")){
+                    continue;
+                }
+                routine[k] = adresse;
+                break;
+            }
+        }
+        v.routeActuelle.retirerVéhiculeSensA(v);
+        v.routeActuelle.retirerVéhiculeSensB(v);
+        v.routeActuelle = routes.get(Maths.randint(0,routes.size()-1));
+        v.avoirNavigateur().donnerRoutine(routine);
+        v.avoirNavigateur().estBrisé = false;
     }
 
     // Merci à Jonas K sur StackOverFlow.

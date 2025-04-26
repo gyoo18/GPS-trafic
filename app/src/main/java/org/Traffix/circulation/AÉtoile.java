@@ -92,7 +92,7 @@ public class AÉtoile {
                     }
 
                     noeudsActifs.add(nRoute);
-                    temps.add(temps.get(curseur)+(nRoute.avoirLongueur()/nRoute.avoirLimiteEffective()));
+                    temps.add(temps.get(curseur)+(nRoute.avoirLongueur()/Math.min(nRoute.avoirLimiteEffective(),nRoute.avoirVitesseVéhicules(interB==nRoute.intersectionB))));
                     poids.add(temps.getLast()+Vec2.distance(interB.position,posDest)+5f*(float)chemins.get(curseur).size());
                     chemins.add((ArrayList<Route>)chemins.get(curseur).clone());
                     chemins.getLast().add(nRoute);

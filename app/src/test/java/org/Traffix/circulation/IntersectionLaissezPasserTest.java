@@ -558,7 +558,7 @@ public class IntersectionLaissezPasserTest {
         while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
+            if((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(2), réseau.routes.get(0)), false);
             }
         }
@@ -598,7 +598,7 @@ public class IntersectionLaissezPasserTest {
         while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule2.positionRelative)*véhicule2.routeActuelle.avoirLongueur() >= 0.1f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
+            if((1f-véhicule2.positionRelative)*véhicule2.routeActuelle.avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(2), réseau.routes.get(0)), false);
             }
         }
@@ -638,7 +638,7 @@ public class IntersectionLaissezPasserTest {
         while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule2.positionRelative)*véhicule2.routeActuelle.avoirLongueur() >= 0.1f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
+            if((1f-véhicule2.positionRelative)*véhicule2.routeActuelle.avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(2), réseau.routes.get(1)), false);
             }
         }
@@ -678,7 +678,7 @@ public class IntersectionLaissezPasserTest {
         while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
+            if((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(2), réseau.routes.get(1)), true);
             }
         }
