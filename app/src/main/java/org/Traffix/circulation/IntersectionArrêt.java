@@ -24,7 +24,7 @@ public class IntersectionArrêt extends Intersection {
     }
 
     @Override
-    public boolean peutPasser(Route routeDépart, Route routeDestination) {
+    public boolean peutEngager(Route routeDépart, Route routeDestination) {
         if (routeDépart == null || routeDestination == null){
             System.err.println("[ERREUR] routeDépart et routeDestination ne peuvent pas être null");
             System.err.println(Thread.currentThread().getStackTrace());
@@ -32,12 +32,19 @@ public class IntersectionArrêt extends Intersection {
         }
 
         if (demandesPassage.size() == 0 || demandesPassage.get(0) == routeDépart){
-            demandesPassage.remove(0);
+            if(demandesPassage.size() != 0){
+                demandesPassage.remove(0);
+            }
             return true;
         }else if(!demandesPassage.contains(routeDépart)){
             demandesPassage.add(routeDépart);
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean peutPasser(Route routeDépart, Route routeDestination){
         return false;
     }
 

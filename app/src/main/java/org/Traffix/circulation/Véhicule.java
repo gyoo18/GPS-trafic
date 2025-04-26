@@ -1,118 +1,119 @@
 package org.Traffix.circulation;
 
+import org.Traffix.OpenGL.GénérateurMaillage;
+import org.Traffix.OpenGL.Maillage;
+import org.Traffix.OpenGL.Nuanceur;
+import org.Traffix.OpenGL.Objet;
+import org.Traffix.maths.Transformée;
 import org.Traffix.maths.Vec2;
+import org.Traffix.maths.Vec3;
+import org.Traffix.maths.Vec4;
+import org.Traffix.utils.Chargeur;
 
-public abstract class Véhicule {
+public class Véhicule {
 
-    private float longueur;
-    private float position;
-    private float vitesse; //TODO changer la vitesse en m/s
-    private Route routeActuelle;
+    public final float longueur; // en mètres
+    public float positionRelative = 0; // Position en % entre les deux intersections de la route actuelle.
+    public float vitesse = 0; // en m/s
+    public boolean estSensA = false; // définit si le véhicule se trouve sur la voie A ou la voie B.
+    public Route routeActuelle;
     private Navigateur navigateur;
+
+    public Objet objetRendus = null;
+
+    public final float ACCÉLÉRATION = 6f; // en m/s²
     
-    public Véhicule(float longueur, float position, float vitesse, Route routeActuelle) {
+    public Véhicule(float longueur, Route routeActuelle) {
         this.longueur = longueur;
-        this.position = position;
-        this.vitesse = vitesse;
         this.routeActuelle = routeActuelle;
-        this.navigateur = null;  
+        this.navigateur = new Navigateur(this);  
+        
+        Maillage maillage = GénérateurMaillage.générerGrille(2, 2);
+        Nuanceur nuanceur = null;
+        try {
+            nuanceur = Chargeur.chargerNuanceurFichier("nuaColoré");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        objetRendus = new Objet("véhicule",maillage,nuanceur,new Vec4(0.9f,0.3f,0.3f,1f),null,new Transformée().échelonner(new Vec3(3f)));
     }
     
     public Véhicule(float longueur, float position, float vitesse, Route routeActuelle, Navigateur navigateur) {
-        this(longueur, position, vitesse, routeActuelle);
+        this(longueur, routeActuelle);
         this.navigateur = navigateur;
     }
     
-    public void avancer(float tempsEnSecondes) {
-        // Conversion de km/h en m/s puis calcul de la distance parcourue
-        float distanceParcourue = (vitesse * 1000 / 3600) * tempsEnSecondes;
-        position += distanceParcourue;
+    public void avancer(float deltaTempsSecondes) {
+        float distanceRelativeParcourue = (vitesse * deltaTempsSecondes)/routeActuelle.avoirLongueur();
         
-        // Vérification si le véhicule a atteint la fin de la route
-        if (position > routeActuelle.avoirLongueur()) {
-            if (navigateur != null && navigateur.aProchainRoute()) {
-                float dépassement = position - routeActuelle.avoirLongueur();
-                routeActuelle = navigateur.getProchainRoute();
-                position = dépassement;  
-                System.out.println("Véhicule a changé de route vers: " + routeActuelle.nom);
-            } else {
-                position = routeActuelle.avoirLongueur();  // Reste à la fin de la route
-                vitesse = 0;  // S'arrête
-                System.out.println("Véhicule arrivé à destination");
+        // Effectuer la collision avec le véhicule en avant
+        Véhicule v = routeActuelle.avoirVéhiculeEnAvant(this);
+        if(v != null){
+            if(v.positionRelative - v.longueur/(2f*routeActuelle.avoirLongueur()) > distanceRelativeParcourue+positionRelative){
+                positionRelative += distanceRelativeParcourue;
+            }else{
+                positionRelative = v.positionRelative - v.longueur/(2f*routeActuelle.avoirLongueur()) - longueur/(2f*routeActuelle.avoirLongueur());
+                vitesse = v.vitesse;
             }
+        }else{
+            positionRelative += distanceRelativeParcourue;
         }
-    }
-    
-    public void changerVitesse(float nouvelleVitesse) {
-        if (nouvelleVitesse >= 0) {
-            this.vitesse = nouvelleVitesse;
-        } else {
-            System.out.println("Erreur: la vitesse ne peut pas être négative");
+
+        if(positionRelative+distanceRelativeParcourue >= 1f){
+            positionRelative = 1f;
         }
-    }
-    
-    public void setNavigateur(Navigateur navigateur) {
-        this.navigateur = navigateur;
     }
     
     public float distance(Véhicule autreVéhicule) {
-        if (this.routeActuelle.equals(autreVéhicule.routeActuelle)) {
-            return Math.abs(this.position - autreVéhicule.position);
+        if (this.routeActuelle == autreVéhicule.routeActuelle) {
+            return Math.abs(this.positionRelative - autreVéhicule.positionRelative)*routeActuelle.avoirLongueur();
         } else {
             return -1;  // Pas sur la même route
         }
     }
     
-    //### Getters et setters
-    public float getLongueur() {
-        return longueur;
-    }
-    
-    public void setLongueur(float longueur) {
-        if (longueur > 0) {
-            this.longueur = longueur;
-        }
-    }
-    
-    public float getPosition() {
-        return position;
+    public void changerNavigateur(Navigateur navigateur) {
+        this.navigateur = navigateur;
     }
 
-    public float avoirPositionRelative(){
-        throw new UnsupportedOperationException();
+    public Navigateur avoirNavigateur() {
+        return navigateur;
     }
-    
-    public void setPosition(float position) {
-        if (position >= 0 && position <= routeActuelle.avoirLongueur()) {
-            this.position = position;
+
+    public Vec2 position(){
+        if(estSensA){
+            return Vec2.addi(Vec2.mult(routeActuelle.intersectionB.position, 1f-positionRelative), Vec2.mult(routeActuelle.intersectionA.position, positionRelative));
+        }else{
+            return Vec2.addi(Vec2.mult(routeActuelle.intersectionA.position, 1f-positionRelative), Vec2.mult(routeActuelle.intersectionB.position, positionRelative));
         }
     }
-    
-    public float getVitesse() {
-        return vitesse;
+
+    public String avoirAdresse(){
+        return routeActuelle.avoirAdresse(position())+" "+routeActuelle.nom;
     }
-    
-    public Route getRouteActuelle() {
-        return routeActuelle;
-    }
-    
-    public void setRouteActuelle(Route routeActuelle) {
-        this.routeActuelle = routeActuelle;
-        this.position = 0;  // Remet la position à 0 sur la nouvelle route
-    }
-    
-    public Navigateur getNavigateur() {
-        return navigateur;
+
+    public Vec2 avoirVitesseVec2(){
+        if(estSensA){
+            return Vec2.sous(routeActuelle.intersectionA.position,routeActuelle.intersectionB.position).norm().mult(vitesse);
+        }else{
+            return Vec2.sous(routeActuelle.intersectionB.position,routeActuelle.intersectionA.position).norm().mult(vitesse);
+        }
     }
     
     @Override
     public String toString() {
         return "Véhicule{" +
                 "longueur=" + longueur +
-                " m, position=" + position +
+                " m, position=" + position() +
                 " m, vitesse=" + vitesse +
                 " km/h, route='" + routeActuelle.nom + '\'' +
                 ", a un navigateur=" + (navigateur != null) +
                 '}';
+    }
+
+    public void miseÀJour(float deltaTempsSecondes, boolean debug){
+        navigateur.miseÀJour(deltaTempsSecondes, debug);
+        Vec2 dir = Vec2.sous(routeActuelle.intersectionA.position,routeActuelle.intersectionB.position).norm().mult(estSensA?-1f:1f);
+        objetRendus.avoirTransformée().positionner(new Vec3(position().x,0.3f,position().y)).faireRotation(new Vec3((float)Math.toRadians(0),(float)Math.atan2(dir.x, dir.y),0));
     }
 }

@@ -33,6 +33,7 @@ public class GLCanvas extends JPanel {
             System.out.println("OpenGL version: " + effective.majorVersion + "." + effective.minorVersion + " (Profile: " + effective.profile + ")");
             GL.createCapabilities();
             GL46.glClearColor(0.3f, 0.4f, 0.5f, 1);
+            GL46.glEnable(GL46.GL_DEPTH_TEST);
 
             scène.construireScène();
 

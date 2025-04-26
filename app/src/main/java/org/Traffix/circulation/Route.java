@@ -21,18 +21,18 @@ public class Route {
     public float facteurRalentissement; // facteur de ralentissement dû aux accidents, en %
 
     // La voie A est la voie en direction de l'intersection A et vice-versa.
-    private ArrayList<Véhicule> véhiculesSensA;
-    private ArrayList<Véhicule> véhiculesSensB;
+    private ArrayList<Véhicule> véhiculesSensA = new ArrayList<>();
+    private ArrayList<Véhicule> véhiculesSensB = new ArrayList<>();
 
     // Les adresses du sens A sont du côté droit lorsqu'en direction vers A et vice-versa.
-    private int[] adressesSensANuméro;
+    public int[] adressesSensANuméro;
     private Vec2[] adressesSensAPosition;
-    private int[] adressesSensBNuméro;
+    public int[] adressesSensBNuméro;
     private Vec2[] adressesSensBPosition;
     
     public Route(String nom, int limiteVitesseKmH, Intersection intersectionA, Intersection intersectionB) {
         this.nom = nom;
-        this.limiteVitesse = (float)limiteVitesseKmH*36f; // transformer la limite de vitesse de km/h en m/s
+        this.limiteVitesse = (float)limiteVitesseKmH/3.6f; // transformer la limite de vitesse de km/h en m/s
         this.facteurRalentissement = 1f;
         this.intersectionA = intersectionA;
         this.intersectionB = intersectionB;
@@ -41,11 +41,16 @@ public class Route {
     }
 
     public void donnerAdresses(int[] listeAdressesSensANuméro, Vec2[] listeAdresseSensAPosition, int[] listeAdressesSensBNuméro, Vec2[] listeAdresseSensBPosition){
-        this.adressesSensANuméro = listeAdressesSensANuméro;
-        this.adressesSensAPosition = listeAdresseSensAPosition;
-        this.adressesSensBNuméro = listeAdressesSensBNuméro;
-        this.adressesSensBPosition = listeAdresseSensBPosition;
-        this.possèdeAdresses = true;
+        if(
+            listeAdressesSensANuméro != null && listeAdresseSensAPosition != null && listeAdressesSensBNuméro != null && listeAdresseSensBPosition != null &&
+            listeAdressesSensANuméro.length > 0 && listeAdresseSensAPosition.length > 0 && listeAdressesSensBNuméro.length > 0 && listeAdresseSensBPosition.length > 0
+        ){
+            this.adressesSensANuméro = listeAdressesSensANuméro;
+            this.adressesSensAPosition = listeAdresseSensAPosition;
+            this.adressesSensBNuméro = listeAdressesSensBNuméro;
+            this.adressesSensBPosition = listeAdresseSensBPosition;
+            this.possèdeAdresses = true;
+        }
     }
 
     public float avoirLongueur() {
@@ -57,7 +62,7 @@ public class Route {
      * @return int limite en km/h
      */
     public int avoirLimiteKmH(){
-        return (int)(limiteVitesse/36f);
+        return (int)(limiteVitesse*3.6f);
     }
 
     /**
@@ -74,7 +79,7 @@ public class Route {
      * @return int limite effective en km/h
      */
     public int avoirLimiteEffectiveKmH(){
-        return (int)(avoirLimiteEffective()/36f);
+        return (int)(avoirLimiteEffective()*3.6f);
     }
 
     /**
@@ -138,10 +143,14 @@ public class Route {
      * @return boolean indiquant s'il reste suffisamment de place.
      */
     public boolean sensAPossèdePlace(float longueur){
+        if(véhiculesSensA.size() == 0){
+            return true;
+        }
+
         float espace = 1f/avoirLongueur();
         Véhicule dernierVéhicule = véhiculesSensA.get(véhiculesSensA.size()-1);
         return (
-            dernierVéhicule.avoirPositionRelative() - (dernierVéhicule.getLongueur()/(2f*avoirLongueur())) -
+            dernierVéhicule.positionRelative - (dernierVéhicule.longueur/(2f*avoirLongueur())) -
             espace -
             longueur
             > 0f);
@@ -153,10 +162,14 @@ public class Route {
      * @return boolean indiquant s'il reste suffisamment de place.
      */
     public boolean sensBPossèdePlace(float longueur){
+        if(véhiculesSensB.size() == 0){
+            return true;
+        }
+
         float espace = 1f/avoirLongueur();
         Véhicule dernierVéhicule = véhiculesSensB.get(véhiculesSensB.size()-1);
         return (
-            dernierVéhicule.avoirPositionRelative() - (dernierVéhicule.getLongueur()/(2f*avoirLongueur())) -
+            dernierVéhicule.positionRelative - (dernierVéhicule.longueur/(2f*avoirLongueur())) -
             espace -
             longueur
             > 0f);
@@ -168,9 +181,11 @@ public class Route {
      * @param véhicule véhicule à ajouter
      */
     public void ajouterVéhiculeSensA(Véhicule véhicule){
-        if(!sensAPossèdePlace(véhicule.getLongueur())){
+        if(!sensAPossèdePlace(véhicule.longueur)){
             System.err.println("[ERREUR] impossible d'ajouter un véhicule à la voie A.");
-            System.err.println(Thread.currentThread().getStackTrace());
+            for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+                System.err.println(element);
+            }
             return;
         }
 
@@ -183,9 +198,11 @@ public class Route {
      * @param véhicule véhicule à ajouter
      */
     public void ajouterVéhiculeSensB(Véhicule véhicule){
-        if(!sensBPossèdePlace(véhicule.getLongueur())){
+        if(!sensBPossèdePlace(véhicule.longueur)){
             System.err.println("[ERREUR] impossible d'ajouter un véhicule à la voie B.");
-            System.err.println(Thread.currentThread().getStackTrace());
+            for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+                System.err.println(element);
+            }
             return;
         }
 
@@ -213,6 +230,18 @@ public class Route {
             return véhiculesSensB.remove(0);
         }else{
             return null;
+        }
+    }
+
+    public void retirerVéhiculeSensA(Véhicule v){
+        if (véhiculesSensA.contains(v)){
+            véhiculesSensA.remove(v);
+        }
+    }
+
+    public void retirerVéhiculeSensB(Véhicule v){
+        if (véhiculesSensB.contains(v)){
+            véhiculesSensB.remove(v);
         }
     }
 
@@ -263,7 +292,9 @@ public class Route {
             }
         }else{
             System.err.println("[ERREUR] Le véhicule fournit ne se trouve pas sur cette route.");
-            System.err.println(Thread.currentThread().getStackTrace());
+             for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+                System.err.println(element);
+            }
             return null;
         }
     }

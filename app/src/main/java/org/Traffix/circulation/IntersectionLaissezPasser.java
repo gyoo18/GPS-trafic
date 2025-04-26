@@ -16,7 +16,7 @@ public class IntersectionLaissezPasser extends Intersection {
     private Route routeB = null;
 
     // Temps minimum pour lequel l'intersection doit être libre pour que les véhicules non-prioritaires puissent passer, en secondes.
-    private final float TEMPS_MANŒUVRE = 20f;
+    private final float TEMPS_MANŒUVRE = 5f;
 
     public IntersectionLaissezPasser(Vec2 pos){
         super(pos);
@@ -31,7 +31,7 @@ public class IntersectionLaissezPasser extends Intersection {
     }
 
     @Override
-    public boolean peutPasser(Route routeDépart, Route routeDestination) {
+    public boolean peutEngager(Route routeDépart, Route routeDestination) {
         if(!estConstruit){
             construire();
         }
@@ -75,6 +75,26 @@ public class IntersectionLaissezPasser extends Intersection {
         return false;
     }
 
+    @Override
+    public boolean peutPasser(Route routeDépart, Route routeDestination){
+        if(!estConstruit){
+            construire();
+        }
+
+        if (routeDépart == null || routeDestination == null){
+            System.err.println("[ERREUR] routeDépart et routeDestination ne peuvent pas être null");
+            System.err.println(Thread.currentThread().getStackTrace());
+            return false;
+        }
+
+        // Si les véhicules sont et continuent sur le tronçon prioritaire.
+        if ((routeDépart == routeA && routeDestination == routeB) || (routeDépart == routeB && routeDestination == routeA)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     /**
      * Indique si l'intersection sera libre pour la durée de TEMPS_MANŒUVRE
      * @param exception route à ne pas examiner. Utile si un véhicule prioritaire veut tourner à gauche : il occupe une voie prioritaire, donc l'intersection n'est pas libre.
@@ -83,16 +103,20 @@ public class IntersectionLaissezPasser extends Intersection {
     private boolean estIntersectionLibre(Route exception){
         if (exception != routeA){
             Véhicule premierVéhicule = this==routeA.intersectionA?routeA.avoirPremierVéhiculeSensA():routeA.avoirPremierVéhiculeSensB();
-            float distance = Vec2.distance(null, position); // TODO changer la position du véhicule en Vec2
-            if (distance/premierVéhicule.getVitesse() < TEMPS_MANŒUVRE){
-                return false;
+            if(premierVéhicule != null){
+                float distance = Vec2.distance(premierVéhicule.position(), position);
+                if (distance/premierVéhicule.vitesse < TEMPS_MANŒUVRE){
+                    return false;
+                }
             }
         }
         if(exception != routeB){
             Véhicule premierVéhicule = this==routeB.intersectionA?routeB.avoirPremierVéhiculeSensA():routeB.avoirPremierVéhiculeSensB();
-            float distance = Vec2.distance(null, position); //TODO changer la position du véhicule en Vec2
-            if(distance/premierVéhicule.getVitesse() < TEMPS_MANŒUVRE){
-                return false;
+            if(premierVéhicule != null){
+                float distance = Vec2.distance(premierVéhicule.position(), position);
+                if(distance/premierVéhicule.vitesse < TEMPS_MANŒUVRE){
+                    return false;
+                }
             }
         }
         return true;
