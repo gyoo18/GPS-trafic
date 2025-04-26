@@ -12,25 +12,32 @@ import org.Traffix.maths.Vec2;
  */
 
 public class Navigateur {
-    private ArrayList<Route> itinéraire;
-    private int indexRouteActuelle;
-
     private Véhicule véhicule = null;
     private Route prochainTournant = null;
+    private long tempsDernierRecalcul = System.currentTimeMillis();
 
-    private boolean ralentisPourIntersection = false;
-    private float ralentissementPourIntersection = 0f;
+    private Route[] itinéraireActuel = null;
+    private int indexeRouteActuelle = 0;
+    private String[] routine = null;
+    private int indexeRoutine = 0;
+    private Vec2 posDest = null;
+
+    private boolean ralentisPourArrêt = false;
+    private float ralentissementPourArrêt = 0f;
 
     private boolean estBrisé = false;
 
     private final float ESPACEMENT_VOITURES = 3f; // en mètres
+    private final int CYCLE_RECALCUL = 10000;
     
     private long tempsDebug = System.currentTimeMillis();
 
     public Navigateur(Véhicule véhicule) {
-        this.itinéraire = new ArrayList<>();
-        this.indexRouteActuelle = 0;
         this.véhicule = véhicule;
+    }
+
+    public void donnerRoutine(String[] adresses){
+        this.routine = adresses;
     }
 
     public void miseÀJour(float deltaTempsSecondes, boolean debug){
@@ -40,29 +47,31 @@ public class Navigateur {
         if(estBrisé){return;}
 
         if (prochainTournant == null){
-            int nbEssais = 0;
-            do{
-                prochainTournant = interB.routes.get(Maths.randint(0, interB.routes.size()-1));
-                nbEssais++;
-            }while(prochainTournant == véhicule.routeActuelle && nbEssais < interB.routes.size()*4);
-            if(nbEssais >= interB.routes.size()*4){
-                estBrisé = true;System.err.println("Brisé");return;}
+            prochainTournant = chercherProchainTournant();
             if(debug){System.out.println("Choisit prochain tournant");}
         }
+
+        boolean estDestination = itinéraireActuel[itinéraireActuel.length-1]==prochainTournant;
+        float distanceDest = Vec2.distance(véhicule.position(), posDest);
 
         Véhicule avant = véhicule.routeActuelle.avoirVéhiculeEnAvant(véhicule);
         float distanceInter = (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur();
         float accélération = 0f;
 
-        // Si le véhicule est à l'intersection, passer l'intersection.
-        if(distanceInter < 0.1f){
+        if(distanceDest < 0.1f && estDestination){
+            // Si le véhicule est arrivé à destination.
+            if(debug){System.out.println("Arrivé à destination");}
+            avancerRoutine();
+            prochainTournant = chercherProchainTournant();
+        }else if(distanceInter < 0.1f && !estDestination){
             // Si le véhicule est à l'intersection.
             if(
                 interB.peutEngager(véhicule.routeActuelle, prochainTournant) && // S'il a le droit de s'engager dans l'intersection
                 ((interB==prochainTournant.intersectionA && prochainTournant.sensBPossèdePlace(véhicule.longueur)) || // Si le prochain tournant a la place restante
                  (interB==prochainTournant.intersectionB && prochainTournant.sensAPossèdePlace(véhicule.longueur)))  // nécessaire pour que le véhicule s'engage.
             ){
-                if(debug){System.out.println("Passe dans l'intersection");}
+                if(debug){
+                    System.out.println("Passe dans l'intersection");}
                 if(véhicule.estSensA){
                     véhicule.routeActuelle.retirerVéhiculeSensA();
                 }else{
@@ -79,23 +88,41 @@ public class Navigateur {
                 véhicule.positionRelative = 0;
                 véhicule.routeActuelle = prochainTournant;
                 prochainTournant = null;
-                ralentisPourIntersection = false;
+                ralentisPourArrêt = false;
             }
         }else if(
             Math.abs(véhicule.vitesse) > 0f &&
             distanceInter/véhicule.vitesse < 5f &&
             !interB.peutPasser(véhicule.routeActuelle, prochainTournant) &&
-            avant == null
+            avant == null &&
+            !estDestination
         ){
-            // Si on est à moins de 20 secondes de passer l'intersection, qu'on est les premiers et qu'on ne peut pas simplement passer tout droit,
+            // Si on est à moins de 5 secondes de passer l'intersection, qu'on est les premiers et qu'on ne peut pas simplement passer tout droit,
             // Ralentir pour s'arrêter à l'intersection.
-            if(!ralentisPourIntersection){
-                ralentissementPourIntersection = (véhicule.vitesse*véhicule.vitesse)/(2f*distanceInter);
-                accélération -= ralentissementPourIntersection;
-                ralentisPourIntersection = true;
+            if(!ralentisPourArrêt){
+                ralentissementPourArrêt = (véhicule.vitesse*véhicule.vitesse)/(2f*distanceInter);
+                accélération -= ralentissementPourArrêt;
+                ralentisPourArrêt = true;
                 if(debug){System.out.println("Ralentis pour s'arrêter à l'intersection");}
             }else if(véhicule.vitesse > 0.1f){
-                accélération -= ralentissementPourIntersection;
+                accélération -= ralentissementPourArrêt;
+            }else if(véhicule.vitesse < 0.1f){
+                véhicule.vitesse = 0.1f;
+            }
+        }else if(
+            Math.abs(véhicule.vitesse) > 0f &&
+            distanceDest/véhicule.vitesse < 5f &&
+            estDestination
+        ){
+            // Si on est à moins de 5 secondes d'arriver à destination,
+            // Ralentir pour s'arrêter à l'intersection.
+            if(!ralentisPourArrêt){
+                ralentissementPourArrêt = (véhicule.vitesse*véhicule.vitesse)/(2f*distanceDest);
+                accélération -= ralentissementPourArrêt;
+                ralentisPourArrêt = true;
+                if(debug){System.out.println("Ralentis pour s'arrêter à destination");}
+            }else if(véhicule.vitesse > 0.1f){
+                accélération -= ralentissementPourArrêt;
             }else if(véhicule.vitesse < 0.1f){
                 véhicule.vitesse = 0.1f;
             }
@@ -129,9 +156,65 @@ public class Navigateur {
         véhicule.vitesse += Math.min(véhicule.ACCÉLÉRATION,Math.abs(accélération))*Math.signum(accélération)*deltaTempsSecondes;
         véhicule.avancer(deltaTempsSecondes);
         //if(debug){System.out.println(deltaTempsSecondes);}
-        if(debug && System.currentTimeMillis()-tempsDebug > 500){System.out.println("Position : "+véhicule.position().x+";"+véhicule.position().y+" Position relative :"+véhicule.positionRelative+" Vitesse : "+véhicule.vitesse*3.6f+" rue : "+véhicule.routeActuelle.nom);tempsDebug=System.currentTimeMillis();}
+        if(debug && System.currentTimeMillis()-tempsDebug > 500){System.out.println("Position relative :"+véhicule.positionRelative+" Vitesse : "+véhicule.vitesse*3.6f+" rue : "+véhicule.routeActuelle.nom+" destination : "+routine[indexeRoutine]+" indexeRoutine : "+indexeRoutine+" temps de trajet : "+(int)avoirTempsTrajetRestant()+"s");tempsDebug=System.currentTimeMillis();}
+    }
+
+    private Route chercherProchainTournant(){
+        if (itinéraireActuel == null){
+            itinéraireActuel = AÉtoile.chercherChemin(véhicule.avoirAdresse(), routine[indexeRoutine]);
+            posDest = itinéraireActuel[itinéraireActuel.length-1].avoirPosition(extraireNuméro(routine[indexeRoutine]));
+            indexeRouteActuelle = 0;
+
+            véhicule.routeActuelle.retirerVéhiculeSensA(véhicule);
+            véhicule.routeActuelle.retirerVéhiculeSensB(véhicule);
+            if(véhicule.routeActuelle.intersectionA.routes.contains(itinéraireActuel[0])){
+                véhicule.routeActuelle.ajouterVéhiculeSensA(véhicule);
+                véhicule.estSensA = true;
+            }else if(véhicule.routeActuelle.intersectionB.routes.contains(itinéraireActuel[0])){
+                véhicule.routeActuelle.ajouterVéhiculeSensB(véhicule);
+                véhicule.estSensA = false;
+            }
+        }
+
+        if(System.currentTimeMillis()-tempsDernierRecalcul > CYCLE_RECALCUL){
+            itinéraireActuel = AÉtoile.chercherChemin(véhicule.avoirAdresse(), routine[indexeRoutine]);
+            tempsDernierRecalcul = System.currentTimeMillis();
+            indexeRouteActuelle = 0;
+        }
+
+        Route retour = itinéraireActuel[indexeRouteActuelle];
+        indexeRouteActuelle++;
+        return retour;
+    }
+
+    private void avancerRoutine(){
+        indexeRoutine++;
+        indexeRoutine = indexeRoutine%routine.length;
+        indexeRouteActuelle = 0;
+        itinéraireActuel = null;
+    }
+
+    public float avoirTempsTrajetRestant(){
+        float temps = (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse;
+        for (int i = 0; i < itinéraireActuel.length; i++) {
+            temps += itinéraireActuel[i].avoirLongueur()/itinéraireActuel[i].avoirLimiteEffective();
+        }
+        return temps;
     }
     
+    private int extraireNuméro(String adresse){
+        char[] chiffres = new char[]{'0','1','2','3','4','5','6','7','8','9'};
+        String numéro = "";
+        for(int i = 0; i < adresse.length(); i++){
+            for(int j = 0; j < chiffres.length; j++){
+                if(adresse.charAt(i) == chiffres[j]){
+                    numéro += adresse.charAt(i);
+                    break;
+                }
+            }
+        }
+        return Integer.parseInt(numéro);
+    }
     
     // public void ajouterRoute(Route route) {
     //     itinéraire.add(route);

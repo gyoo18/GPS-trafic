@@ -21,7 +21,7 @@ public class UsineRéseau {
 
     private static final float RAYON_INITIAL = 100f;
     private static final float RAYON_VILLE = 3000f;
-    private static final float DISTANCE_POUSSE_MIN = LARGEUR_MAISON;
+    private static final float DISTANCE_POUSSE_MIN = LARGEUR_MAISON+1f;
     private static final float DISTANCE_POUSSE_MAX = 200f;
 
     private static Réseau réseau;
@@ -194,7 +194,7 @@ public class UsineRéseau {
             //Passer à travers toutes les routes du tronçon.
             for (int i = 0; i < tronçon.size(); i++) {
                 Route route = tronçon.get(i);
-                int nbAdresses = (int)(tronçon.get(i).avoirLongueur()/LARGEUR_MAISON);
+                int nbAdresses = (int)Math.ceil(tronçon.get(i).avoirLongueur()/LARGEUR_MAISON);
                 Vec2 tanAbs = Vec2.sous(route.intersectionA.position,route.intersectionB.position).norm().mult(interA==route.intersectionA?-1f:1f);
                 Vec2 tanLoc = Vec2.sous(route.intersectionA.position,route.intersectionB.position).norm();
                 Vec2 cotan = new Vec2(tanLoc.y,-tanLoc.x);

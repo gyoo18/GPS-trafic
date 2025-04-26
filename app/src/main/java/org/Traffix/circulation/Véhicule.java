@@ -11,7 +11,7 @@ public class Véhicule {
     public Route routeActuelle;
     private Navigateur navigateur;
 
-    public final float ACCÉLÉRATION = -6f; // en m/s²
+    public final float ACCÉLÉRATION = 6f; // en m/s²
     
     public Véhicule(float longueur, Route routeActuelle) {
         this.longueur = longueur;
@@ -42,7 +42,6 @@ public class Véhicule {
 
         if(positionRelative+distanceRelativeParcourue >= 1f){
             positionRelative = 1f;
-            vitesse = 0f;
         }
     }
     
@@ -64,10 +63,14 @@ public class Véhicule {
 
     public Vec2 position(){
         if(estSensA){
-            return Vec2.addi(Vec2.mult(routeActuelle.intersectionB.position, positionRelative), Vec2.mult(routeActuelle.intersectionA.position, positionRelative));
+            return Vec2.addi(Vec2.mult(routeActuelle.intersectionB.position, 1f-positionRelative), Vec2.mult(routeActuelle.intersectionA.position, positionRelative));
         }else{
-            return Vec2.addi(Vec2.mult(routeActuelle.intersectionA.position, positionRelative), Vec2.mult(routeActuelle.intersectionB.position, positionRelative));
+            return Vec2.addi(Vec2.mult(routeActuelle.intersectionA.position, 1f-positionRelative), Vec2.mult(routeActuelle.intersectionB.position, positionRelative));
         }
+    }
+
+    public String avoirAdresse(){
+        return routeActuelle.avoirAdresse(position())+" "+routeActuelle.nom;
     }
 
     public Vec2 avoirVitesseVec2(){

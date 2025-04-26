@@ -96,12 +96,17 @@ public class AÉtoile {
                     poids.add(temps.getLast()+Vec2.distance(interB.position,posDest));
                     chemins.add((ArrayList<Route>)chemins.get(curseur).clone());
                     chemins.getLast().add(nRoute);
+
+                    for (int k = 0; k < chemins.getLast().size()-1; k++) {
+                        if(!chemins.getLast().get(k).intersectionA.routes.contains(chemins.getLast().get(k+1)) && !chemins.getLast().get(k).intersectionB.routes.contains(chemins.getLast().get(k+1))){
+                            throw new RuntimeException("Attention");
+                        }
+                    }
                 }
             }
 
             // Retirer le curseur
-            nouedsPassifs.add(noeudsActifs.get(curseur));
-            noeudsActifs.remove(curseur);
+            nouedsPassifs.add(noeudsActifs.remove(curseur));
             temps.remove(curseur);
             poids.remove(curseur);
             chemins.remove(curseur);
@@ -117,6 +122,28 @@ public class AÉtoile {
             return null;
         }
         return chercherChemin(réseau.avoirAdresse(posA), réseau.avoirAdresse(posB));
+    }
+
+    public static Route[] chercherChemin(Vec2 posA, String adresseB){
+        if(réseau == null){
+            System.err.println("[ERREUR] le Réseau est null. Veuillez indiquer un réseau à utiliser.");
+            for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+                System.err.println(element);
+            }
+            return null;
+        }
+        return chercherChemin(réseau.avoirAdresse(posA), adresseB);
+    }
+
+    public static Route[] chercherChemin(String adresseA, Vec2 posB){
+        if(réseau == null){
+            System.err.println("[ERREUR] le Réseau est null. Veuillez indiquer un réseau à utiliser.");
+            for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+                System.err.println(element);
+            }
+            return null;
+        }
+        return chercherChemin(adresseA, réseau.avoirAdresse(posB));
     }
 
     private static Route extraireRoute(String adresse){

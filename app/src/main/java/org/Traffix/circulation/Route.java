@@ -41,11 +41,16 @@ public class Route {
     }
 
     public void donnerAdresses(int[] listeAdressesSensANuméro, Vec2[] listeAdresseSensAPosition, int[] listeAdressesSensBNuméro, Vec2[] listeAdresseSensBPosition){
-        this.adressesSensANuméro = listeAdressesSensANuméro;
-        this.adressesSensAPosition = listeAdresseSensAPosition;
-        this.adressesSensBNuméro = listeAdressesSensBNuméro;
-        this.adressesSensBPosition = listeAdresseSensBPosition;
-        this.possèdeAdresses = true;
+        if(
+            listeAdressesSensANuméro != null && listeAdresseSensAPosition != null && listeAdressesSensBNuméro != null && listeAdresseSensBPosition != null &&
+            listeAdressesSensANuméro.length > 0 && listeAdresseSensAPosition.length > 0 && listeAdressesSensBNuméro.length > 0 && listeAdresseSensBPosition.length > 0
+        ){
+            this.adressesSensANuméro = listeAdressesSensANuméro;
+            this.adressesSensAPosition = listeAdresseSensAPosition;
+            this.adressesSensBNuméro = listeAdressesSensBNuméro;
+            this.adressesSensBPosition = listeAdresseSensBPosition;
+            this.possèdeAdresses = true;
+        }
     }
 
     public float avoirLongueur() {
@@ -225,6 +230,18 @@ public class Route {
             return véhiculesSensB.remove(0);
         }else{
             return null;
+        }
+    }
+
+    public void retirerVéhiculeSensA(Véhicule v){
+        if (véhiculesSensA.contains(v)){
+            véhiculesSensA.remove(v);
+        }
+    }
+
+    public void retirerVéhiculeSensB(Véhicule v){
+        if (véhiculesSensB.contains(v)){
+            véhiculesSensB.remove(v);
         }
     }
 
