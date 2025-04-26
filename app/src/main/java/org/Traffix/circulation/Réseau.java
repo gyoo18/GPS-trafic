@@ -14,10 +14,10 @@ public class Réseau {
         System.out.println("Construction des tronçons...");
         for (int i = 0; i < routes.size(); i++) {
             if(!tronçons.containsKey(routes.get(i).nom)){
-                // Vérifier que ce tronçon est un bout
+                // Vérifier que cette route est un bout
                 boolean estABout = true;
                 for (int j = 0; j < routes.get(i).intersectionA.routes.size(); j++) {
-                    if(routes.get(i).intersectionA.routes.get(j) != routes.get(i) && routes.get(i).intersectionA.routes.get(j).nom == routes.get(i).nom){
+                    if(routes.get(i).intersectionA.routes.get(j) != routes.get(i) && routes.get(i).intersectionA.routes.get(j).nom.equals(routes.get(i).nom)){
                         estABout = false;
                         break;
                     }
@@ -25,7 +25,7 @@ public class Réseau {
 
                 boolean estBBout = true;
                 for (int j = 0; j < routes.get(i).intersectionB.routes.size(); j++) {
-                    if(routes.get(i).intersectionB.routes.get(j) != routes.get(i) && routes.get(i).intersectionB.routes.get(j).nom == routes.get(i).nom){
+                    if(routes.get(i).intersectionB.routes.get(j) != routes.get(i) && routes.get(i).intersectionB.routes.get(j).nom.equals(routes.get(i).nom)){
                         estBBout = false;
                         break;
                     }
@@ -52,7 +52,7 @@ public class Réseau {
         if(estAFait){
             for (int i = 0; i < route.intersectionB.routes.size(); i++) {
                 Route routeB = route.intersectionB.routes.get(i);
-                if(routeB != route && routeB.nom == route.nom){
+                if(routeB != route && routeB.nom.equals(route.nom)){
                     tronçon.add(routeB);
                     boolean estAFaitB = routeB.intersectionA==route.intersectionB;
                     ajouterConnexionÀTronçon(routeB, estAFaitB, tronçon);
@@ -62,7 +62,7 @@ public class Réseau {
         }else{
             for (int i = 0; i < route.intersectionA.routes.size(); i++) {
                 Route routeB = route.intersectionA.routes.get(i);
-                if(routeB != route && routeB.nom == route.nom){
+                if(routeB != route && routeB.nom.equals(route.nom)){
                     tronçon.add(routeB);
                     boolean estAFaitB = routeB.intersectionA==route.intersectionA;
                     ajouterConnexionÀTronçon(routeB, estAFaitB, tronçon);
@@ -152,7 +152,7 @@ public class Réseau {
         }
 
         if(!tronçons.containsKey(nom)){
-            System.out.println("Aucune route de ce nom");
+            System.out.println("Aucune route de ce nom : "+adresse);
             return null;
         }
 

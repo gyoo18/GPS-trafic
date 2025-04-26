@@ -12,6 +12,9 @@ import org.Traffix.OpenGL.Objet;
 import org.Traffix.circulation.Réseau;
 import org.Traffix.circulation.UsineRéseau;
 import org.Traffix.circulation.AÉtoile;
+import org.Traffix.circulation.Intersection;
+import org.Traffix.circulation.IntersectionArrêt;
+import org.Traffix.circulation.IntersectionLaissezPasser;
 import org.Traffix.circulation.Navigateur;
 import org.Traffix.circulation.Route;
 import org.Traffix.circulation.Véhicule;
@@ -29,6 +32,7 @@ import javax.swing.JFrame;
 public class App {
 
     public static void main(String[] args) {
+
         System.out.println("Hello World!");
 
         Réseau réseau = UsineRéseau.générerRéseau();
@@ -85,7 +89,7 @@ public class App {
             distances[i] = Vec2.distance(p, positions[i]);
         }
 
-        Véhicule[] v = new Véhicule[100];
+        Véhicule[] v = new Véhicule[1000];
         for (int i = 0; i < v.length; i++) {
             String[] routine = new String[5];
             for (int j = 0; j < routine.length;j++) {
@@ -147,8 +151,9 @@ public class App {
             }catch(Exception e){
                 e.printStackTrace();
             }
+            long deltaTempsMillis = System.currentTimeMillis()-tempsA;
             for (int i = 0; i < v.length; i++) {
-                v[i].miseÀJour((float)(System.currentTimeMillis()-tempsA)/1000f, i==0);
+                v[i].miseÀJour(2f*(float)(deltaTempsMillis)/1000f, i==0);
             }
             carte.scène.caméra.positionner(v[0].objetRendus.avoirTransformée().avoirPos());
             carte.scène.caméra.faireRotation( new Vec3((float)Math.toRadians(-45f), v[0].objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f));
@@ -157,5 +162,57 @@ public class App {
         }        
 
         System.out.println("Goodbye World!");
+    }
+
+    private static void générerNumérosRues(Réseau réseau){
+        float LARGEUR_MAISON = 15f;
+        float ESPACEMENT_AVANT_MAISON = 5f;
+        for (ArrayList<Route> tronçon : réseau.tronçons.values()) {
+            // Aucun numéro de rue sur les autoroutes.
+            if(tronçon.get(0).nom.contains("Autoroute")){
+                continue;
+            }
+
+            // Trouver l'intersection au bout
+            Intersection interA = null;
+            for (int j = 0; j < tronçon.get(0).intersectionA.avoirRoutes().size(); j++) {
+                if(tronçon.get(0).intersectionA.avoirRoutes().get(j) != tronçon.get(0) && tronçon.get(0).intersectionA.avoirRoutes().get(j).nom == tronçon.get(0).nom){
+                    interA = tronçon.get(0).intersectionB;
+                }
+            }
+            if(interA == null){
+                interA = tronçon.get(0).intersectionA;
+            }
+
+            int adressesCompte = 0;
+            //Passer à travers toutes les routes du tronçon.
+            for (int i = 0; i < tronçon.size(); i++) {
+                Route route = tronçon.get(i);
+                int nbAdresses = (int)Math.ceil(tronçon.get(i).avoirLongueur()/LARGEUR_MAISON);
+                Vec2 tanAbs = Vec2.sous(route.intersectionA.position,route.intersectionB.position).norm().mult(interA==route.intersectionA?-1f:1f);
+                Vec2 tanLoc = Vec2.sous(route.intersectionA.position,route.intersectionB.position).norm();
+                Vec2 cotan = new Vec2(tanLoc.y,-tanLoc.x);
+
+                int[] numérosSensA = new int[nbAdresses];
+                int[] numérosSensB = new int[nbAdresses];
+                Vec2[] positionsSensA = new Vec2[nbAdresses];
+                Vec2[] positionsSensB = new Vec2[nbAdresses];
+                for (int j = 0; j < nbAdresses; j++) {
+                    Vec2 pos = Vec2.mult(tanAbs,LARGEUR_MAISON*(float)j).addi(interA.position);
+                    if(interA == route.intersectionA){
+                        numérosSensA[j] = 2*j+adressesCompte;
+                        numérosSensB[j] = 2*j+1+adressesCompte;
+                    }else{
+                        numérosSensA[j] = (adressesCompte+nbAdresses*2)-(2*j);
+                        numérosSensB[j] = (adressesCompte+nbAdresses*2)-(2*j+1);
+                    }
+                    positionsSensA[j] = Vec2.addi(pos,Vec2.mult(cotan,ESPACEMENT_AVANT_MAISON));
+                    positionsSensB[j] = Vec2.sous(pos,Vec2.mult(cotan,ESPACEMENT_AVANT_MAISON));
+                }
+                route.donnerAdresses(numérosSensA, positionsSensA, numérosSensB, positionsSensB);
+                adressesCompte += nbAdresses*2;
+                interA = interA==route.intersectionA?route.intersectionB:route.intersectionA;
+            }
+        }
     }
 }

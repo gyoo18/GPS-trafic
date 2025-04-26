@@ -68,14 +68,14 @@ public class Navigateur {
             if(debug){System.out.println("Choisit prochain tournant");}
         }
 
-        boolean estDestination = itinéraireActuel[itinéraireActuel.length-1]==prochainTournant;
+        boolean estDestination = itinéraireActuel[itinéraireActuel.length-1]==véhicule.routeActuelle;
         float distanceDest = Vec2.distance(véhicule.position(), posDest);
 
         Véhicule avant = véhicule.routeActuelle.avoirVéhiculeEnAvant(véhicule);
         float distanceInter = (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur();
         float accélération = 0f;
 
-        if(distanceDest < 0.1f && estDestination){
+        if(estDestination && Math.abs(véhicule.routeActuelle.avoirAdresse(véhicule.position())-extraireNuméro(routine[indexeRoutine])) <= 1){
             // Si le véhicule est arrivé à destination.
             if(debug){System.out.println("Arrivé à destination");}
             avancerRoutine();
@@ -193,6 +193,7 @@ public class Navigateur {
             }
 
             itinérairObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel));
+            tempsDernierRecalcul = System.currentTimeMillis();
         }
 
         if(System.currentTimeMillis()-tempsDernierRecalcul > CYCLE_RECALCUL){
@@ -203,6 +204,7 @@ public class Navigateur {
 
         Route retour = itinéraireActuel[indexeRouteActuelle];
         indexeRouteActuelle++;
+        indexeRouteActuelle = indexeRouteActuelle%itinéraireActuel.length;
         return retour;
     }
 

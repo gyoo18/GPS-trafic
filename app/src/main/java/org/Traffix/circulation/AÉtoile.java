@@ -27,7 +27,7 @@ public class AÉtoile {
 
         if(routeDép == routeDest){
             System.out.println("[ATTENTION] Le point de départ et le point d'arrivé sont les mêmes.");
-            return null;
+            return new Route[]{routeDép};
         }
 
         ArrayList<Route> noeudsActifs = new ArrayList<>();
@@ -93,7 +93,7 @@ public class AÉtoile {
 
                     noeudsActifs.add(nRoute);
                     temps.add(temps.get(curseur)+(nRoute.avoirLongueur()/nRoute.avoirLimiteEffective()));
-                    poids.add(temps.getLast()+Vec2.distance(interB.position,posDest));
+                    poids.add(temps.getLast()+Vec2.distance(interB.position,posDest)+5f*(float)chemins.get(curseur).size());
                     chemins.add((ArrayList<Route>)chemins.get(curseur).clone());
                     chemins.getLast().add(nRoute);
 

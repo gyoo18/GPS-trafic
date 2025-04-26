@@ -31,7 +31,7 @@ public class Route {
     private Vec2[] adressesSensBPosition;
     
     public Route(String nom, int limiteVitesseKmH, Intersection intersectionA, Intersection intersectionB) {
-        this.nom = nom;
+        this.nom = nom.toLowerCase();
         this.limiteVitesse = (float)limiteVitesseKmH/3.6f; // transformer la limite de vitesse de km/h en m/s
         this.facteurRalentissement = 1f;
         this.intersectionA = intersectionA;
@@ -171,7 +171,7 @@ public class Route {
         return (
             dernierVéhicule.positionRelative - (dernierVéhicule.longueur/(2f*avoirLongueur())) -
             espace -
-            longueur
+            (longueur/(2f*avoirLongueur()))
             > 0f);
     }
 

@@ -31,7 +31,7 @@ public class IntersectionArrêt extends Intersection {
             return false;
         }
 
-        if (demandesPassage.size() == 0 || demandesPassage.get(0) == routeDépart){
+        if (demandesPassage.size() > 0 && demandesPassage.get(0) == routeDépart){
             if(demandesPassage.size() != 0){
                 demandesPassage.remove(0);
             }
