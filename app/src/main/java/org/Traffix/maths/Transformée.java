@@ -1,7 +1,5 @@
 package org.Traffix.maths;
 
-import java.util.ArrayList;
-
 import org.Traffix.animations.Animable;
 import org.Traffix.maths.Mat4.MOrdre;
 
@@ -194,16 +192,13 @@ public class Transformée implements Animable{
     public Mat4 avoirMat(){
         if (estModifié()){
             if (estOrbite){
-                mat = new Mat4().mulM(posMat).mulM(rotMat).mulM(new Mat4().positionner(new Vec3(0,0,rayon))).mulM(échMat);
+                mat = Mat4.mulM(posMat, Mat4.mulM(rotMat, Mat4.mulM(new Mat4().positionner(new Vec3(0,0,rayon)),échMat)));//new Mat4().mulM(posMat).mulM(rotMat).mulM(new Mat4().positionner(new Vec3(0,0,rayon))).mulM(échMat);
             }else{
                 // mat = pos*rot*éch*x
-                mat = new Mat4();
-                mat.mulM(échMat);
-                mat.mulM(rotMat);
-                mat.mulM(posMat);
+                mat = Mat4.mulM(échMat, Mat4.mulM(rotMat, posMat)); //new Mat4().mulM(échMat).mulM(rotMat).mulM(posMat);
             }
             if (parent != null){
-                mat = Mat4.mulM(mat, parent.avoirMat());
+                mat = Mat4.mulM(parent.avoirMat(), mat);
             }
             estModifié = false;
         }
@@ -227,15 +222,13 @@ public class Transformée implements Animable{
             });
 
             if (estOrbite){
-                matInv = new Mat4().mulM(échMatInv).mulM(new Mat4().positionner(new Vec3(0,0,-rayon))).mulM(rotMatInv).mulM(posMatInv);
+                matInv = Mat4.mulM(posMatInv, Mat4.mulM(rotMatInv, Mat4.mulM(new Mat4().positionner(new Vec3(0,0,-rayon)),échMatInv)));//new Mat4().mulM(posMat).mulM(rotMat).mulM(new Mat4().positionner(new Vec3(0,0,rayon))).mulM(échMat);
             }else{
-                matInv = new Mat4();
-                matInv.mulM(posMatInv);
-                matInv.mulM(rotMatInv);
-                matInv.mulM(échMatInv);
+                // mat = pos*rot*éch*x
+                matInv = Mat4.mulM(posMatInv, Mat4.mulM(rotMatInv, échMatInv)); //new Mat4().mulM(échMat).mulM(rotMat).mulM(posMat);
             }
             if (parent != null){
-                matInv = Mat4.mulM(parent.avoirInv(),matInv);
+                matInv = Mat4.mulM(parent.avoirInv(), matInv);
             }
             estInvModifié = false;
         }

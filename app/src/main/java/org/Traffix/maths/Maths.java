@@ -16,7 +16,7 @@ public class Maths {
      * @return int entre a et b
      */
     public static int randint(int a, int b){
-        return (int)(Math.random()*(a-b) + b);
+        return (int)(Math.random()*((float)b-(float)a+0.9) + (float)a);
     }
 
     /**

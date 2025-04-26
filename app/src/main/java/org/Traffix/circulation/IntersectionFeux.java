@@ -115,10 +115,10 @@ public class IntersectionFeux extends Intersection{
         switch (état) {
             // Si D n'existe pas (si l'intersection est un T), on ne pourra jamais tourner dessus, puisque routeDestination n'est pas null.
             // On tourne à droite pour entrer sur C depuis B et sur D depuis A.
-            case A_PASSER:  return ((routeDépart == routeA && routeDestination == routeB) || (routeDépart == routeB && routeDestination == routeA)) && (duréeCycleMin*60000)-(System.currentTimeMillis()-tempCycleMillis) > 20000;
+            case A_PASSER:  return ((routeDépart == routeA && routeDestination == routeB) || (routeDépart == routeB && routeDestination == routeA)) && (duréeCycleMin*60000)-(System.currentTimeMillis()-tempCycleMillis) > 5000;
             case A_TOURNER: return false;
             // On tourne à droite pour entrer sur A depuis C et sur B depuis D.
-            case B_PASSER:  return ((routeDépart == routeC && routeDestination == routeD) || (routeDépart == routeD && routeDestination == routeC)) && (duréeCycleMin*60000)-(System.currentTimeMillis()-tempCycleMillis) > 20000;
+            case B_PASSER:  return ((routeDépart == routeC && routeDestination == routeD) || (routeDépart == routeD && routeDestination == routeC)) && (duréeCycleMin*60000)-(System.currentTimeMillis()-tempCycleMillis) > 5000;
             case B_TOURNER: return false;
             default: throw new IllegalArgumentException("Aucun comportement défini pour état = État."+état.name());
         }

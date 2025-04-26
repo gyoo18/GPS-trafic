@@ -12,7 +12,8 @@ import java.util.ArrayList;
 
 public class UsineRéseau {
 
-    private static final int MAX_ITÉRATIONS = 30;
+    private static final int MAX_ITÉRATIONS = 10; //30;
+    private static final int NOMBRE_VÉHICULES = 3000;
 
     // En mètres
     private static final float LARGEUR_MAISON = 15f;
@@ -20,7 +21,7 @@ public class UsineRéseau {
 
     private static final float RAYON_INITIAL = 100f;
     private static final float RAYON_VILLE = 3000f;
-    private static final float DISTANCE_POUSSE_MIN = LARGEUR_MAISON;
+    private static final float DISTANCE_POUSSE_MIN = LARGEUR_MAISON+1f;
     private static final float DISTANCE_POUSSE_MAX = 200f;
 
     private static Réseau réseau;
@@ -193,7 +194,7 @@ public class UsineRéseau {
             //Passer à travers toutes les routes du tronçon.
             for (int i = 0; i < tronçon.size(); i++) {
                 Route route = tronçon.get(i);
-                int nbAdresses = (int)(tronçon.get(i).avoirLongueur()/LARGEUR_MAISON);
+                int nbAdresses = (int)Math.ceil(tronçon.get(i).avoirLongueur()/LARGEUR_MAISON);
                 Vec2 tanAbs = Vec2.sous(route.intersectionA.position,route.intersectionB.position).norm().mult(interA==route.intersectionA?-1f:1f);
                 Vec2 tanLoc = Vec2.sous(route.intersectionA.position,route.intersectionB.position).norm();
                 Vec2 cotan = new Vec2(tanLoc.y,-tanLoc.x);
@@ -220,8 +221,10 @@ public class UsineRéseau {
             }
         }
 
+        System.out.println("Génération des voitures");
         // TODO phase 5: placement des voitures.
 
+        System.out.println("Réseau Généré");
         return réseau;
     }
 
@@ -284,6 +287,7 @@ public class UsineRéseau {
                     origine.routes.get(0).intersectionB = interB;
                 }
                 interB.ajouterRoute(origine.routes.get(0));
+                réseau.routes.remove(origine);
                 
                 réseau.intersections.add(interB);
                 réseau.intersections.remove(origine);
