@@ -35,7 +35,7 @@ public class Véhicule {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        objetRendus = new Objet("véhicule",maillage,nuanceur,new Vec4(0.9f,0.3f,0.3f,1f),null,new Transformée().échelonner(new Vec3(3f)));
+        objetRendus = new Objet("véhicule",maillage,nuanceur,new Vec4(0.9f,0.3f,0.3f,1f),null,new Transformée().échelonner(new Vec3(2f, 1f, longueur)));
     }
     
     public Véhicule(float longueur, float position, float vitesse, Route routeActuelle, Navigateur navigateur) {

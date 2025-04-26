@@ -104,7 +104,7 @@ public class App {
             while(v[i] == null){
                 Route route = réseau.routes.get(Maths.randint(0, réseau.routes.size()-1));
                 if(route.sensAPossèdePlace(1.2f) && route.possèdeAdresses){
-                    v[i] = new Véhicule(1.2f,route);
+                    v[i] = new Véhicule(4.2f,route);
                     v[i].routeActuelle.ajouterVéhiculeSensA(v[i]);
                     v[i].avoirNavigateur().donnerRoutine(adresses);
                 }
@@ -150,10 +150,10 @@ public class App {
             for (int i = 0; i < v.length; i++) {
                 v[i].miseÀJour((float)(System.currentTimeMillis()-tempsA)/1000f, i==0);
             }
-            tempsA = System.currentTimeMillis();
             carte.scène.caméra.positionner(v[0].objetRendus.avoirTransformée().avoirPos());
             carte.scène.caméra.faireRotation( new Vec3((float)Math.toRadians(-45f), v[0].objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f));
             //carte.scène.caméra.tourner(new Vec3(0,(float)Math.toRadians(1f),0));
+            tempsA = System.currentTimeMillis();
         }        
 
         System.out.println("Goodbye World!");

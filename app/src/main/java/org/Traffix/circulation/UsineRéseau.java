@@ -287,6 +287,7 @@ public class UsineRéseau {
                     origine.routes.get(0).intersectionB = interB;
                 }
                 interB.ajouterRoute(origine.routes.get(0));
+                réseau.routes.remove(origine);
                 
                 réseau.intersections.add(interB);
                 réseau.intersections.remove(origine);
