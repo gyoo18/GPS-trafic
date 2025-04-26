@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class UsineRéseau {
 
     private static final int MAX_ITÉRATIONS = 30;
+    private static final int NOMBRE_VÉHICULES = 3000;
 
     // En mètres
     private static final float LARGEUR_MAISON = 15f;
@@ -220,8 +221,10 @@ public class UsineRéseau {
             }
         }
 
+        System.out.println("Génération des voitures");
         // TODO phase 5: placement des voitures.
 
+        System.out.println("Réseau Généré");
         return réseau;
     }
 

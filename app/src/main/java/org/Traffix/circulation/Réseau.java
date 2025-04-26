@@ -73,38 +73,46 @@ public class Réseau {
     }
 
     public String avoirAdresse(Vec2 position){
-        // Trouver l'intersection la plus proche
-        float minDist = Float.MAX_VALUE;
-        Intersection minDistInter = null;
-        for (int i = 0; i < intersections.size(); i++) {
-            if (Vec2.distance(position, intersections.get(i).position) < minDist){
-                minDistInter = intersections.get(i);
-                minDist = Vec2.distance(position, minDistInter.position);
+        ArrayList<Intersection> intersectionsVitiées = new ArrayList<>();
+
+        while (true) {
+            if(intersectionsVitiées.size() == intersections.size()){
+                throw new RuntimeException("[ERREUR FATALE] Aucune route ne possède d'adresses.");
+            }
+
+            // Trouver l'intersection la plus proche
+            float minDist = Float.MAX_VALUE;
+            Intersection minDistInter = null;
+            for (int i = 0; i < intersections.size(); i++) {
+                if (Vec2.distance(position, intersections.get(i).position) < minDist && !intersectionsVitiées.contains(intersections.get(i))){
+                    minDistInter = intersections.get(i);
+                    minDist = Vec2.distance(position, minDistInter.position);
+                }
+            }
+
+            intersectionsVitiées.add(minDistInter);
+
+            // Trouver la position et l'adresse la plus proche parmi les routes de l'intersection
+            minDist = Float.MAX_VALUE;
+            String minDistAdresse = "";
+            for (int i = 0; i < minDistInter.routes.size(); i++) {
+                int adresse = minDistInter.routes.get(i).avoirAdresse(position);
+                // Il se pourrait que la route n'aie pas d'adresse (elle est trop courte).
+                if(adresse == -1){
+                    continue;
+                }
+                Vec2 positionAdresse = minDistInter.routes.get(i).avoirPosition(adresse);
+
+                if(Vec2.distance(position, positionAdresse) < minDist){
+                    minDist = Vec2.distance(position, positionAdresse);
+                    minDistAdresse = adresse + " " + minDistInter.routes.get(i).nom;
+                }
+            }
+
+            if (minDistAdresse != ""){
+                return minDistAdresse;
             }
         }
-
-        // Trouver la position et l'adresse la plus proche parmi les routes de l'intersection
-        minDist = Float.MAX_VALUE;
-        String minDistAdresse = "";
-        for (int i = 0; i < minDistInter.routes.size(); i++) {
-            int adresse = minDistInter.routes.get(i).avoirAdresse(position);
-            // Il se pourrait que la route n'aie pas d'adresse (elle est trop courte).
-            if(adresse == -1){
-                continue;
-            }
-            Vec2 positionAdresse = minDistInter.routes.get(i).avoirPosition(adresse);
-
-            if(Vec2.distance(position, positionAdresse) < minDist){
-                minDist = Vec2.distance(position, positionAdresse);
-                minDistAdresse = adresse + " " + minDistInter.routes.get(i).nom;
-            }
-        }
-
-        if(minDistAdresse == ""){
-            System.out.println("a");
-        }
-
-        return minDistAdresse;
     }
 
     public Vec2 avoirPosition(String adresse){
@@ -164,7 +172,9 @@ public class Réseau {
             }
         }
 
-        // Devrait être impossible à atteindre.
+        if(contientNuméro){
+            System.out.println("Aucune adresse correspondante sur cette rue");
+        }
         return null;
     }
 

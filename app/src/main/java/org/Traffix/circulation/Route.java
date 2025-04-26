@@ -25,9 +25,9 @@ public class Route {
     private ArrayList<Véhicule> véhiculesSensB = new ArrayList<>();
 
     // Les adresses du sens A sont du côté droit lorsqu'en direction vers A et vice-versa.
-    private int[] adressesSensANuméro;
+    public int[] adressesSensANuméro;
     private Vec2[] adressesSensAPosition;
-    private int[] adressesSensBNuméro;
+    public int[] adressesSensBNuméro;
     private Vec2[] adressesSensBPosition;
     
     public Route(String nom, int limiteVitesseKmH, Intersection intersectionA, Intersection intersectionB) {

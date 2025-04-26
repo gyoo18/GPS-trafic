@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
+import org.Traffix.circulation.AÉtoile;
 import org.Traffix.circulation.Navigateur;
 import org.Traffix.circulation.Route;
 import org.Traffix.circulation.Réseau;
@@ -18,6 +19,7 @@ public class App {
     public static void main(String[] args) {
         System.out.println("Hello World!");
         Réseau réseau = UsineRéseau.générerRéseau();
+
         // UsineRéseau.enregistrerRéseauEnOBJ(réseau);
 
         // for (int i = 0; i < réseau.intersections.size(); i++) {
@@ -46,6 +48,13 @@ public class App {
         //     ){
         //         throw new RuntimeException("Une route qui pointe vers une intersection qui ne pointe pas en retour à été trouvée");
         //     }
+        // }
+
+        // AÉtoile.donnerRéseau(réseau);
+        // System.out.println("Test de AÉtoile");
+        // for (int i = 0; i < 1000; i++) {
+        //     System.out.print(i+".");
+        //     AÉtoile.chercherChemin(new Vec2((float)((Math.random() * 2.0 - 1.0)*3000.0),(float)((Math.random() * 2.0 - 1.0)*3000.0)), new Vec2((float)((Math.random() * 2.0 - 1.0)*3000.0),(float)((Math.random() * 2.0 - 1.0)*3000.0)));
         // }
         
         // try {
