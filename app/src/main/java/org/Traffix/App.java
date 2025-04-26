@@ -75,6 +75,19 @@ public class App {
         Objet itinéraire = réseau.véhicules[0].avoirNavigateur().avoirItinéraire();
         carte.scène.objets.add(itinéraire);
 
+        // GLCanvas miniCarte = (GLCanvas)fenêtre.obtenirÉlémentParID("GLCarte2");
+        // miniCarte.scène.ajouterObjet(plancher);
+        // miniCarte.scène.ajouterObjet(réseauObjet);
+        // miniCarte.scène.caméra.positionner(new Vec3(0,50,0));
+        // miniCarte.scène.caméra.faireRotation(new Vec3((float)Math.toRadians(-90f),0,0));
+        // miniCarte.scène.caméra.planProche = 40f;
+        // miniCarte.scène.caméra.planLoin = 60f;
+        // miniCarte.scène.caméra.FOV = 110f;
+        // for (int i = 0; i < réseau.véhicules.length; i++) {
+        //     miniCarte.scène.ajouterObjet(réseau.véhicules[i].objetRendus);
+        // }
+        // miniCarte.scène.objets.add(itinéraire);
+
         long tempsA = System.currentTimeMillis();
         while(fenêtre.active){
             long deltaTempsMillis = System.currentTimeMillis()-tempsA;
@@ -82,6 +95,7 @@ public class App {
             réseau.miseÀJour((float)deltaTempsMillis/1000f, true);
             carte.scène.caméra.positionner(réseau.véhicules[0].objetRendus.avoirTransformée().avoirPos());
             carte.scène.caméra.faireRotation( new Vec3((float)Math.toRadians(-45f), réseau.véhicules[0].objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f));
+            miniCarte.scène.caméra.positionner(Vec3.addi(réseau.véhicules[0].objetRendus.avoirTransformée().avoirPos(),new Vec3(0,50,0)));
         }        
 
         fenêtre.fermer();

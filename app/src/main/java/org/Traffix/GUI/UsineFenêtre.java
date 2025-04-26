@@ -343,6 +343,7 @@ public class UsineFenêtre {
         GLCanvas GLCanvas2 = new GLCanvas();
         GLCanvas2.setOpaque(false);
         miniCarteConteneur.add(GLCanvas2,BorderLayout.CENTER);
+        fenêtre.ajouterÉlémentParID(GLCanvas2, "GLCarte2");
 
         JPanel boutonMiniCarteConteneur = new JPanel();
         boutonMiniCarteConteneur.setBackground(new Color(0,0,0,0));
@@ -401,11 +402,11 @@ public class UsineFenêtre {
         Runnable renderLoop = new Runnable() {
 			@Override
             public void run() {
-				if (carte.canvas.isValid()) {
+				if (carte.canvas.isValid() && carte.continuer) {
                     carte.canvas.render();
                 }
 
-                if (GLCanvas2.canvas.isValid()) {
+                if (GLCanvas2.canvas.isValid() && GLCanvas2.continuer) {
                     GLCanvas2.canvas.render();
                 }
                 if(carte.continuer || GLCanvas2.continuer){
