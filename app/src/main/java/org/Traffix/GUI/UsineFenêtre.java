@@ -408,7 +408,9 @@ public class UsineFenêtre {
                 if (GLCanvas2.canvas.isValid()) {
                     GLCanvas2.canvas.render();
                 }
-                SwingUtilities.invokeLater(this);
+                if(carte.continuer || GLCanvas2.continuer){
+                    SwingUtilities.invokeLater(this);
+                }
 			}
 		};
 		SwingUtilities.invokeLater(renderLoop);

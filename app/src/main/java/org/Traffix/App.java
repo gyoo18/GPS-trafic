@@ -84,6 +84,7 @@ public class App {
             carte.scène.caméra.faireRotation( new Vec3((float)Math.toRadians(-45f), réseau.véhicules[0].objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f));
         }        
 
+        fenêtre.fermer();
         System.out.println("Goodbye World!");
     }
 
