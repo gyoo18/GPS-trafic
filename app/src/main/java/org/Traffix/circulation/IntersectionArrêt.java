@@ -32,9 +32,6 @@ public class IntersectionArrêt extends Intersection {
         }
 
         if (demandesPassage.size() > 0 && demandesPassage.get(0) == routeDépart){
-            if(demandesPassage.size() != 0){
-                demandesPassage.remove(0);
-            }
             return true;
         }else if(!demandesPassage.contains(routeDépart)){
             demandesPassage.add(routeDépart);
@@ -49,6 +46,10 @@ public class IntersectionArrêt extends Intersection {
     }
 
     @Override
-    public void miseÀJour() {}
+    public void miseÀJour() {
+        if(demandesPassage.size() != 0){
+            demandesPassage.remove(0);
+        }
+    }
     
 }
