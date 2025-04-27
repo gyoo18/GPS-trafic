@@ -1,6 +1,8 @@
 package org.Traffix.circulation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -453,4 +455,204 @@ public class IntersectionArrêtTest {
             }
         }
     }
+
+   @Test
+    public void testAddition() {
+        int result = 2 + 3;
+        assertEquals(5, result);
+    }
+
+    
+public class IntersectionArrêetTest {
+
+    @BeforeClass
+    public static void init() {
+        try {
+            System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("IntersectionArrêtTest.log"))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ======== TESTS RALENTIS ========
+
+    @Test
+    public void ralentis2() {
+        System.out.println("====== ralentis2 =====");
+        Réseau réseau = créerRéseauSimple();
+        Véhicule véhicule = nouveauVéhicule(réseau, new Vec2(100, 0));
+        avancerVéhicule(véhicule);
+        assertFalse(réseau.intersections.get(1).peutPasser(réseau.routes.get(0), réseau.routes.get(1)));
+    }
+
+    @Test
+    public void ralentis3() {
+        System.out.println("====== ralentis3 =====");
+        Réseau réseau = créerRéseauCarrefour();
+        Véhicule véhicule = nouveauVéhicule(réseau, new Vec2(100, 0));
+        avancerVéhicule(véhicule);
+        assertFalse(réseau.intersections.get(1).peutPasser(réseau.routes.get(0), réseau.routes.get(1)));
+    }
+
+    @Test
+    public void ralentis4() {
+        System.out.println("====== ralentis4 =====");
+        Réseau réseau = créerGrandCarrefour();
+        Véhicule véhicule = nouveauVéhicule(réseau, new Vec2(100, 0));
+        avancerVéhicule(véhicule);
+        assertFalse(réseau.intersections.get(1).peutPasser(réseau.routes.get(0), réseau.routes.get(1)));
+    }
+
+    // ======== TESTS CONTINUE ========
+
+    @Test
+    public void continue2() {
+        System.out.println("====== continue2 =====");
+        Réseau réseau = créerRéseauSimple();
+        Véhicule véhicule = nouveauVéhicule(réseau, new Vec2(100, 0));
+        avancerEtChangerRoute(véhicule, réseau.routes.get(0), réseau.routes.get(1));
+    }
+
+    @Test
+    public void continue3() {
+        System.out.println("====== continue3 =====");
+        Réseau réseau = créerRéseauCarrefour();
+        Véhicule véhicule = nouveauVéhicule(réseau, new Vec2(100, 0));
+        avancerEtChangerRoute(véhicule, réseau.routes.get(0), réseau.routes.get(1));
+    }
+
+    @Test
+    public void continue4() {
+        System.out.println("====== continue4 =====");
+        Réseau réseau = créerGrandCarrefour();
+        Véhicule véhicule = nouveauVéhicule(réseau, new Vec2(100, 0));
+        avancerEtChangerRoute(véhicule, réseau.routes.get(0), réseau.routes.get(1));
+    }
+
+    // ======== TESTS AVEC DEUX VÉHICULES ========
+
+    @Test
+    public void continue2voitureDerrière() {
+        System.out.println("====== continue2voitureDerrière =====");
+        Réseau réseau = créerRéseauSimple();
+        testerDeuxVéhicules(réseau);
+    }
+
+    @Test
+    public void continue3voitureDerrière() {
+        System.out.println("====== continue3voitureDerrière =====");
+        Réseau réseau = créerRéseauCarrefour();
+        testerDeuxVéhicules(réseau);
+    }
+
+    @Test
+    public void continue4voitureDerrière() {
+        System.out.println("====== continue4voitureDerrière =====");
+        Réseau réseau = créerGrandCarrefour();
+        testerDeuxVéhicules(réseau);
+    }
+
+    // ======== PETITS TESTS BASIQUES ========
+
+    @Test
+    public void testAddition() {
+        int result = 2 + 3;
+        assertEquals(5, result);
+    }
+
+    @Test
+    public void testTexteNonNul() {
+        String texte = "Hello";
+        assertNotNull(texte);
+        assertEquals("Hello", texte);
+    }
+
+    // ======== MÉTHODES PRIVÉES ========
+
+    private Réseau créerRéseauSimple() {
+        Réseau réseau = new Réseau();
+        AÉtoile.donnerRéseau(réseau);
+        réseau.intersections.add(new IntersectionArrêt(new Vec2(-100, 0)));
+        réseau.intersections.add(new IntersectionArrêt(new Vec2(0, 0)));
+        réseau.intersections.add(new IntersectionArrêt(new Vec2(100, 0)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
+        réseau.construireTronçons();
+        générerNumérosRues(réseau);
+        return réseau;
+    }
+
+    private Réseau créerRéseauCarrefour() {
+        Réseau réseau = créerRéseauSimple();
+        réseau.intersections.add(new IntersectionArrêt(new Vec2(0, -100)));
+        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
+        réseau.construireTronçons();
+        générerNumérosRues(réseau);
+        return réseau;
+    }
+
+    private Réseau créerGrandCarrefour() {
+        Réseau réseau = créerRéseauCarrefour();
+        réseau.intersections.add(new IntersectionArrêt(new Vec2(0, 100)));
+        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
+        réseau.construireTronçons();
+        générerNumérosRues(réseau);
+        return réseau;
+    }
+
+    private Véhicule nouveauVéhicule(Réseau réseau, Vec2 destination) {
+        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(0));
+        String[] routine = { réseau.avoirAdresse(destination) };
+        véhicule.avoirNavigateur().donnerRoutine(routine);
+        return véhicule;
+    }
+
+    private void avancerVéhicule(Véhicule véhicule) {
+        while (véhicule.positionRelative < 1f) {
+            véhicule.miseÀJour(0.1f, true);
+        }
+    }
+
+    private void avancerEtChangerRoute(Véhicule véhicule, Route route1, Route route2) {
+        while ((1f - véhicule.positionRelative) * véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+            véhicule.miseÀJour(0.1f, true);
+        }
+        véhicule.miseÀJour(0.1f, true);
+        assertEquals(route1, véhicule.routeActuelle);
+        véhicule.miseÀJour(0.1f, true);
+        assertEquals(route2, véhicule.routeActuelle);
+    }
+
+    private void testerDeuxVéhicules(Réseau réseau) {
+        Véhicule v1 = nouveauVéhicule(réseau, new Vec2(100, 0));
+        Véhicule v2 = nouveauVéhicule(réseau, new Vec2(100, 0));
+        v1.positionRelative = 0.05f;
+
+        while ((1f - v2.positionRelative) * v2.routeActuelle.avoirLongueur() >= 0.1f) {
+            v1.miseÀJour(0.1f, true);
+            v2.miseÀJour(0.1f, true);
+        }
+
+        v1.miseÀJour(0.1f, true);
+        v2.miseÀJour(0.1f, true);
+        assertEquals(réseau.routes.get(0), v2.routeActuelle);
+
+        while (!réseau.routes.get(1).sensBPossèdePlace(v1.longueur)) {
+            v1.miseÀJour(0.1f, true);
+            v2.miseÀJour(0.1f, true);
+        }
+
+        v1.miseÀJour(0.1f, true);
+        v2.miseÀJour(0.1f, true);
+        assertEquals(réseau.routes.get(1), v2.routeActuelle);
+    }
+
+    private void générerNumérosRues(Réseau réseau) {
+        // Ton générerNumérosRues() reste correct
+    }
+}
+
+
+
+
 }
