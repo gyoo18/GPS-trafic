@@ -51,7 +51,7 @@ public class GestionnaireContrôles {
             public void actionPerformed(ActionEvent e){
                 ((JPanel) fenêtre.obtenirÉlémentParID("miniCarteCouches")).setBounds(30,30, fenêtre.jframe.getContentPane().getWidth()-60,fenêtre.jframe.getContentPane().getHeight()-60);
                 fenêtre.changerDrapeau("miniCarte minimisé", false);
-                ((JButton) fenêtre.obtenirÉlémentParID("adresseChercherBouton")).setText("")
+                ((JButton) fenêtre.obtenirÉlémentParID("adresseChercherBouton")).setText("");
                 fenêtre.jframe.revalidate();
                 fenêtre.jframe.repaint();
             }

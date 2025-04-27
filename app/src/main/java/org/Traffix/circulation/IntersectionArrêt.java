@@ -10,6 +10,7 @@ import org.Traffix.maths.Vec2;
 public class IntersectionArrêt extends Intersection {
 
     private ArrayList<Route> demandesPassage = new ArrayList<>();
+    private boolean passageAccordé = false;
 
     public IntersectionArrêt(Vec2 pos){
         super(pos);
@@ -32,6 +33,7 @@ public class IntersectionArrêt extends Intersection {
         }
 
         if (demandesPassage.size() > 0 && demandesPassage.get(0) == routeDépart){
+            passageAccordé = true;
             return true;
         }else if(!demandesPassage.contains(routeDépart)){
             demandesPassage.add(routeDépart);
@@ -47,8 +49,9 @@ public class IntersectionArrêt extends Intersection {
 
     @Override
     public void miseÀJour() {
-        if(demandesPassage.size() != 0){
+        if(demandesPassage.size() != 0 && passageAccordé){
             demandesPassage.remove(0);
+            passageAccordé = false;
         }
     }
     

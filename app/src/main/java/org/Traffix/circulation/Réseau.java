@@ -78,6 +78,9 @@ public class Réseau {
         for (int i = 0; i < véhicules.length; i++) {
             véhicules[i].miseÀJour(deltaTempsSecondes, debug && i==0);
         }
+        for(int i = 0; i < intersections.size(); i++){
+            intersections.get(i).miseÀJour();
+        }
         nettoyer();
     }
 

@@ -108,29 +108,31 @@ public class Navigateur {
         }else if(distanceInter < 0.1f && !estDestination){
             // Si le véhicule est à l'intersection.
             if(
-                interB.peutEngager(véhicule.routeActuelle, prochainTournant) && // S'il a le droit de s'engager dans l'intersection
-                ((interB==prochainTournant.intersectionA && prochainTournant.sensBPossèdePlace(véhicule.longueur)) || // Si le prochain tournant a la place restante
-                 (interB==prochainTournant.intersectionB && prochainTournant.sensAPossèdePlace(véhicule.longueur)))  // nécessaire pour que le véhicule s'engage.
+                (interB==prochainTournant.intersectionA && prochainTournant.sensBPossèdePlace(véhicule.longueur)) || // Si le prochain tournant a la place restante
+                (interB==prochainTournant.intersectionB && prochainTournant.sensAPossèdePlace(véhicule.longueur))    // nécessaire pour que le véhicule s'engage.
             ){
-                if(debug){
-                    System.out.println("Passe dans l'intersection");}
-                if(véhicule.estSensA){
-                    véhicule.routeActuelle.retirerVéhiculeSensA();
-                }else{
-                    véhicule.routeActuelle.retirerVéhiculeSensB();
-                }
+                // S'il a le droit de s'engager dans l'intersection
+                // l'approche en deux étapes est nécessaire pour, car appeler IntersectionArrêt.peutEngager() change l'état de ce dernier.
+                if(interB.peutEngager(véhicule.routeActuelle, prochainTournant)){
+                    if(debug){System.out.println("Passe dans l'intersection");}
+                    if(véhicule.estSensA){
+                        véhicule.routeActuelle.retirerVéhiculeSensA();
+                    }else{
+                        véhicule.routeActuelle.retirerVéhiculeSensB();
+                    }
 
-                if(interB == prochainTournant.intersectionA){
-                    prochainTournant.ajouterVéhiculeSensB(véhicule);
-                }else{
-                    prochainTournant.ajouterVéhiculeSensA(véhicule);
-                }
+                    if(interB == prochainTournant.intersectionA){
+                        prochainTournant.ajouterVéhiculeSensB(véhicule);
+                    }else{
+                        prochainTournant.ajouterVéhiculeSensA(véhicule);
+                    }
 
-                véhicule.estSensA = interB == prochainTournant.intersectionB;
-                véhicule.positionRelative = 0;
-                véhicule.routeActuelle = prochainTournant;
-                prochainTournant = null;
-                ralentisPourArrêt = false;
+                    véhicule.estSensA = interB == prochainTournant.intersectionB;
+                    véhicule.positionRelative = 0;
+                    véhicule.routeActuelle = prochainTournant;
+                    prochainTournant = null;
+                    ralentisPourArrêt = false;
+                }
             }else{
                 véhicule.vitesse = 0;
                 véhicule.positionRelative = 1f;
