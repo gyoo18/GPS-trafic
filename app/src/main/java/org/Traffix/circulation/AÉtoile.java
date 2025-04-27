@@ -6,6 +6,8 @@ import org.Traffix.maths.Vec2;
 
 public class AÉtoile {
     private static Réseau réseau = null;
+    private static Route[] dernierTrajet = null;
+    private static int duréeDernierTrajetSec = -1;
 
     public static void donnerRéseau(Réseau réseau){
         AÉtoile.réseau = réseau;
@@ -88,6 +90,8 @@ public class AÉtoile {
                         for (int k = 0; k < cheminFinal.length; k++) {
                             cheminFinal[k] = chemins.get(curseur).get(k);
                         }
+                        dernierTrajet = cheminFinal;
+                        duréeDernierTrajetSec = (int)(temps.get(curseur)+Vec2.distance(posDest, interB.position)/Math.min(nRoute.avoirLimiteEffective(),nRoute.avoirVitesseVéhicules(interB==nRoute.intersectionB)));
                         return cheminFinal;
                     }
 
@@ -144,6 +148,14 @@ public class AÉtoile {
             return null;
         }
         return chercherChemin(adresseA, réseau.avoirAdresse(posB));
+    }
+
+    public static Route[] avoirDernierTrajet(){
+        return dernierTrajet;
+    }
+
+    public static int avoirDuréeDernierTrajetSec(){
+        return duréeDernierTrajetSec;
     }
 
     private static Route extraireRoute(String adresse){

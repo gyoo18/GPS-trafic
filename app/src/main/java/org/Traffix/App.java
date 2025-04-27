@@ -3,6 +3,7 @@ package org.Traffix;
 import java.util.Scanner;
 
 import org.Traffix.GUI.Fenêtre;
+import org.Traffix.GUI.GestionnaireContrôles;
 import org.Traffix.GUI.UsineFenêtre;
 import org.Traffix.OpenGL.GLCanvas;
 import org.Traffix.OpenGL.GénérateurMaillage;
@@ -48,6 +49,7 @@ public class App {
             }
         }
         AÉtoile.donnerRéseau(réseau);
+        GestionnaireContrôles.initialiserGPS(fenêtre,réseau);
 
         Maillage maillage = GénérateurMaillage.générerGrille(2, 2);
         Nuanceur nuanceur = null;
@@ -99,7 +101,7 @@ public class App {
         while(fenêtre.active){
             long deltaTempsMillis = System.currentTimeMillis()-tempsA;
             tempsA = System.currentTimeMillis();
-            réseau.miseÀJour(10f*(float)deltaTempsMillis/1000f, false);
+            réseau.miseÀJour(0.1f*(float)deltaTempsMillis/1000f, false);
             carte.scène.caméra.positionner(réseau.véhicules[0].objetRendus.avoirTransformée().avoirPos());
             carte.scène.caméra.faireRotation( new Vec3((float)Math.toRadians(-45f), réseau.véhicules[0].objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f));
             miniCarte.scène.caméra.positionner(réseau.véhicules[0].objetRendus.avoirTransformée().avoirPos());

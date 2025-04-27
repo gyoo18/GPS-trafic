@@ -103,7 +103,7 @@ public class UsineFenêtre {
         JPanel coucheDéplacement = new JPanel();
         coucheDéplacement.setOpaque(false);
         coucheDéplacement.setPreferredSize(fenêtre.jframe.getPreferredSize());
-        coucheDéplacement.setLayout(new BorderLayout());
+        coucheDéplacement.setLayout(null);
         coucheDéplacement.setMixingCutoutShape(coucheDéplacement.getBounds());  // Empêche les couches supérieures de cacher les objets « Heavyweight » des couches inférieures
         couchesPrincipales.add(coucheDéplacement);
         fenêtre.ajouterÉlémentParID(coucheDéplacement, "coucheDéplacement");
@@ -303,26 +303,17 @@ public class UsineFenêtre {
         adresseConteneur.add(adresseChercherBouton, BorderLayout.EAST);
         fenêtre.ajouterÉlémentParID(adresseChercherBouton, "adresseChercherBouton");
 
+        JLabel adresseEntréeMessageErreur = new JLabel();
+        adresseEntréeMessageErreur.setForeground(Color.RED);
+        adresseEntréeMessageErreur.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 9));
+        paramètresTrajets.add(adresseEntréeMessageErreur);
+        fenêtre.ajouterÉlémentParID(adresseEntréeMessageErreur, "adresseEntréeMessageErreur");
+
         JPanel espace2 = new JPanel();
         espace2.setBackground(new Color(0,0,0,0));
         espace2.setOpaque(false);
         espace2.setPreferredSize(new Dimension(10,10));
         paramètresTrajets.add(espace2);
-
-        Destination destinationA = new Destination("Maison", Destination.Type.DÉPART);
-        destinationA.changerDurée(3665);
-        paramètresTrajets.add(destinationA);
-        fenêtre.ajouterÉlémentParID(destinationA, "destinationA");
-
-        Destination destinationB = new Destination("Maison", Destination.Type.ARRÊT);
-        destinationB.changerDurée(3665);
-        paramètresTrajets.add(destinationB);
-        fenêtre.ajouterÉlémentParID(destinationB, "destinationB");
-
-        Destination destinationC = new Destination("Maison", Destination.Type.FIN);
-        destinationC.changerDurée(3665);
-        paramètresTrajets.add(destinationC);
-        fenêtre.ajouterÉlémentParID(destinationC, "destinationC");
 
         //////////////////////////////////////////////////////////////////////////////////////////////
         /// Mini-Carte                                                                             ///

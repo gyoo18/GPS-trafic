@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class UsineRéseau {
 
-    private static final int MAX_ITÉRATIONS = 30;
-    private static final int NOMBRE_VÉHICULES = 3000;
+    private static final int MAX_ITÉRATIONS = 10; //30;
+    private static final int NOMBRE_VÉHICULES = 100; //3000;
 
     // En mètres
     private static final float LARGEUR_MAISON = 15f;
@@ -232,17 +232,15 @@ public class UsineRéseau {
         System.out.println("Génération des voitures");
         // TODO phase 5: placement des voitures.
         String[] adresses = new String[NOMBRE_VÉHICULES];
-        Vec2[] positions = new Vec2[adresses.length];
-        float[] distances = new float[adresses.length];
         ArrayList<Integer> abérations = new ArrayList<>();
         for (int i = 0; i < adresses.length; i++) {
-            positions[i] = new Vec2( (float)(Math.random()*2.0-1.0)*3000f, (float)(Math.random()*2.0-1.0)*3000f);
-            adresses[i] = réseau.avoirAdresse(positions[i]);
+            Vec2 position = new Vec2( (float)(Math.random()*2.0-1.0)*3000f, (float)(Math.random()*2.0-1.0)*3000f);
+            adresses[i] = réseau.avoirAdresse(position);
             if(adresses[i] == ""){
                 continue;
             }
             Vec2 p = réseau.avoirPosition(adresses[i]);
-            distances[i] = Vec2.distance(p, positions[i]);
+            System.out.println(adresses[i]);
         }
 
         réseau.véhicules = new Véhicule[NOMBRE_VÉHICULES];
