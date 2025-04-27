@@ -245,7 +245,7 @@ public class UsineRéseau {
             distances[i] = Vec2.distance(p, positions[i]);
         }
 
-        réseau.véhicules = new Véhicule[1000];
+        réseau.véhicules = new Véhicule[NOMBRE_VÉHICULES];
         for (int i = 0; i < réseau.véhicules.length; i++) {
             String[] routine = new String[5];
             for (int j = 0; j < routine.length;j++) {
@@ -266,7 +266,7 @@ public class UsineRéseau {
                 if(route.sensAPossèdePlace(1.2f) && route.possèdeAdresses){
                     réseau.véhicules[i] = new Véhicule(4.2f,route);
                     réseau.véhicules[i].routeActuelle.ajouterVéhiculeSensA(réseau.véhicules[i]);
-                    réseau.véhicules[i].avoirNavigateur().donnerRoutine(adresses);
+                    réseau.véhicules[i].avoirNavigateur().donnerRoutine(routine);
                 }
             }
         }

@@ -86,6 +86,12 @@ public class Objet implements Animable{
         return o;
     }
 
+    public Objet copierProfond(){
+        Objet o = new Objet(nom, maillage!=null?maillage.copier():null, nuanceur!=null?nuanceur.copier():null, couleur!=null?couleur.copier():null, texture!=null?texture.copier():null, transformée!=null?transformée.copier():null);
+        o.dessiner = dessiner;
+        return o;
+    }
+
     @Override
     public void mix(Object[] a, Object[] b, float m) {}
 

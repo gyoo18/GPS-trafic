@@ -51,13 +51,15 @@ public class App {
 
         Maillage maillage = GénérateurMaillage.générerGrille(2, 2);
         Nuanceur nuanceur = null;
+        Nuanceur nuaRéseau = null;
         try{
             nuanceur = Chargeur.chargerNuanceurFichier("nuaColoré");
+            nuaRéseau = Chargeur.chargerNuanceurFichier("nuaColoréPoints");
         }catch(Exception e){
             e.printStackTrace();
         }
         Objet plancher = new Objet("plancher", maillage, nuanceur, new Vec4(0.8f,0.7f,0.5f,1f), null, new Transformée(new Vec3(-6000,-0.1f,-6000),new Vec3(0),new Vec3(18000)));
-        Objet réseauObjet = new Objet("réseau", GénérateurMaillage.faireMaillageRéseau(réseau), nuanceur, new Vec4(0.1f), null, new Transformée());
+        Objet réseauObjet = new Objet("réseau", GénérateurMaillage.faireMaillageRéseau(réseau,1f), nuaRéseau, null, null, new Transformée());
 
         GLCanvas carte = (GLCanvas)fenêtre.obtenirÉlémentParID("GLCarte");
         carte.scène.ajouterObjet(plancher);
@@ -73,29 +75,35 @@ public class App {
             carte.scène.ajouterObjet(réseau.véhicules[i].objetRendus);
         }
         Objet itinéraire = réseau.véhicules[0].avoirNavigateur().avoirItinéraire();
-        carte.scène.objets.add(itinéraire);
+        carte.scène.ajouterObjet(itinéraire);
 
-        // GLCanvas miniCarte = (GLCanvas)fenêtre.obtenirÉlémentParID("GLCarte2");
-        // miniCarte.scène.ajouterObjet(plancher);
-        // miniCarte.scène.ajouterObjet(réseauObjet);
-        // miniCarte.scène.caméra.positionner(new Vec3(0,50,0));
-        // miniCarte.scène.caméra.faireRotation(new Vec3((float)Math.toRadians(-90f),0,0));
-        // miniCarte.scène.caméra.planProche = 40f;
-        // miniCarte.scène.caméra.planLoin = 60f;
+        GLCanvas miniCarte = (GLCanvas)fenêtre.obtenirÉlémentParID("GLCarte2");
+        Objet miniPlancher = plancher.copierProfond(); miniPlancher.donnerTransformée(plancher.avoirTransformée());
+        miniCarte.scène.ajouterObjet(miniPlancher);
+        Objet miniRéseau = réseauObjet.copierProfond();
+        miniRéseau.donnerMaillage(GénérateurMaillage.faireMaillageRéseau(réseau, 3f));
+        miniCarte.scène.ajouterObjet(miniRéseau);
+        miniCarte.scène.caméra.faireRotation(new Vec3((float)Math.toRadians(-90f),0,0));
+        miniCarte.scène.caméra.planProche = 1f;
+        miniCarte.scène.caméra.planLoin = 1000f;
         // miniCarte.scène.caméra.FOV = 110f;
-        // for (int i = 0; i < réseau.véhicules.length; i++) {
-        //     miniCarte.scène.ajouterObjet(réseau.véhicules[i].objetRendus);
-        // }
-        // miniCarte.scène.objets.add(itinéraire);
+        miniCarte.scène.caméra.avoirVue().estOrbite = true;
+        miniCarte.scène.caméra.avoirVue().changerRayon(200);
+        for (int i = 0; i < réseau.véhicules.length; i++) {
+            Objet miniVéhicule = réseau.véhicules[i].objetRendus.copierProfond(); miniVéhicule.donnerTransformée(réseau.véhicules[i].objetRendus.avoirTransformée());
+            miniCarte.scène.ajouterObjet(miniVéhicule);
+        }
+        miniCarte.scène.ajouterObjet(réseau.véhicules[0].avoirNavigateur().avoirMiniItinéraire());
 
         long tempsA = System.currentTimeMillis();
         while(fenêtre.active){
             long deltaTempsMillis = System.currentTimeMillis()-tempsA;
             tempsA = System.currentTimeMillis();
-            réseau.miseÀJour((float)deltaTempsMillis/1000f, true);
+            réseau.miseÀJour(10f*(float)deltaTempsMillis/1000f, false);
             carte.scène.caméra.positionner(réseau.véhicules[0].objetRendus.avoirTransformée().avoirPos());
             carte.scène.caméra.faireRotation( new Vec3((float)Math.toRadians(-45f), réseau.véhicules[0].objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f));
-            miniCarte.scène.caméra.positionner(Vec3.addi(réseau.véhicules[0].objetRendus.avoirTransformée().avoirPos(),new Vec3(0,50,0)));
+            miniCarte.scène.caméra.positionner(réseau.véhicules[0].objetRendus.avoirTransformée().avoirPos());
+            miniCarte.scène.caméra.faireRotation( new Vec3((float)Math.toRadians(-90f), réseau.véhicules[0].objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f));
         }        
 
         fenêtre.fermer();

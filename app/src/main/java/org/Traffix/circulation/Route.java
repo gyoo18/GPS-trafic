@@ -85,10 +85,10 @@ public class Route {
             vitesseVéhicules = vitesseVéhicules/véhiculesSensA.size();
         }else if(!dansSensA && véhiculesSensB.size() > 2){
             vitesseVéhicules = 0;
-            for (int i = 0; i < véhiculesSensA.size(); i++) {
-                vitesseVéhicules += véhiculesSensA.get(i).vitesse;
+            for (int i = 0; i < véhiculesSensB.size(); i++) {
+                vitesseVéhicules += véhiculesSensB.get(i).vitesse;
             }
-            vitesseVéhicules = vitesseVéhicules/véhiculesSensA.size();
+            vitesseVéhicules = vitesseVéhicules/véhiculesSensB.size();
         }
         return vitesseVéhicules;
     }
