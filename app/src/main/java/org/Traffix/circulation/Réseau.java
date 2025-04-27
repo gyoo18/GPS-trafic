@@ -10,6 +10,7 @@ public class Réseau {
     public ArrayList<Route> routes = new ArrayList<>();
     public ArrayList<Intersection> intersections = new ArrayList<>();
     public HashMap<String, ArrayList<Route>> tronçons = new HashMap<>(); // Liste de routes portants le même nom
+    public Véhicule[] véhicules;
 
     public void construireTronçons(){
         System.out.println("Construction des tronçons...");
@@ -71,6 +72,13 @@ public class Réseau {
                 }
             }
         }
+    }
+
+    public void miseÀJour(float deltaTempsSecondes, boolean debug){
+        for (int i = 0; i < véhicules.length; i++) {
+            véhicules[i].miseÀJour(deltaTempsSecondes, debug && i==0);
+        }
+        nettoyer();
     }
 
     public String avoirAdresse(Vec2 position){
@@ -180,16 +188,9 @@ public class Réseau {
     }
 
     public void nettoyer(){
-        for (int i = 0; i < routes.size(); i++) {
-            for (int j = 0; j < routes.get(i).véhiculesSensA.size(); j++) {
-                if(routes.get(i).véhiculesSensA.get(j).avoirNavigateur().estBrisé){
-                    recyclerVéhicule(routes.get(i).véhiculesSensA.get(j));
-                }
-            }
-            for (int j = 0; j < routes.get(i).véhiculesSensB.size(); j++) {
-                if(routes.get(i).véhiculesSensB.get(j).avoirNavigateur().estBrisé){
-                    recyclerVéhicule(routes.get(i).véhiculesSensB.get(j));
-                }
+        for (int i = 0; i < véhicules.length; i++) {
+            if(véhicules[i].avoirNavigateur().estBrisé){
+                recyclerVéhicule(véhicules[i]);
             }
         }
     }

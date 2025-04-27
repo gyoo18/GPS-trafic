@@ -40,7 +40,8 @@ public class Navigateur {
     
     private long tempsDebug = System.currentTimeMillis();
 
-    private Objet itinérairObjet = null;
+    private Objet itinéraireObjet = null;
+    private Objet miniItinéraireObjet = null;
 
     public Navigateur(Véhicule véhicule) {
         this.véhicule = véhicule;
@@ -51,7 +52,8 @@ public class Navigateur {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        itinérairObjet = new Objet("itinéraire", null, nuanceur, new Vec4(0.5f,0.7f,0.9f,1f), null, new Transformée().positionner(new Vec3(0,0.2f,0)));
+        itinéraireObjet = new Objet("itinéraire", null, nuanceur, new Vec4(0.2f,0.5f,0.9f,1f), null, new Transformée().positionner(new Vec3(0,0.2f,0)));
+        miniItinéraireObjet = new Objet("itinéraire", null, nuanceur.copier(), new Vec4(0.2f,0.5f,0.9f,1f), null, new Transformée().positionner(new Vec3(0,0.2f,0)));
     }
 
     public void donnerRoutine(String[] adresses){
@@ -252,7 +254,6 @@ public class Navigateur {
                 véhicule.estSensA = false;
             }
 
-            itinérairObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel));
             tempsDernierRecalcul = System.currentTimeMillis();
         }else if(enAttenteDePlace){
             if(véhicule.routeActuelle.intersectionA.routes.contains(itinéraireActuel[0])){
@@ -273,7 +274,6 @@ public class Navigateur {
                 véhicule.estSensA = false;
             }
 
-            itinérairObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel));
             tempsDernierRecalcul = System.currentTimeMillis();
             enAttenteDePlace = false;
         }
@@ -295,10 +295,12 @@ public class Navigateur {
                 }
             }
             itinéraireActuel = itinéraire;
-            itinérairObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel));
             tempsDernierRecalcul = System.currentTimeMillis();
             indexeRouteActuelle = 0;
         }
+
+        itinéraireObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel,1.5f));
+        miniItinéraireObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel,4.5f));
 
         Route retour = itinéraireActuel[indexeRouteActuelle];
         indexeRouteActuelle++;
@@ -336,7 +338,11 @@ public class Navigateur {
     }
 
     public Objet avoirItinéraire(){
-        return itinérairObjet;
+        return itinéraireObjet;
+    }
+
+    public Objet avoirMiniItinéraire(){
+        return miniItinéraireObjet;
     }
     
     // public void ajouterRoute(Route route) {

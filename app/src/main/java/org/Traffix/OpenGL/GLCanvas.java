@@ -20,6 +20,8 @@ public class GLCanvas extends JPanel {
 
     public Scène scène = new Scène();
 
+    public boolean continuer = true;
+
     public class GLSubCanvas extends AWTGLCanvas{
         private boolean aFenêtreÉtéModifié = false;
         private static final long serialVersionUID = 1L;
@@ -153,5 +155,10 @@ public class GLCanvas extends JPanel {
                 canvas.surFenêtreModifiée();
             }
         });
+    }
+
+    public synchronized void détruire(){
+        GL.destroy();
+        continuer = false;
     }
 }
