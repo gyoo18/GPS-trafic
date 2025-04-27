@@ -15,7 +15,9 @@ public class Fenêtre {
 
     public JFrame jframe = new JFrame();
 
-    private Map<String,Object> éléments = new HashMap<>();
+    private HashMap<String,Object> éléments = new HashMap<>();
+
+    private HashMap<String, Object> drapeaux = new HashMap<>();
 
     public Fenêtre(){}
 
@@ -25,6 +27,31 @@ public class Fenêtre {
 
     public Object obtenirÉlémentParID(String ID){
         return éléments.get(ID);
+    }
+
+    public void ajouterDrapeau(String nom, Object valeur){
+        if(drapeaux.containsKey(nom)){
+            changerDrapeau(nom, valeur);
+        }
+        drapeaux.put(nom, valeur);
+    }
+
+    public void changerDrapeau(String nom, Object valeur){
+        if(!drapeaux.containsKey(nom)){
+            ajouterDrapeau(nom, valeur);
+        }
+        drapeaux.put(nom, valeur);
+    }
+
+    public Object avoirDrapeau(String nom){
+        if(!drapeaux.containsKey(nom)){
+            System.err.println("[ERREUR] Le drapeau "+nom+" n'existe pas.");
+            for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+                System.err.println(element);
+            }
+            return null;
+        }
+        return drapeaux.get(nom);
     }
 
     public void fermer(){

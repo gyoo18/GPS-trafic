@@ -324,12 +324,13 @@ public class UsineFenêtre {
         miniCarteCouches.setBackground(new Color(0,0,0,0));
         miniCarteCouches.setOpaque(false);
         coucheMiniCarte.add(miniCarteCouches);
+        fenêtre.ajouterÉlémentParID(miniCarteCouches, "miniCarteCouches");
+        fenêtre.ajouterDrapeau("miniCarte minimisé", true);
 
         JPanel miniCarteConteneur = new JPanel();
         miniCarteConteneur.setOpaque(false);
         miniCarteConteneur.setLayout(new BorderLayout());
         miniCarteCouches.add(miniCarteConteneur);
-        fenêtre.ajouterÉlémentParID(miniCarteConteneur, "miniCarteConteneur");
 
         GLCanvas GLCanvas2 = new GLCanvas();
         GLCanvas2.setOpaque(false);
@@ -375,8 +376,12 @@ public class UsineFenêtre {
                 carteCoucheCarte.setSize(sectionCarteTaille);
                 carteCoucheGUI.setSize(sectionCarteTaille);
                 sectionParamètres.setPreferredSize( new Dimension( Math.max((int)(coucheBase.getSize().width * 0.2f),300), coucheBase.getSize().height ) );
-                int minTaille = Math.min(coucheMiniCarte.getSize().width, coucheMiniCarte.getSize().height);
-                miniCarteCouches.setBounds( (int)(jfdim.width * 0.8f - (minTaille * 0.15f)), (int)(jfdim.height * 0.75f - (minTaille * 0.15f)), (int)(minTaille * 0.3f), (int)(minTaille * 0.3f) );
+                if((Boolean)fenêtre.avoirDrapeau("miniCarte minimisé")){
+                    int minTaille = Math.min(coucheMiniCarte.getSize().width, coucheMiniCarte.getSize().height);
+                    miniCarteCouches.setBounds( (int)(jfdim.width * 0.8f - (minTaille * 0.15f)), (int)(jfdim.height * 0.75f - (minTaille * 0.15f)), (int)(minTaille * 0.3f), (int)(minTaille * 0.3f) );
+                }else{
+                    miniCarteCouches.setBounds( 30, 30, jfdim.width-60, jfdim.height-60 );
+                }
                 Dimension miniCarteDimension = new Dimension(miniCarteCouches.getSize().width-20, miniCarteCouches.getSize().height-20);
                 miniCarteConteneur.setBounds(10,10,miniCarteDimension.width, miniCarteDimension.height);
                 //boutonMiniCarteConteneur.setBounds(10,10,miniCarteDimension.width, miniCarteDimension.height);

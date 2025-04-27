@@ -11,11 +11,9 @@ import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
 
 import org.Traffix.GUI.Destination.Type;
 import org.Traffix.circulation.AÉtoile;
@@ -46,6 +44,17 @@ public class GestionnaireContrôles {
                     liste.repaint();
                 }
             }            
+        });
+
+        ((JButton) fenêtre.obtenirÉlémentParID("boutonMiniCarte")).addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                ((JPanel) fenêtre.obtenirÉlémentParID("miniCarteCouches")).setBounds(30,30, fenêtre.jframe.getContentPane().getWidth()-60,fenêtre.jframe.getContentPane().getHeight()-60);
+                fenêtre.changerDrapeau("miniCarte minimisé", false);
+                ((JButton) fenêtre.obtenirÉlémentParID("adresseChercherBouton")).setText("")
+                fenêtre.jframe.revalidate();
+                fenêtre.jframe.repaint();
+            }
         });
     }
 
