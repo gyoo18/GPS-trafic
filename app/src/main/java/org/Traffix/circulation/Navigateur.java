@@ -19,15 +19,15 @@ import org.Traffix.utils.Chargeur;
  */
 
 public class Navigateur {
-    private Véhicule véhicule = null;
-    private Route prochainTournant = null;
-    private long tempsDernierRecalcul = System.currentTimeMillis();
+    protected Véhicule véhicule = null;
+    protected Route prochainTournant = null;
+    protected long tempsDernierRecalcul = System.currentTimeMillis();
 
-    private Route[] itinéraireActuel = null;
-    private int indexeRouteActuelle = 0;
-    private String[] routine = null;
-    private int indexeRoutine = 0;
-    private Vec2 posDest = null;
+    protected Route[] itinéraireActuel = null;
+    protected int indexeRouteActuelle = 0;
+    protected String[] routine = null;
+    protected int indexeRoutine = 0;
+    protected Vec2 posDest = null;
 
     private boolean ralentisPourArrêt = false;
     private float ralentissementPourArrêt = 0f;
@@ -35,11 +35,11 @@ public class Navigateur {
     private boolean estBrisé = false;
 
     private final float ESPACEMENT_VOITURES = 3f; // en mètres
-    private final int CYCLE_RECALCUL = 10000;
+    protected final int CYCLE_RECALCUL = 10000;
     
     private long tempsDebug = System.currentTimeMillis();
 
-    private Objet itinérairObjet = null;
+    protected Objet itinéraireObjet = null;
 
     public Navigateur(Véhicule véhicule) {
         this.véhicule = véhicule;
@@ -50,7 +50,7 @@ public class Navigateur {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        itinérairObjet = new Objet("itinéraire", null, nuanceur, new Vec4(0.5f,0.7f,0.9f,1f), null, new Transformée().positionner(new Vec3(0,0.2f,0)));
+        itinéraireObjet = new Objet("itinéraire", null, nuanceur, new Vec4(0.5f,0.7f,0.9f,1f), null, new Transformée().positionner(new Vec3(0,0.2f,0)));
     }
 
     public void donnerRoutine(String[] adresses){
@@ -176,7 +176,7 @@ public class Navigateur {
         if(debug && System.currentTimeMillis()-tempsDebug > 500){System.out.println("Position relative :"+véhicule.positionRelative+" Vitesse : "+véhicule.vitesse*3.6f+" rue : "+véhicule.routeActuelle.nom+" destination : "+routine[indexeRoutine]+" indexeRoutine : "+indexeRoutine+" temps de trajet : "+(int)avoirTempsTrajetRestant()+"s");tempsDebug=System.currentTimeMillis();}
     }
 
-    private Route chercherProchainTournant(){
+    protected Route chercherProchainTournant(){
         if (itinéraireActuel == null){
             itinéraireActuel = AÉtoile.chercherChemin(véhicule.avoirAdresse(), routine[indexeRoutine]);
             posDest = itinéraireActuel[itinéraireActuel.length-1].avoirPosition(extraireNuméro(routine[indexeRoutine]));
@@ -192,13 +192,14 @@ public class Navigateur {
                 véhicule.estSensA = false;
             }
 
-            itinérairObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel));
+            itinéraireObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel));
         }
 
         if(System.currentTimeMillis()-tempsDernierRecalcul > CYCLE_RECALCUL){
             itinéraireActuel = AÉtoile.chercherChemin(véhicule.avoirAdresse(), routine[indexeRoutine]);
             tempsDernierRecalcul = System.currentTimeMillis();
             indexeRouteActuelle = 0;
+            itinéraireObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel));
         }
 
         Route retour = itinéraireActuel[indexeRouteActuelle];
@@ -206,7 +207,7 @@ public class Navigateur {
         return retour;
     }
 
-    private void avancerRoutine(){
+    protected void avancerRoutine(){
         indexeRoutine++;
         indexeRoutine = indexeRoutine%routine.length;
         indexeRouteActuelle = 0;
@@ -221,7 +222,7 @@ public class Navigateur {
         return temps;
     }
     
-    private int extraireNuméro(String adresse){
+    protected int extraireNuméro(String adresse){
         char[] chiffres = new char[]{'0','1','2','3','4','5','6','7','8','9'};
         String numéro = "";
         for(int i = 0; i < adresse.length(); i++){
@@ -236,67 +237,6 @@ public class Navigateur {
     }
 
     public Objet avoirItinéraire(){
-        return itinérairObjet;
+        return itinéraireObjet;
     }
-    
-    // public void ajouterRoute(Route route) {
-    //     itinéraire.add(route);
-    // }
-    
-   
-    // public boolean aProchainRoute() {
-    //     return indexRouteActuelle < itinéraire.size() - 1;
-    // }
-    
-    
-    // public Route getProchainRoute() {
-    //     if (aProchainRoute()) {
-    //         indexRouteActuelle++;
-    //         return itinéraire.get(indexRouteActuelle);
-    //     }
-    //     return null;
-    // }
-    
-    
-    // public Route getRouteActuelle() {
-    //     if (itinéraire.isEmpty()) {
-    //         return null;
-    //     }
-    //     return itinéraire.get(indexRouteActuelle);
-    // }
-    
-   
-    // public float getDistanceTotale() {
-    //     float distanceTotale = 0;
-    //     for (Route route : itinéraire) {
-    //         distanceTotale += route.avoirLongueur();
-    //     }
-    //     return distanceTotale;
-    // }
-    
-    
-    // public float getTempsEstime(float vitesseMoyenne) {
-    //     if (vitesseMoyenne <= 0) {
-    //         return Float.POSITIVE_INFINITY;
-    //     }
-    //     // Distance en km / vitesse en km/h = temps en heures
-    //     return getDistanceTotale() / 1000 / vitesseMoyenne;
-    // }
-    
-    // @Override
-    // public String toString() {
-    //     StringBuilder sb = new StringBuilder();
-    //     sb.append("Itinéraire: ");
-    //     sb.append(itinéraire.size()).append(" routes, ");
-    //     sb.append(String.format("%.1f", getDistanceTotale() / 1000)).append(" km au total\n");
-
-    //     for (int i = 0; i < itinéraire.size(); i++) {
-    //         Route route = itinéraire.get(i);
-    //         sb.append(i + 1).append(". ");
-    //         sb.append(route.nom).append(" (");
-    //         sb.append(String.format("%.1f", route.avoirLongueur() / 1000)).append(" km)\n");
-    //     }
-        
-    //     return sb.toString();
-    // }
 }
