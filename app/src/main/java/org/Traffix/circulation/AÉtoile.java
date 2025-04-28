@@ -1,11 +1,14 @@
 package org.Traffix.circulation;
 
+import java.awt.datatransfer.FlavorEvent;
 import java.util.ArrayList;
 
 import org.Traffix.maths.Vec2;
 
 public class AÉtoile {
     private static Réseau réseau = null;
+    private static Route[] dernierTrajet = null;
+    private static int duréeDernierTrajetSec = -1;
 
     public static void donnerRéseau(Réseau réseau){
         AÉtoile.réseau = réseau;
@@ -27,7 +30,7 @@ public class AÉtoile {
 
         if(routeDép == routeDest){
             System.out.println("[ATTENTION] Le point de départ et le point d'arrivé sont les mêmes.");
-            return null;
+            return new Route[]{routeDép};
         }
 
         ArrayList<Route> noeudsActifs = new ArrayList<>();
@@ -44,7 +47,7 @@ public class AÉtoile {
         
         while (true) {
             // Chercher le meilleur poid
-            meilleurPoid = Float.MAX_VALUE;
+            meilleurPoid = Float.POSITIVE_INFINITY;
             curseur = -1;
             for (int i = 0; i < noeudsActifs.size(); i++) {
                 if(poids.get(i) < meilleurPoid){
@@ -54,7 +57,7 @@ public class AÉtoile {
             }
 
             if (curseur == -1){
-                System.err.println("[ERREUR] aucun chemin n'existe entre les destinations");
+                System.err.println("[ERREUR] aucun chemin n'existe entre les destinations. Départ : "+adresseA+", Destination : "+adresseB);
                 for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
                     System.err.println(element);
                 }
@@ -88,20 +91,22 @@ public class AÉtoile {
                         for (int k = 0; k < cheminFinal.length; k++) {
                             cheminFinal[k] = chemins.get(curseur).get(k);
                         }
+                        dernierTrajet = cheminFinal;
+                        duréeDernierTrajetSec = (int)(temps.get(curseur)+Vec2.distance(posDest, interB.position)/Math.min(nRoute.avoirLimiteEffective(),nRoute.avoirVitesseVéhicules(interB==nRoute.intersectionB)));
                         return cheminFinal;
                     }
 
                     noeudsActifs.add(nRoute);
-                    temps.add(temps.get(curseur)+(nRoute.avoirLongueur()/nRoute.avoirLimiteEffective()));
-                    poids.add(temps.getLast()+Vec2.distance(interB.position,posDest));
+                    temps.add(temps.get(curseur)+Math.min(nRoute.avoirLongueur()/Math.min(nRoute.avoirLimiteEffective(),nRoute.avoirVitesseVéhicules(interB==nRoute.intersectionB)),Float.MAX_VALUE-1));
+                    poids.add(temps.getLast()+Vec2.distance(interB.position,posDest)+5f*(float)chemins.get(curseur).size());
                     chemins.add((ArrayList<Route>)chemins.get(curseur).clone());
                     chemins.getLast().add(nRoute);
 
-                    for (int k = 0; k < chemins.getLast().size()-1; k++) {
-                        if(!chemins.getLast().get(k).intersectionA.routes.contains(chemins.getLast().get(k+1)) && !chemins.getLast().get(k).intersectionB.routes.contains(chemins.getLast().get(k+1))){
-                            throw new RuntimeException("Attention");
-                        }
-                    }
+                    // for (int k = 0; k < chemins.getLast().size()-1; k++) {
+                    //     if(!chemins.getLast().get(k).intersectionA.routes.contains(chemins.getLast().get(k+1)) && !chemins.getLast().get(k).intersectionB.routes.contains(chemins.getLast().get(k+1))){
+                    //         throw new RuntimeException("Attention");
+                    //     }
+                    // }
                 }
             }
 
@@ -144,6 +149,14 @@ public class AÉtoile {
             return null;
         }
         return chercherChemin(adresseA, réseau.avoirAdresse(posB));
+    }
+
+    public static Route[] avoirDernierTrajet(){
+        return dernierTrajet;
+    }
+
+    public static int avoirDuréeDernierTrajetSec(){
+        return duréeDernierTrajetSec;
     }
 
     private static Route extraireRoute(String adresse){

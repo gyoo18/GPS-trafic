@@ -105,4 +105,15 @@ public class Nuanceur {
         }
         return -1;
     }
+
+    public Nuanceur copier(){
+        Nuanceur n = new Nuanceur(null, null);
+        n.estConstruit  = false;
+        n.uniformesNoms = this.uniformesNoms;
+        n.uniformesID   = this.uniformesID;
+        n.étiquettes    = this.étiquettes;
+        n.fragSource    = this.fragSource;
+        n.somSource     = this.somSource;
+        return n;
+    }
 }

@@ -242,4 +242,9 @@ public class Vec2 implements Animable{
         x = (float)cléB[0];
         y = (float)cléB[1];
     }
+
+    @Override
+    public String toString(){
+        return "["+x+";"+y+"]";
+    }
 }

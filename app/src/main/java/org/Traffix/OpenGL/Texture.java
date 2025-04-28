@@ -66,4 +66,16 @@ public class Texture {
 
         estConstruit = true;
     }
+
+    public Texture copier(){
+        Texture t = new Texture(this.largeur, this.hauteur);
+        t.format        = this.format;
+        t.internalFormat= this.internalFormat;
+        t.dataType      = this.dataType;
+        t.minFilter     = this.minFilter;
+        t.magFilter     = this.magFilter;
+        t.inverserAlpha = this.inverserAlpha;
+        t.estConstruit = false;
+        return t;
+    }
 }

@@ -28,7 +28,7 @@ public class Scène {
 
     public Objet obtenirObjet(String nom){
         for (Objet o : objets){
-            if (o.nom == nom){
+            if (o.nom.equals(nom)){
                 return o;
             }
         }
@@ -58,7 +58,7 @@ public class Scène {
         LinkedList<Objet> résultatLL = new LinkedList<>();
         for (Objet o : objets){
             for (String nom : noms){
-                if (o.nom == nom){
+                if (o.nom.equals(nom)){
                     résultatLL.add(o);
                     break;
                 }

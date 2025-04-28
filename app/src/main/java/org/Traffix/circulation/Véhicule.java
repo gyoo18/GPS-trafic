@@ -1,5 +1,7 @@
 package org.Traffix.circulation;
 
+import java.util.ArrayList;
+
 import org.Traffix.OpenGL.GénérateurMaillage;
 import org.Traffix.OpenGL.Maillage;
 import org.Traffix.OpenGL.Nuanceur;
@@ -16,16 +18,18 @@ public class Véhicule {
     public float positionRelative = 0; // Position en % entre les deux intersections de la route actuelle.
     public float vitesse = 0; // en m/s
     public boolean estSensA = false; // définit si le véhicule se trouve sur la voie A ou la voie B.
-    public Route routeActuelle;
+    private Route routeActuelle;
     private Navigateur navigateur;
 
     public Objet objetRendus = null;
 
     public final float ACCÉLÉRATION = 6f; // en m/s²
+
+    private ArrayList<String> accèsRouteActuelle = new ArrayList<>();
     
     public Véhicule(float longueur, Route routeActuelle) {
         this.longueur = longueur;
-        this.routeActuelle = routeActuelle;
+        this.routeActuelle(routeActuelle);
         this.navigateur = new Navigateur(this);  
         
         Maillage maillage = GénérateurMaillage.générerGrille(2, 2);
@@ -49,23 +53,21 @@ public class Véhicule {
         // Effectuer la collision avec le véhicule en avant
         Véhicule v = routeActuelle.avoirVéhiculeEnAvant(this);
         if(v != null){
-            if(v.positionRelative - v.longueur/(2f*routeActuelle.avoirLongueur()) > distanceRelativeParcourue+positionRelative){
+            if(v.positionRelative - v.longueur/(2f*routeActuelle.avoirLongueur()) > distanceRelativeParcourue+positionRelative + longueur/(2f*routeActuelle.avoirLongueur()) + 2f/routeActuelle.avoirLongueur()){
                 positionRelative += distanceRelativeParcourue;
             }else{
-                positionRelative = v.positionRelative - v.longueur/(2f*routeActuelle.avoirLongueur()) - longueur/(2f*routeActuelle.avoirLongueur());
+                positionRelative = v.positionRelative - v.longueur/(2f*routeActuelle.avoirLongueur()) - longueur/(2f*routeActuelle.avoirLongueur()) - 2f/routeActuelle.avoirLongueur();
                 vitesse = v.vitesse;
             }
         }else{
             positionRelative += distanceRelativeParcourue;
         }
 
-        if(positionRelative+distanceRelativeParcourue >= 1f){
-            positionRelative = 1f;
-        }
+        positionRelative = Math.clamp(positionRelative, 0f, 1f);
     }
     
     public float distance(Véhicule autreVéhicule) {
-        if (this.routeActuelle == autreVéhicule.routeActuelle) {
+        if (this.routeActuelle() == autreVéhicule.routeActuelle()) {
             return Math.abs(this.positionRelative - autreVéhicule.positionRelative)*routeActuelle.avoirLongueur();
         } else {
             return -1;  // Pas sur la même route
@@ -100,20 +102,36 @@ public class Véhicule {
         }
     }
     
-    @Override
-    public String toString() {
-        return "Véhicule{" +
-                "longueur=" + longueur +
-                " m, position=" + position() +
-                " m, vitesse=" + vitesse +
-                " km/h, route='" + routeActuelle.nom + '\'' +
-                ", a un navigateur=" + (navigateur != null) +
-                '}';
-    }
+    // @Override
+    // public String toString() {
+    //     return "Véhicule{" +
+    //             "longueur=" + longueur +
+    //             " m, position=" + position() +
+    //             " m, vitesse=" + vitesse +
+    //             " km/h, route='" + routeActuelle.nom + '\'' +
+    //             ", a un navigateur=" + (navigateur != null) +
+    //             '}';
+    // }
 
     public void miseÀJour(float deltaTempsSecondes, boolean debug){
         navigateur.miseÀJour(deltaTempsSecondes, debug);
         Vec2 dir = Vec2.sous(routeActuelle.intersectionA.position,routeActuelle.intersectionB.position).norm().mult(estSensA?-1f:1f);
         objetRendus.avoirTransformée().positionner(new Vec3(position().x,0.3f,position().y)).faireRotation(new Vec3((float)Math.toRadians(0),(float)Math.atan2(dir.x, dir.y),0));
+    }
+
+    public Route routeActuelle(){
+        // accèsRouteActuelle.add("===== Nouvel accès ===== t: "+System.currentTimeMillis());
+        // for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+        //     accèsRouteActuelle.add(element.toString());
+        // }
+        return routeActuelle;
+    }
+
+    public void routeActuelle(Route n){
+        // accèsRouteActuelle.add("===== Nouvelle valeur : "+n+", nom : "+n.nom+" ===== t: "+System.currentTimeMillis());
+        // for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+        //     accèsRouteActuelle.add(element.toString());
+        // }
+        this.routeActuelle = n;
     }
 }

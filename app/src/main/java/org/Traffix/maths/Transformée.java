@@ -94,6 +94,9 @@ public class Transformée implements Animable{
     public Mat4 avoirPosMat(){return parent==null?posMat:Mat4.mulM(posMat,parent.avoirPosMat());}
     public Mat4 avoirRotMat(){return parent==null?rotMat:Mat4.mulM(rotMat,parent.avoirRotMat());}
     public Mat4 avoirÉchMat(){return parent==null?échMat:Mat4.mulM(échMat,parent.avoirÉchMat());}
+    public Mat4 avoirPosMatInv(){return parent==null?posMatInv:Mat4.mulM(parent.avoirPosMatInv(),posMatInv);}
+    public Mat4 avoirRotMatInv(){return parent==null?rotMatInv:Mat4.mulM(parent.avoirRotMatInv(),rotMatInv);}
+    public Mat4 avoirÉchMatInv(){return parent==null?échMatInv:Mat4.mulM(parent.avoirÉchMatInv(),échMatInv);}
 
     public Transformée positionner(Vec3 p){
         pos = p.copier();
@@ -192,10 +195,9 @@ public class Transformée implements Animable{
     public Mat4 avoirMat(){
         if (estModifié()){
             if (estOrbite){
-                mat = Mat4.mulM(posMat, Mat4.mulM(rotMat, Mat4.mulM(new Mat4().positionner(new Vec3(0,0,rayon)),échMat)));//new Mat4().mulM(posMat).mulM(rotMat).mulM(new Mat4().positionner(new Vec3(0,0,rayon))).mulM(échMat);
+                mat = Mat4.mulM(posMat, Mat4.mulM(rotMat, Mat4.mulM(new Mat4().positionner(new Vec3(0,0,rayon)),échMat)));
             }else{
-                // mat = pos*rot*éch*x
-                mat = Mat4.mulM(échMat, Mat4.mulM(rotMat, posMat)); //new Mat4().mulM(échMat).mulM(rotMat).mulM(posMat);
+                mat = Mat4.mulM(échMat, Mat4.mulM(rotMat, posMat));
             }
             if (parent != null){
                 mat = Mat4.mulM(parent.avoirMat(), mat);
@@ -222,13 +224,12 @@ public class Transformée implements Animable{
             });
 
             if (estOrbite){
-                matInv = Mat4.mulM(posMatInv, Mat4.mulM(rotMatInv, Mat4.mulM(new Mat4().positionner(new Vec3(0,0,-rayon)),échMatInv)));//new Mat4().mulM(posMat).mulM(rotMat).mulM(new Mat4().positionner(new Vec3(0,0,rayon))).mulM(échMat);
+                matInv = Mat4.mulM(échMatInv, Mat4.mulM(new Mat4().positionner(new Vec3(0,0,-rayon)), Mat4.mulM(rotMatInv, posMatInv)));
             }else{
-                // mat = pos*rot*éch*x
-                matInv = Mat4.mulM(posMatInv, Mat4.mulM(rotMatInv, échMatInv)); //new Mat4().mulM(échMat).mulM(rotMat).mulM(posMat);
+                matInv = Mat4.mulM(échMatInv, Mat4.mulM(rotMatInv, posMatInv));
             }
             if (parent != null){
-                matInv = Mat4.mulM(parent.avoirInv(), matInv);
+                matInv = Mat4.mulM(matInv, parent.avoirInv());
             }
             estInvModifié = false;
         }
@@ -356,5 +357,10 @@ public class Transformée implements Animable{
         estInvModifié = true;
         nModifié++;
         nInvModifié++;
+    }
+
+    @Override
+    public String toString() {
+        return "{ pos:"+pos+" rot:"+rot+" éch:"+éch+(estOrbite?" estOrbite, r:"+rayon:"")+" }";
     }
 }

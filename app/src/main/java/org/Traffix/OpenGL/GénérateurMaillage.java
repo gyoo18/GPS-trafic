@@ -48,31 +48,70 @@ public class GénérateurMaillage {
         return maillage;
     }
 
-    public static Maillage faireMaillageRéseau(Réseau réseau){
+    public static Maillage faireMaillageRéseau(Réseau réseau, float épaisseur){
         float[] positions = new float[réseau.routes.size()*4*3];
+        float[] normales = new float[réseau.routes.size()*4*3];
+        float[] couleurs = new float[réseau.routes.size()*4*4];
         int[] indexes = new int[réseau.routes.size()*6]; 
         for (int i = 0; i < réseau.routes.size(); i++) {
             Vec2 posA = réseau.routes.get(i).intersectionA.position;
             Vec2 posB = réseau.routes.get(i).intersectionB.position;
             Vec2 tan = Vec2.sous(posA,posB).norm();
             Vec2 cotan = new Vec2(tan.y,-tan.x);
-            float largeur = (float)réseau.routes.get(i).avoirLimiteKmH()/100f;
+            int vitesse = réseau.routes.get(i).avoirLimiteKmH();
+            float largeur = épaisseur*(float)vitesse/100f;
 
             positions[i*12 + 0] = posA.x + cotan.x*largeur;
             positions[i*12 + 1] = 0;
             positions[i*12 + 2] = posA.y + cotan.y*largeur;
 
+            normales[i*12 + 0] = 0f;
+            normales[i*12 + 1] = 1f;
+            normales[i*12 + 2] = 1f;
+
+            couleurs[i*16 + 0] = vitesse<50?0.8f:(vitesse<80?0.95f:0.95f);
+            couleurs[i*16 + 1] = vitesse<50?0.8f:(vitesse<80?0.90f:0.70f);
+            couleurs[i*16 + 2] = vitesse<50?0.8f:(vitesse<80?0.30f:0.30f);
+            couleurs[i*16 + 3] = vitesse<50?1.0f:(vitesse<80?1.00f:1.00f);
+
             positions[i*12 + 3] = posB.x + cotan.x*largeur;
             positions[i*12 + 4] = 0;
             positions[i*12 + 5] = posB.y + cotan.y*largeur;
+
+            normales[i*12 + 3] = 0f;
+            normales[i*12 + 4] = 1f;
+            normales[i*12 + 5] = 1f;
+
+            couleurs[i*16 + 4] = vitesse<50?0.8f:(vitesse<80?0.95f:0.95f);
+            couleurs[i*16 + 5] = vitesse<50?0.8f:(vitesse<80?0.90f:0.70f);
+            couleurs[i*16 + 6] = vitesse<50?0.8f:(vitesse<80?0.30f:0.30f);
+            couleurs[i*16 + 7] = vitesse<50?1.0f:(vitesse<80?1.00f:1.00f);
 
             positions[i*12 + 6] = posA.x - cotan.x*largeur;
             positions[i*12 + 7] = 0;
             positions[i*12 + 8] = posA.y - cotan.y*largeur;
 
+            normales[i*12 + 6] = 0f;
+            normales[i*12 + 7] = 1f;
+            normales[i*12 + 8] = 1f;
+
+            couleurs[i*16 + 8] = vitesse<50?0.8f:(vitesse<80?0.95f:0.95f);
+            couleurs[i*16 + 9] = vitesse<50?0.8f:(vitesse<80?0.90f:0.70f);
+            couleurs[i*16 +10] = vitesse<50?0.8f:(vitesse<80?0.30f:0.30f);
+            couleurs[i*16 +11] = vitesse<50?1.0f:(vitesse<80?1.00f:1.00f);
+
             positions[i*12 + 9] = posB.x - cotan.x*largeur;
             positions[i*12 +10] = 0;
             positions[i*12 +11] = posB.y - cotan.y*largeur;
+
+            normales[i*12 + 9] = 0f;
+            normales[i*12 +10] = 1f;
+            normales[i*12 +11] = 1f;
+
+            couleurs[i*16 +12] = vitesse<50?0.8f:(vitesse<80?0.95f:0.95f);
+            couleurs[i*16 +13] = vitesse<50?0.8f:(vitesse<80?0.90f:0.70f);
+            couleurs[i*16 +14] = vitesse<50?0.8f:(vitesse<80?0.30f:0.30f);
+            couleurs[i*16 +15] = vitesse<50?1.0f:(vitesse<80?1.00f:1.00f);
 
             indexes[i*6 + 0] = i*4 + 0;
             indexes[i*6 + 1] = i*4 + 1;
@@ -82,37 +121,56 @@ public class GénérateurMaillage {
             indexes[i*6 + 5] = i*4 + 2;
         }
 
-        Maillage maillage = new Maillage(Map.of(TypeDonnée.FLOAT, 1), true);
+        Maillage maillage = new Maillage(Map.of(TypeDonnée.FLOAT, 3), true);
         maillage.ajouterAttributListe(positions, 3);
+        maillage.ajouterAttributListe(normales, 3);
+        maillage.ajouterAttributListe(couleurs, 4);
         maillage.ajouterIndexesListe(indexes);
         return maillage;
     }
 
-    public static Maillage faireMaillageItinéraire(Route[] itinéraire){
+    public static Maillage faireMaillageItinéraire(Route[] itinéraire,float épaisseur){
         float[] positions = new float[itinéraire.length*4*3];
+        float[] normales = new float[itinéraire.length*4*3];
         int[] indexes = new int[itinéraire.length*6]; 
         for (int i = 0; i < itinéraire.length; i++) {
             Vec2 posA = itinéraire[i].intersectionA.position;
             Vec2 posB = itinéraire[i].intersectionB.position;
             Vec2 tan = Vec2.sous(posA,posB).norm();
             Vec2 cotan = new Vec2(tan.y,-tan.x);
-            float largeur = 1.2f*(float)itinéraire[i].avoirLimiteKmH()/100f;
+            float largeur = épaisseur*(float)itinéraire[i].avoirLimiteKmH()/100f;
 
             positions[i*12 + 0] = posA.x + cotan.x*largeur;
             positions[i*12 + 1] = 0;
             positions[i*12 + 2] = posA.y + cotan.y*largeur;
 
+            normales[i*12 + 0] = 0;
+            normales[i*12 + 1] = 1;
+            normales[i*12 + 2] = 0;
+
             positions[i*12 + 3] = posB.x + cotan.x*largeur;
             positions[i*12 + 4] = 0;
             positions[i*12 + 5] = posB.y + cotan.y*largeur;
+
+            normales[i*12 + 3] = 0;
+            normales[i*12 + 4] = 1;
+            normales[i*12 + 5] = 0;
 
             positions[i*12 + 6] = posA.x - cotan.x*largeur;
             positions[i*12 + 7] = 0;
             positions[i*12 + 8] = posA.y - cotan.y*largeur;
 
+            normales[i*12 + 6] = 0;
+            normales[i*12 + 7] = 1;
+            normales[i*12 + 8] = 0;
+
             positions[i*12 + 9] = posB.x - cotan.x*largeur;
             positions[i*12 +10] = 0;
             positions[i*12 +11] = posB.y - cotan.y*largeur;
+
+            normales[i*12 + 9] = 0;
+            normales[i*12 +10] = 1;
+            normales[i*12 +11] = 0;
 
             indexes[i*6 + 0] = i*4 + 0;
             indexes[i*6 + 1] = i*4 + 1;
@@ -122,8 +180,9 @@ public class GénérateurMaillage {
             indexes[i*6 + 5] = i*4 + 2;
         }
 
-        Maillage maillage = new Maillage(Map.of(TypeDonnée.FLOAT, 1), true);
+        Maillage maillage = new Maillage(Map.of(TypeDonnée.FLOAT, 2), true);
         maillage.ajouterAttributListe(positions, 3);
+        maillage.ajouterAttributListe(normales, 3);
         maillage.ajouterIndexesListe(indexes);
         return maillage;
     }

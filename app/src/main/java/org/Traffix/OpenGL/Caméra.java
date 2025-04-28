@@ -51,6 +51,10 @@ public class Caméra implements Animable {
         projection = Mat4.fairePerspective(planProche, planLoin, FOV, ratio);
     }
 
+    public void refaireProjection(){
+        projection = Mat4.fairePerspective(planProche, planLoin, FOV, ratio);
+    }
+
     public Caméra positionner   (Vec3 pos) { vue.positionner  ( pos.opposé() ); return this; }
     public Caméra faireRotation (Vec3 rot) { vue.faireRotation( rot.opposé() ); return this; }
     public Caméra faireÉchelle  (Vec3 éch) { vue.faireÉchelle ( éch.inv()    ); return this; }
