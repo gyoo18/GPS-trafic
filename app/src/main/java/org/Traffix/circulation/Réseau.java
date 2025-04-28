@@ -230,6 +230,7 @@ public class Réseau {
         }
         v.avoirNavigateur().donnerRoutine(routine);
         v.avoirNavigateur().estBrisé = false;
+        v.vitesseMoyenne = 40;
         System.out.println(", nouvelle adresse : "+v.avoirAdresse());
     }
 

@@ -277,7 +277,7 @@ public class UsineRéseau {
             }
         }
 
-        //réseau.véhicules[0].changerNavigateur( new NavigateurManuel(réseau.véhicules[0]) );
+        réseau.véhicules[0].changerNavigateur( new NavigateurManuel(réseau.véhicules[0]) );
 
         System.out.println("Réseau Généré");
         return réseau;

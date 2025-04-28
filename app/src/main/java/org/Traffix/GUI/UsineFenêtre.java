@@ -229,6 +229,7 @@ public class UsineFenêtre {
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         gbc.gridheight = 1;
+        boutonHaut.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         carteInfosGaucheBas.add(boutonHaut,gbc);
         fenêtre.ajouterÉlémentParID(boutonHaut, "boutonAccélérer");
 
@@ -237,6 +238,7 @@ public class UsineFenêtre {
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
+        boutonGauche.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         carteInfosGaucheBas.add(boutonGauche,gbc);
         fenêtre.ajouterÉlémentParID(boutonGauche, "boutonTournerGauche");
         
@@ -245,6 +247,7 @@ public class UsineFenêtre {
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
+        boutonDroite.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         carteInfosGaucheBas.add(boutonDroite,gbc);
         fenêtre.ajouterÉlémentParID(boutonDroite, "boutonTournerDroit");
 
@@ -253,6 +256,7 @@ public class UsineFenêtre {
         gbc.gridy = 2;
         gbc.gridwidth = 2;
         gbc.gridheight = 1;
+        boutonBas.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         carteInfosGaucheBas.add(boutonBas,gbc);
         fenêtre.ajouterÉlémentParID(boutonBas, "boutonRalentir");
 
@@ -261,6 +265,7 @@ public class UsineFenêtre {
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         gbc.gridheight = 1;
+        boutonDemiTour.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         carteInfosGaucheBas.add(boutonDemiTour,gbc);
         fenêtre.ajouterÉlémentParID(boutonDemiTour, "boutonDemiTour");
 

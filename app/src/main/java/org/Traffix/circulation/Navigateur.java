@@ -51,7 +51,7 @@ public class Navigateur {
             e.printStackTrace();
         }
         itinéraireObjet = new Objet("itinéraire", null, nuanceur, new Vec4(0.2f,0.5f,0.9f,1f), null, new Transformée().positionner(new Vec3(0,0.2f,0)));
-        miniItinéraireObjet = new Objet("miniItinéraire", null, nuanceur, new Vec4(0.2f,0.5f,0.9f,1f), null, new Transformée().positionner(new Vec3(0,0.2f,0)));
+        miniItinéraireObjet = new Objet("miniItinéraire", null, nuanceur.copier(), new Vec4(0.2f,0.5f,0.9f,1f), null, new Transformée().positionner(new Vec3(0,0.2f,0)));
     }
 
     public void donnerRoutine(String[] adresses){

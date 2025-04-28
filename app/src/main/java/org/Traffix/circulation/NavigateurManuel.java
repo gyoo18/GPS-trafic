@@ -58,12 +58,16 @@ public class NavigateurManuel extends Navigateur {
                     routeActuelle.ajouterVéhiculeSensB(véhicule);
                     véhicule.vitesse = 0;
                     action = Commande.LÂCHER;
+                    itinéraireActuel = null;
+                    prochainTournant = chercherProchainTournant(false);
                 }else if(!véhicule.estSensA && véhicule.routeActuelle.sensAPossèdePlace(véhicule.longueur)){
                     Route routeActuelle = véhicule.routeActuelle;
                     routeActuelle.retirerVéhiculeSensB(véhicule);
                     routeActuelle.ajouterVéhiculeSensA(véhicule);
                     véhicule.vitesse = 0;
                     action = Commande.LÂCHER;
+                    itinéraireActuel = null;
+                    prochainTournant = chercherProchainTournant(false);
                 }
                 break;
             }
@@ -76,7 +80,14 @@ public class NavigateurManuel extends Navigateur {
         Intersection interB = véhicule.estSensA?véhicule.routeActuelle.intersectionA:véhicule.routeActuelle.intersectionB;
         float distanceInter = (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur();
 
-        if(distanceInter < 0.1f && optionsTournants[0] != null){
+        boolean estDestination = prochainTournant==véhicule.routeActuelle;
+
+        if(estDestination && Math.abs(véhicule.routeActuelle.avoirAdresse(véhicule.position())-extraireNuméro(routine[indexeRoutine])) <= 1){
+            // Si le véhicule est arrivé à destination.
+            avancerRoutine();
+            itinéraireActuel = null;
+            prochainTournant = chercherProchainTournant(false);
+        }else if(distanceInter < 0.1f && optionsTournants[0] != null){
             boolean estRouteChoisieSensA = interB == optionsTournants[optionChoisie].intersectionB;
             if(
                 (estRouteChoisieSensA && optionsTournants[optionChoisie].sensAPossèdePlace(véhicule.longueur)) ||
@@ -92,7 +103,12 @@ public class NavigateurManuel extends Navigateur {
                     if(estRouteChoisieSensA){
                         optionsTournants[optionChoisie].ajouterVéhiculeSensA(véhicule);
                     }else{
-                        optionsTournants[optionChoisie].ajouterVéhiculeSensB(véhicule); 
+                        optionsTournants[optionChoisie].ajouterVéhiculeSensB(véhicule);
+                    }
+
+                    if(optionsTournants[optionChoisie] != prochainTournant){
+                        itinéraireActuel = null;
+                        prochainTournant = chercherProchainTournant(false);
                     }
 
                     calculerOptions();
@@ -177,20 +193,17 @@ public class NavigateurManuel extends Navigateur {
             return null;
         }
 
-        if (itinéraireActuel == null){
+        if(routine == null){
+            return null;
+        }
+
+        if (itinéraireActuel == null || System.currentTimeMillis()-tempsDernierRecalcul > CYCLE_RECALCUL){
             itinéraireActuel = AÉtoile.chercherChemin(véhicule.avoirAdresse(), routine[indexeRoutine], véhicule.estSensA);
             posDest = itinéraireActuel[itinéraireActuel.length-1].avoirPosition(extraireNuméro(routine[indexeRoutine]));
             indexeRouteActuelle = 0;
 
             itinéraireObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel, 1.5f));
-        }
-
-        if(System.currentTimeMillis()-tempsDernierRecalcul > CYCLE_RECALCUL){
-            itinéraireActuel = AÉtoile.chercherChemin(véhicule.avoirAdresse(), routine[indexeRoutine], véhicule.estSensA);
-            tempsDernierRecalcul = System.currentTimeMillis();
-            indexeRouteActuelle = 0;
-
-            itinéraireObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel, 4.5f));
+            miniItinéraireObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel, 4.5f));
         }
 
         Route retour = itinéraireActuel[indexeRouteActuelle];

@@ -299,7 +299,9 @@ public class GestionnaireContrôles {
         }
         destinations.getLast().changerType(Type.FIN);
 
-        int tempsSec = 0;
+        AÉtoile.chercherChemin(réseau.véhicules[0].avoirAdresse(), destinations.get(0).adresse, réseau.véhicules[0].estSensA);
+        int tempsSec = AÉtoile.avoirDuréeDernierTrajetSec();
+        destinations.get(0).changerDurée(tempsSec);
         for (int i = 1; i < destinations.size(); i++) {
             Route[] chemin = AÉtoile.chercherChemin(destinations.get(i-1).adresse, destinations.get(i).adresse, réseau.véhicules[0].estSensA);
             if(chemin == null){

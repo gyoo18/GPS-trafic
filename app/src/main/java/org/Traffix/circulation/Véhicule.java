@@ -116,7 +116,12 @@ public class Véhicule {
     public void miseÀJour(float deltaTempsSecondes, boolean debug){
         navigateur.miseÀJour(deltaTempsSecondes, debug);
         Vec2 dir = Vec2.sous(routeActuelle.intersectionA.position,routeActuelle.intersectionB.position).norm().mult(estSensA?-1f:1f);
-        objetRendus.avoirTransformée().positionner(new Vec3(position().x,0.3f,position().y)).faireRotation(new Vec3((float)Math.toRadians(0),(float)Math.atan2(dir.x, dir.y),0));
+        Transformée t = objetRendus.avoirTransformée();
+        t.positionner(
+            Vec3.addi( new Vec3(position().x,0.3f,position().y).mult(0.1f), t.avoirPos().mult(0.9f) ))
+        .faireRotation(
+            Vec3.addi(new Vec3((float)Math.toRadians(0),(float)Math.atan2(dir.x, dir.y),0).mult(0.1f),t.avoirRot().mult(0.9f))
+        );
         vitesseMoyenne = (vitesse + vitesseMoyenne*59f)/60f;
     }
 }

@@ -5,6 +5,7 @@ import java.util.Scanner;
 import org.Traffix.GUI.Fenêtre;
 import org.Traffix.GUI.GestionnaireContrôles;
 import org.Traffix.GUI.UsineFenêtre;
+import org.Traffix.OpenGL.Caméra;
 import org.Traffix.OpenGL.GLCanvas;
 import org.Traffix.OpenGL.GénérateurMaillage;
 import org.Traffix.OpenGL.Maillage;
@@ -51,6 +52,7 @@ public class App {
         }
         AÉtoile.donnerRéseau(réseau);
         GestionnaireContrôles.initialiserGPS(fenêtre,réseau);
+        Véhicule joueur = réseau.véhicules[0];
 
         Maillage maillage = GénérateurMaillage.générerGrille(2, 2);
         Nuanceur nuanceur = null;
@@ -111,16 +113,19 @@ public class App {
         miniCarte.canvas.surFenêtreModifiée();
 
         long tempsA = System.currentTimeMillis();
+        Caméra caméra = carte.scène.caméra;
+        Caméra miniCaméra = miniCarte.scène.caméra;
         while(fenêtre.active){
             long deltaTempsMillis = System.currentTimeMillis()-tempsA;
             tempsA = System.currentTimeMillis();
-            réseau.miseÀJour(10f*(float)deltaTempsMillis/1000f, false);
-            carte.scène.caméra.positionner(réseau.véhicules[0].objetRendus.avoirTransformée().avoirPos());
-            carte.scène.caméra.faireRotation( new Vec3((float)Math.toRadians(-45f), réseau.véhicules[0].objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f));
-            miniCarte.scène.caméra.positionner(réseau.véhicules[0].objetRendus.avoirTransformée().avoirPos());
-            miniCarte.scène.caméra.faireRotation( new Vec3((float)Math.toRadians(-90f), réseau.véhicules[0].objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f));
-            System.out.println(réseau.véhicules[0].vitesseMoyenne);
-        }        
+            réseau.miseÀJour(1f*(float)deltaTempsMillis/1000f, false);
+
+            caméra.positionner(Vec3.addi( Vec3.mult(joueur.objetRendus.avoirTransformée().avoirPos(), 0.1f), caméra.avoirPos().mult(0.9f)));
+            caméra.faireRotation(Vec3.addi( new Vec3((float)Math.toRadians(-45f), joueur.objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f).mult(0.1f), caméra.avoirRot().mult(0.9f)));
+
+            miniCarte.scène.caméra.positionner(Vec3.addi(Vec3.mult( joueur.objetRendus.avoirTransformée().avoirPos(), 0.1f), miniCaméra.avoirPos().mult(0.9f)));
+            miniCarte.scène.caméra.faireRotation( Vec3.addi(new Vec3((float)Math.toRadians(-90f), joueur.objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f).mult(0.1f),miniCarte.scène.caméra.avoirRot().mult(0.9f)));
+        }
 
         fenêtre.fermer();
         System.out.println("Goodbye World!");
