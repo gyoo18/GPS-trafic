@@ -1,0 +1,134 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x000076b5d60e2643, pid=1648161, tid=1648193
+#
+# JRE version: OpenJDK Runtime Environment (21.0.6+7) (build 21.0.6+7-Ubuntu-122.04.1)
+# Java VM: OpenJDK 64-Bit Server VM (21.0.6+7-Ubuntu-122.04.1, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, g1 gc, linux-amd64)
+# Problematic frame:
+# C  [libgallium-24.2.8-1~bpo12+1pop1~1744225826~22.04~b077665.so+0x6e2643]
+#
+# Core dump will be written. Default location: Core dumps may be processed with "/usr/share/apport/apport -p%p -s%s -c%c -d%d -P%P -u%u -g%g -- %E" (or dumping to /home/vincentgodbout/Documents/École/UQO Hiver 2025/Programmation II/devoir2/Traffix/core.1648161)
+#
+# If you would like to submit a bug report, please visit:
+#   https://bugs.launchpad.net/ubuntu/+source/openjdk-21
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -agentlib:jdwp=transport=dt_socket,server=n,suspend=y,address=localhost:42697 -XX:+ShowCodeDetailsInExceptionMessages org.Traffix.App
+
+Host: Intel(R) Core(TM) i7-10750H CPU @ 2.60GHz, 12 cores, 15G, Pop!_OS 22.04 LTS
+Time: Sun Apr 27 23:48:03 2025 EDT elapsed time: 41.037581 seconds (0d 0h 0m 41s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x000076b6cc4bad40):  JavaThread "AWT-EventQueue-0"        [_thread_in_native, id=1648193, stack(0x000076b64e042000,0x000076b64e142000) (1024K)]
+
+Stack: [0x000076b64e042000,0x000076b64e142000],  sp=0x000076b64e13fc20,  free space=1015k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libgallium-24.2.8-1~bpo12+1pop1~1744225826~22.04~b077665.so+0x6e2643]
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+J 2913  org.lwjgl.opengl.GL11C.nglDrawElements(IIIJ)V (0 bytes) @ 0x000076b6bc49b102 [0x000076b6bc49b0a0+0x0000000000000062]
+J 3577 c2 org.Traffix.OpenGL.GLCanvas$GLSubCanvas.paintGL()V (448 bytes) @ 0x000076b6bc57c514 [0x000076b6bc57ba80+0x0000000000000a94]
+J 2170 c1 org.lwjgl.opengl.awt.AWTGLCanvas.render()V (39 bytes) @ 0x000076b6b4b8614c [0x000076b6b4b85f80+0x00000000000001cc]
+J 2538 c1 org.Traffix.GUI.UsineFenêtre$3.run()V (91 bytes) @ 0x000076b6b4c74fec [0x000076b6b4c74aa0+0x000000000000054c]
+J 3199 c1 java.awt.event.InvocationEvent.dispatch()V java.desktop@21.0.6 (69 bytes) @ 0x000076b6b4dc3dc4 [0x000076b6b4dc3ba0+0x0000000000000224]
+J 3173 c1 java.awt.EventQueue.dispatchEventImpl(Ljava/awt/AWTEvent;Ljava/lang/Object;)V java.desktop@21.0.6 (139 bytes) @ 0x000076b6b4dbdb3c [0x000076b6b4dbc140+0x00000000000019fc]
+J 3172 c1 java.awt.EventQueue$4.run()Ljava/lang/Void; java.desktop@21.0.6 (60 bytes) @ 0x000076b6b4dbb9b4 [0x000076b6b4dbb880+0x0000000000000134]
+J 2249 c1 java.awt.EventQueue.dispatchEvent(Ljava/awt/AWTEvent;)V java.desktop@21.0.6 (80 bytes) @ 0x000076b6b4bc81bc [0x000076b6b4bc7be0+0x00000000000005dc]
+J 2252 c1 java.awt.EventDispatchThread.pumpOneEventForFilters(I)V java.desktop@21.0.6 (106 bytes) @ 0x000076b6b4bca8fc [0x000076b6b4bca0e0+0x000000000000081c]
+j  java.awt.EventDispatchThread.pumpEventsForFilter(ILjava/awt/Conditional;Ljava/awt/EventFilter;)V+35 java.desktop@21.0.6
+j  java.awt.EventDispatchThread.pumpEventsForHierarchy(ILjava/awt/Conditional;Ljava/awt/Component;)V+11 java.desktop@21.0.6
+j  java.awt.EventDispatchThread.pumpEvents(ILjava/awt/Conditional;)V+4 java.desktop@21.0.6
+j  java.awt.EventDispatchThread.pumpEvents(Ljava/awt/Conditional;)V+3 java.desktop@21.0.6
+j  java.awt.EventDispatchThread.run()V+9 java.desktop@21.0.6
+v  ~StubRoutines::call_stub 0x000076b6bbd37cc6
+
+siginfo: si_signo: 11 (SIGSEGV), si_code: 1 (SEGV_MAPERR), si_addr: 0x0000000000570009
+
+Registers:
+RAX=0x0000000000570001, RBX=0x000076b600659330, RCX=0x0000000000007605, RDX=0x000076b60065f3b0
+RSP=0x000076b64e13fc20, RBP=0x0000000000000003, RSI=0x00000000000065d4, RDI=0x000076b600659330
+R8 =0x000076b64e13fea0, R9 =0x00000000ffffffff, R10=0x0000000000010000, R11=0x000076b5d6fdb700
+R12=0x0000000000000002, R13=0x0000000000000001, R14=0x000076b600661490, R15=0x0000000000006080
+RIP=0x000076b5d60e2643, EFLAGS=0x0000000000010202, CSGSFS=0x002b000000000033, ERR=0x0000000000000006
+  TRAPNO=0x000000000000000e
+
+XMM[0]=0x3f8000003e99999a 0x3e99999a3f666666
+XMM[1]=0x3f8000003e99999a 0x3e99999a3f666666
+XMM[2]=0xffffffffffffffff 0xffffffffffffffff
+XMM[3]=0x00000000b3205647 0x3f5aa2833f052c11
+XMM[4]=0x000000003f499a05 0x00000000bf1dc642
+XMM[5]=0x000000003f1dc642 0x000000003f499a05
+XMM[6]=0x000000004053ae85 0x00000000c025a9c5
+XMM[7]=0x000000003f9dc642 0x000000003fc99a05
+XMM[8]=0x0000000000000000 0x0000000000000000
+XMM[9]=0x0000000000000000 0x0000000000000000
+XMM[10]=0x0000000000000000 0x0000000000000000
+XMM[11]=0x0000000000000000 0x000000003f734ba6
+XMM[12]=0x0000000000000000 0x000000003e1ba776
+XMM[13]=0x0000000000000000 0x000000003f0290b4
+XMM[14]=0x0000000000000000 0x0000000000000000
+XMM[15]=0x0000000000000000 0x0504070601000302
+  MXCSR=0x00001fa7
+
+
+Register to memory mapping:
+
+RAX=0x0000000000570001 is an unknown value
+RBX=0x000076b600659330 points into unknown readable memory: 0x000076b600262ac0 | c0 2a 26 00 b6 76 00 00
+RCX=0x0000000000007605 is an unknown value
+RDX=0x000076b60065f3b0 points into unknown readable memory: 0x00000000001f0005 | 05 00 1f 00 00 00 00 00
+RSP=0x000076b64e13fc20 is pointing into the stack for thread: 0x000076b6cc4bad40
+RBP=0x0000000000000003 is an unknown value
+RSI=0x00000000000065d4 is an unknown value
+RDI=0x000076b600659330 points into unknown readable memory: 0x000076b600262ac0 | c0 2a 26 00 b6 76 00 00
+R8 =0x000076b64e13fea0 is pointing into the stack for thread: 0x000076b6cc4bad40
+R9 =0x00000000ffffffff is an unknown value
+R10=0x0000000000010000 is an unknown value
+R11=0x000076b5d6fdb700: <offset 0x00000000015db700> in /lib/x86_64-linux-gnu/libgallium-24.2.8-1~bpo12+1pop1~1744225826~22.04~b077665.so at 0x000076b5d5a00000
+R12=0x0000000000000002 is an unknown value
+R13=0x0000000000000001 is an unknown value
+R14=0x000076b600661490 points into unknown readable memory: 0x00000000000d0004 | 04 00 0d 00 00 00 00 00
+R15=0x0000000000006080 is an unknown value
+
+Top of Stack: (sp=0x000076b64e13fc20)
+0x000076b64e13fc20:   0000000000000000 000076b600659330
+0x000076b64e13fc30:   000076b64e13fea0 0000000000000005
+0x000076b64e13fc40:   0000000000000002 0000000000000002
+0x000076b64e13fc50:   0000000000000030 000076b5d60e8082
+0x000076b64e13fc60:   fffc7fff00030000 000076b6007cd630
+0x000076b64e13fc70:   000076b64e13fd14 0000000000000001
+0x000076b64e13fc80:   000000000000000c 0000000000000000
+0x000076b64e13fc90:   0000000000000000 000076b5d5e0758c
+0x000076b64e13fca0:   000076b600263e10 0000000000000000
+0x000076b64e13fcb0:   0000000000000002 000076b64e13fea0
+0x000076b64e13fcc0:   000076b60068da50 0003800100000002
+0x000076b64e13fcd0:   000076b6007cd630 0000000000000000
+0x000076b64e13fce0:   000076b5576b95c0 000076b5576b6810
+0x000076b64e13fcf0:   0000000000000020 000076b52abd65d0
+0x000076b64e13fd00:   000076b564a639b0 000076b5d6966dfa
+0x000076b64e13fd10:   0f00000000000002 000000000000000c
+0x000076b64e13fd20:   0000000c0f010000 000076b500000000
+0x000076b64e13fd30:   0000000000000010 000076b52abd6a10
+0x000076b64e13fd40:   000076b6000a3590 0000000000000004
+0x000076b64e13fd50:   000076b600264358 0000000000100000
+0x000076b64e13fd60:   0000000000000000 000076b5d668a671
+0x000076b64e13fd70:   000076b6007de000 0000000400000000
+0x000076b64e13fd80:   0000000000000030 0000000000000080
+0x000076b64e13fd90:   0000000000100000 000076b5d66989ee
+0x000076b64e13fda0:   0000000000000000 00000000e0000322
+0x000076b64e13fdb0:   000076b6005a8650 000076b6005f9e78
+0x000076b64e13fdc0:   0000005c0000006e 5beacdaa694eb600
+0x000076b64e13fdd0:   000076b600264ba8 000076b52abd6650
+0x000076b64e13fde0:   000076b600659330 00000000e0000322
+0x000076b64e13fdf0:   000076b64e13feb0 000076b6005f9e78
+0x000076b64e13fe00:   000076b6005a8650 000076b5d60ead32
+0x000076b64e13fe10:   0000000005200001 000076b600000000 
+
+Instructions: (pc=0x000076b5d60e2643)
+0x000076b5d60e2543:   ff ff ff be 01 00 00 00 4c 89 ff 89 4c 24 0c c7
+0x000076b5d60e2553:   85

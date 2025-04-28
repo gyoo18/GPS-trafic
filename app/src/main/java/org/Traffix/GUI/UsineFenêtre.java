@@ -338,11 +338,11 @@ public class UsineFenêtre {
         fenêtre.ajouterÉlémentParID(GLCanvas2, "GLCarte2");
 
         JPanel boutonMiniCarteConteneur = new JPanel();
-        boutonMiniCarteConteneur.setBackground(new Color(0,0,0,0));
         boutonMiniCarteConteneur.setOpaque(false);
         boutonMiniCarteConteneur.setMixingCutoutShape(boutonMiniCarteConteneur.getBounds());
         boutonMiniCarteConteneur.setLayout(new GridBagLayout());
         miniCarteCouches.add(boutonMiniCarteConteneur);
+        fenêtre.ajouterÉlémentParID(boutonMiniCarteConteneur, "boutonMiniCarteConteneur");
 
         miniCarteCouches.setComponentZOrder(miniCarteConteneur, 1);
         miniCarteCouches.setComponentZOrder(boutonMiniCarteConteneur, 0);

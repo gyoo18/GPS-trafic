@@ -86,8 +86,8 @@ public class App {
         miniRéseau.donnerMaillage(GénérateurMaillage.faireMaillageRéseau(réseau, 3f));
         miniCarte.scène.ajouterObjet(miniRéseau);
         miniCarte.scène.caméra.faireRotation(new Vec3((float)Math.toRadians(-90f),0,0));
-        miniCarte.scène.caméra.planProche = 1f;
-        miniCarte.scène.caméra.planLoin = 1000f;
+        miniCarte.scène.caméra.planProche = 190f;
+        miniCarte.scène.caméra.planLoin = 210f;
         // miniCarte.scène.caméra.FOV = 110f;
         miniCarte.scène.caméra.avoirVue().estOrbite = true;
         miniCarte.scène.caméra.avoirVue().changerRayon(200);
@@ -97,11 +97,14 @@ public class App {
         }
         miniCarte.scène.ajouterObjet(réseau.véhicules[0].avoirNavigateur().avoirMiniItinéraire());
 
+        Objet pointeur = new Objet("pointeur", GénérateurMaillage.générerGrille(2, 2), nuanceur, new Vec4(0,0,1f,1f), null, new Transformée().faireÉchelle(new Vec3(5f)));
+        miniCarte.scène.ajouterObjet(pointeur);
+
         long tempsA = System.currentTimeMillis();
         while(fenêtre.active){
             long deltaTempsMillis = System.currentTimeMillis()-tempsA;
             tempsA = System.currentTimeMillis();
-            réseau.miseÀJour(10f*(float)deltaTempsMillis/1000f, false);
+            réseau.miseÀJour(0f*(float)deltaTempsMillis/1000f, false);
             carte.scène.caméra.positionner(réseau.véhicules[0].objetRendus.avoirTransformée().avoirPos());
             carte.scène.caméra.faireRotation( new Vec3((float)Math.toRadians(-45f), réseau.véhicules[0].objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f));
             miniCarte.scène.caméra.positionner(réseau.véhicules[0].objetRendus.avoirTransformée().avoirPos());

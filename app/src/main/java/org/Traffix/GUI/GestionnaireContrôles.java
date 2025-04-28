@@ -13,14 +13,25 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import org.Traffix.GUI.Destination.Type;
+import org.Traffix.OpenGL.Caméra;
+import org.Traffix.OpenGL.GLCanvas;
 import org.Traffix.circulation.AÉtoile;
 import org.Traffix.circulation.Route;
 import org.Traffix.circulation.Réseau;
+import org.Traffix.maths.Mat4;
+import org.Traffix.maths.Maths;
 import org.Traffix.maths.Vec2;
+import org.Traffix.maths.Vec3;
+import org.checkerframework.checker.units.qual.min;
+
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 public class GestionnaireContrôles {
 
@@ -37,7 +48,7 @@ public class GestionnaireContrôles {
                     ((JLabel) fenêtre.obtenirÉlémentParID("adresseEntréeMessageErreur")).setText("Impossible de trouver l'adresse spécifiée.");
                 }else{
                     ((TexteEntrée) fenêtre.obtenirÉlémentParID("adresseEntrée")).setText("");
-                    ((JLabel) fenêtre.obtenirÉlémentParID("adresseEntréeMessageErreur")).setText("Adresse Trouvée");
+                    ((JLabel) fenêtre.obtenirÉlémentParID("adresseEntréeMessageErreur")).setText("");
                     JPanel liste = (JPanel) fenêtre.obtenirÉlémentParID("paramètresTrajets");
                     ajouterDestination(new Destination(adresse, adresse, Type.FIN), liste, fenêtre, réseau);
                     liste.revalidate();
@@ -49,13 +60,84 @@ public class GestionnaireContrôles {
         ((JButton) fenêtre.obtenirÉlémentParID("boutonMiniCarte")).addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-                ((JPanel) fenêtre.obtenirÉlémentParID("miniCarteCouches")).setBounds(30,30, fenêtre.jframe.getContentPane().getWidth()-60,fenêtre.jframe.getContentPane().getHeight()-60);
-                fenêtre.changerDrapeau("miniCarte minimisé", false);
-                ((JButton) fenêtre.obtenirÉlémentParID("adresseChercherBouton")).setText("");
+                if((Boolean) fenêtre.avoirDrapeau("miniCarte minimisé") ){
+                    ((JPanel) fenêtre.obtenirÉlémentParID("miniCarteCouches")).setBounds(30,30, fenêtre.jframe.getContentPane().getWidth()-60,fenêtre.jframe.getContentPane().getHeight()-60);
+                    fenêtre.changerDrapeau("miniCarte minimisé", false);
+                    ((JButton) fenêtre.obtenirÉlémentParID("boutonMiniCarte")).setText("🗗");
+                } else {
+                    Dimension jfdim = fenêtre.jframe.getContentPane().getSize();
+                    int minTaille = Math.min(jfdim.width, jfdim.getSize().height);
+                    ((JPanel) fenêtre.obtenirÉlémentParID("miniCarteCouches")).setBounds( (int)(jfdim.width * 0.8f - (minTaille * 0.15f)), (int)(jfdim.height * 0.75f - (minTaille * 0.15f)), (int)(minTaille * 0.3f), (int)(minTaille * 0.3f) );
+                    fenêtre.changerDrapeau("miniCarte minimisé", true);
+                    ((JButton) fenêtre.obtenirÉlémentParID("boutonMiniCarte")).setText("⛶");
+                }
                 fenêtre.jframe.revalidate();
                 fenêtre.jframe.repaint();
             }
         });
+
+        GLCanvas miniCarte = ((GLCanvas) fenêtre.obtenirÉlémentParID("GLCarte2"));
+        miniCarte.canvas.addMouseWheelListener(new MouseWheelListener() {
+
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                float scroll = (float)e.getPreciseWheelRotation();
+                Caméra cam = miniCarte.scène.caméra;
+                cam.avoirVue().donnerRayon(Math.clamp( cam.avoirVue().avoirRayon()*(float)Math.pow(2.0,scroll), 20f, 2000f));
+                cam.planProche = 1f; //cam.avoirVue().avoirRayon() - 10f;
+                cam.planLoin = 2000f; //cam.avoirVue().avoirRayon() + 10f;
+                cam.refaireProjection();
+                miniCarte.revalidate();
+                miniCarte.repaint();
+            }
+        });
+
+        MouseAdapter ma = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e){
+                
+                Caméra caméra = miniCarte.scène.caméra;
+                float xPosRel = (float)e.getX()/(float)miniCarte.getWidth(); // Position du curseur, relative à la miniCarte
+                float yPosRel = (float)e.getY()/(float)miniCarte.getHeight();
+                float ratio = (float)miniCarte.getWidth()/(float)miniCarte.getHeight();
+
+                // Obtenir la position du curseur sur la carte
+
+                // Comme la transformée de la caméra est en mode Orbite, caméra.avoirPos() renvoie le centre d'orbite.
+                // Il faut donc manuellement calculer la position de la caméra.
+                Vec3 camPos = Mat4.mulV(caméra.avoirVue().avoirInv(), new Vec3(0f));
+
+                // Construction du vecteur qui pointe dans la direction du curseur
+                // Direction vers laquelle pointe la caméra
+                Vec3 camDir = Vec3.sous(caméra.avoirPos(),camPos).norm();
+                // Transformation de la position relative du curseur sur un plan en 3D à planProche de
+                // distance en face de la caméra
+                float posX =  (float)Math.tan((Math.PI/180f)*caméra.FOV/2f)*(xPosRel*2f - 1f)*caméra.planProche;
+                float posY = -(float)Math.tan((Math.PI/180f)*caméra.FOV/2f)*(yPosRel*2f - 1f)*caméra.planProche/ratio;
+                // Création du vecteur normal qui pointe dans la direction du curseur
+                Vec3 pointeurDir = new Vec3(posX,posY,caméra.planProche).norm();
+                // Il faut maintenant orienter le vecteur dans l'orientation de la caméra avec une transformation matricielle
+                Vec3 Z = camDir; // Vecteur Z de la caméra
+                Vec3 X = new Vec3((float)Math.cos(caméra.avoirRot().y),0,(float)-Math.sin(caméra.avoirRot().y)); // Vecteur X de la caméra
+                Vec3 Y = Vec3.croix(Z, X);  // Vecteur Y de la caméra
+                Mat4 rotation = new Mat4(new float[]{
+                    X.x, X.y, X.z, 0,
+                    Y.x, Y.y, Y.z, 0,
+                    Z.x, Z.y, Z.z, 0,
+                    0,   0,   0,   1
+                });     // Matrice de transformation de l'espace vue vers l'espace univers
+                pointeurDir = Mat4.mulV(rotation, pointeurDir); // Multiplication matricielle
+
+                Vec3 pointeurPos = Maths.intersectionPlan(new Vec3(0), new Vec3(0,1,0), pointeurDir, camPos);
+                
+                Vec2 positionCarte = new Vec2(pointeurPos.x,pointeurPos.z);
+                String adresse = réseau.avoirAdresse(positionCarte);
+
+                ((TexteEntrée) fenêtre.obtenirÉlémentParID("adresseEntrée")).setText(adresse);
+            }
+        };
+        miniCarte.canvas.addMouseListener(ma);
+        miniCarte.canvas.addMouseMotionListener(ma);
     }
 
     private static void ajouterDestination(Destination destination, JPanel liste, Fenêtre fenêtre, Réseau réseau){

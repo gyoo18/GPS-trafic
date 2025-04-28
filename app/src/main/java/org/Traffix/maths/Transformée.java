@@ -222,7 +222,7 @@ public class Transformée implements Animable{
             });
 
             if (estOrbite){
-                matInv = Mat4.mulM(posMatInv, Mat4.mulM(rotMatInv, Mat4.mulM(new Mat4().positionner(new Vec3(0,0,-rayon)),échMatInv)));//new Mat4().mulM(posMat).mulM(rotMat).mulM(new Mat4().positionner(new Vec3(0,0,rayon))).mulM(échMat);
+                matInv = Mat4.mulM(échMatInv, Mat4.mulM(new Mat4().positionner(new Vec3(0,0,-rayon)), Mat4.mulM(rotMatInv, posMatInv)));//new Mat4().mulM(posMat).mulM(rotMat).mulM(new Mat4().positionner(new Vec3(0,0,rayon))).mulM(échMat);
             }else{
                 // mat = pos*rot*éch*x
                 matInv = Mat4.mulM(posMatInv, Mat4.mulM(rotMatInv, échMatInv)); //new Mat4().mulM(échMat).mulM(rotMat).mulM(posMat);
