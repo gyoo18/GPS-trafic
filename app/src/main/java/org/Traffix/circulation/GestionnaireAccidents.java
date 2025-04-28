@@ -5,52 +5,64 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.Traffix.maths.Vec2;
+
 public class GestionnaireAccidents {
 
-    private static List<Accident> listeAccidents = new ArrayList<>();
-    private static List<LocalDateTime> listeTempsAccidents = new ArrayList<>();
-    private static List<Integer> listeDuréeAccidents = new ArrayList<>();
+    private static ArrayList<Accident> listeAccidents = new ArrayList<>();
+    private static Réseau réseau = null;
+
+    public static class Accident {
+
+        public final float pourcentageRalentissement; // Pourcentage entre 0.0 (pas de ralentissement) et 1.0 (arrêt complet)
+        public final float durée;
+        public float temps = 0f;
+
+        public final String description;
+        public final TypeAccident type;
+
+        public enum TypeAccident {
+            ACCIDENT_VÉHICULE("Collision entre véhicules"),
+            TRAVAUX("Travaux de construction"),
+            INTEMPÉRIE("Intempérie"),
+            MANIFESTATION("Manifestation"),
+            VÉHICULE_EN_PANNE("Véhicule en panne");
     
+            final String description;
     
-    public enum TypeAccident {
-        ACCIDENT_VÉHICULE("Accident de véhicule"),
-        TRAVAUX("Travaux de construction"),
-        INTEMPÉRIE("Intempérie"),
-        MANIFESTATION("Manifestation"),
-        VÉHICULE_EN_PANNE("Véhicule en panne");
-        
-        final String description;
-        
-        TypeAccident(String description) {
-            this.description = description;
+            TypeAccident(String description) {
+                this.description = description;
+            }
+    
         }
 
-    }
-    
-    public static class Accident {
-        private TypeAccident type;
-        private ArrayList<Route> routes;
-        private float position;      // Position sur la route en mètres
-        private double pourcentageRalentissement;         // Échelle de 1 à 5
-        private boolean actif;
-        private String description;
+        private ArrayList<Route> routesAffectés;
+        private Vec2 position;
+        private float rayon;
 
-        public Accident(TypeAccident type, ArrayList<Route> routes, float position, double pourcentageRalentissement) {
+        public Accident(TypeAccident type, Vec2 position, float durée, float pourcentageRalentissement) {
             this.type = type;
-            this.routes = routes;
             this.position = position;
-            // Pourcentage entre 0.0 (pas de ralentissement) et 1.0 (arrêt complet)
-            this.pourcentageRalentissement = Math.max(0.0, Math.min(1.0, pourcentageRalentissement));
-            this.actif = true;
-            générerDescription();
+            this.rayon = rayon;
+            this.durée = durée;
+            this.pourcentageRalentissement = pourcentageRalentissement;
+            
+            if(GestionnaireAccidents.réseau == null){
+                throw new RuntimeException("[ERREUR] Le gestionnaire d'accidents ne possède pas de réseau.");
+            }
+
+            ArrayList<Route> routes = GestionnaireAccidents.réseau.routes;
+            for(int i = 0; i < routes.size(); i++){
+                if()
+            }
         }
 
 
         // Constructeur pour compatibilité avec le code existant qui n'utilise qu'une route
         public Accident(TypeAccident type, Route route, float position, double pourcentageRalentissement) {
             this.type = type;
-            this.routes = new ArrayList<>();
-            this.routes.add(route);
+            this.routesAffectés = new ArrayList<>();
+            this.routesAffectés.add(route);
             this.position = position;
             this.pourcentageRalentissement = Math.max(0.0, Math.min(1.0, pourcentageRalentissement)); // Entre 1 et 5
             this.actif = true;
@@ -60,13 +72,13 @@ public class GestionnaireAccidents {
         private void générerDescription() {
             StringBuilder sb = new StringBuilder();
             //sb.append(type.description()).append(" sur ");
-            if (routes.size() == 1) {
-                sb.append(routes.get(0).nom);
+            if (routesAffectés.size() == 1) {
+                sb.append(routesAffectés.get(0).nom);
             } else {
                 sb.append("plusieurs routes: ");
-                for (int i = 0; i < routes.size();  i++) {
+                for (int i = 0; i < routesAffectés.size();  i++) {
                     if (i > 0) sb.append(",");
-                    sb.append(routes.get(i).nom);
+                    sb.append(routesAffectés.get(i).nom);
                 }
             }
             sb.append(" à ").append(String.format("%.1f", position / 1000)).append(" km");
@@ -113,11 +125,11 @@ public class GestionnaireAccidents {
             return type;
         }
         
-        public ArrayList<Route>  getRoutes() {
-            return routes;
+        public ArrayList<Route>  getRoutesAffectés() {
+            return routesAffectés;
         }
         public Route getRoutePrincipale() {
-            return routes.isEmpty() ? null : routes.get(0);
+            return routesAffectés.isEmpty() ? null : routesAffectés.get(0);
         }
 
         public float getPosition() {
@@ -145,7 +157,7 @@ public class GestionnaireAccidents {
             return description + (actif ? " [ACTIF]" : " [TERMINÉ]");
         }
          public boolean affecteRoute(Route route) {
-            return routes.contains(route);
+            return routesAffectés.contains(route);
         }
     }
 
