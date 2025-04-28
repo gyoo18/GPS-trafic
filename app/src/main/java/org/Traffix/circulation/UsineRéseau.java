@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class UsineRéseau {
 
-    private static final int MAX_ITÉRATIONS = 10; //30;
-    private static final int NOMBRE_VÉHICULES = 100; //3000;
+    private static final int MAX_ITÉRATIONS = 30;
+    private static final int NOMBRE_VÉHICULES = 3000;
 
     // En mètres
     private static final float LARGEUR_MAISON = 15f;
@@ -136,7 +136,10 @@ public class UsineRéseau {
                             case 1: dir = dirC; break;
                         }
 
-                        fairePousserRoute(dir, distancePousse, false,"bd", 70, interA, intersectionsActives);
+                        boolean arrêter = fairePousserRoute(dir, distancePousse, false,"bd", 70, interA, intersectionsActives);
+                        if(arrêter){
+                            break;
+                        }
                     }
                 }
             }
@@ -165,8 +168,10 @@ public class UsineRéseau {
                             case 1: dir = dirB; break;
                             case 2: dir = dirC; break;
                         }
-
-                        fairePousserRoute(dir, distancePousse, k==0, "rue", 40, interA, intersectionsActives);
+                        boolean arrêter = fairePousserRoute(dir, distancePousse, k==0, "rue", 40, interA, intersectionsActives);
+                        if(arrêter){
+                            break;
+                        }
                     }
                 }
             }
@@ -234,13 +239,13 @@ public class UsineRéseau {
         String[] adresses = new String[NOMBRE_VÉHICULES];
         ArrayList<Integer> abérations = new ArrayList<>();
         for (int i = 0; i < adresses.length; i++) {
-            Vec2 position = new Vec2( (float)(Math.random()*2.0-1.0)*3000f, (float)(Math.random()*2.0-1.0)*3000f);
+            Vec2 position = new Vec2( (float)(Math.random()*2.0-1.0)*2000f, (float)(Math.random()*2.0-1.0)*2000f);
             adresses[i] = réseau.avoirAdresse(position);
             if(adresses[i] == ""){
                 continue;
             }
             Vec2 p = réseau.avoirPosition(adresses[i]);
-            System.out.println(adresses[i]);
+            //System.out.println(adresses[i]);
         }
 
         réseau.véhicules = new Véhicule[NOMBRE_VÉHICULES];
@@ -261,9 +266,10 @@ public class UsineRéseau {
             }
             while(réseau.véhicules[i] == null){
                 Route route = réseau.routes.get(Maths.randint(0, réseau.routes.size()-1));
-                if(route.sensAPossèdePlace(1.2f) && route.possèdeAdresses){
+                if(route.sensAPossèdePlace(4.2f) && route.possèdeAdresses){
                     réseau.véhicules[i] = new Véhicule(4.2f,route);
-                    réseau.véhicules[i].routeActuelle.ajouterVéhiculeSensA(réseau.véhicules[i]);
+                    réseau.véhicules[i].estSensA = true;
+                    réseau.véhicules[i].routeActuelle().ajouterVéhiculeSensA(réseau.véhicules[i]);
                     réseau.véhicules[i].avoirNavigateur().donnerRoutine(routine);
                 }
             }
@@ -282,11 +288,13 @@ public class UsineRéseau {
      * @param limiteVitesse
      * @param origine
      * @param intersectionsActives
+     * @return booléen indiquant si la route a été fusionnée avec une autre route avec laquelle elle a collisionné.
      */
-    private static void fairePousserRoute(Vec2 dir, float dist, boolean continuerRoute, String nomPréfixe, int limiteVitesse, Intersection origine, ArrayList<Intersection> intersectionsActives){
+    private static boolean fairePousserRoute(Vec2 dir, float dist, boolean continuerRoute, String nomPréfixe, int limiteVitesse, Intersection origine, ArrayList<Intersection> intersectionsActives){
+        
         avoirIntersection(dir, origine.position, dist); // Vérifier si la route rentre dans une autre route.
         Vec2 interPos = intersectionRoutes;
-        if(interPos == null){
+        if(interPos == null || Vec2.distance(origine.position, interPos) < 0.01f){
             // S'il n'y a pas d'intersection.
             Intersection interB = null;
             if(continuerRoute){
@@ -299,6 +307,8 @@ public class UsineRéseau {
             réseau.intersections.add(interB);
             réseau.routes.add(nouvelleRoute);
             intersectionsActives.add(interB);
+
+            return false;
         }else{
             // S'il y a intersection avec une route existante.
             // On ne veut pas des routes trop courtes pour accueillir des maisons.
@@ -316,6 +326,8 @@ public class UsineRéseau {
                 réseau.intersections.add(interB);
                 réseau.routes.add(nouvelleRoute);
                 réseau.routes.add(routeIntersecté2);
+
+                return false;
             }else if(Vec2.distance(interPos, origine.position) < DISTANCE_POUSSE_MIN && continuerRoute){
                 // Si la route devait s'étendre, la rejoindre avec l'intersection.
                 // Couper la route en deux
@@ -337,8 +349,12 @@ public class UsineRéseau {
                 réseau.intersections.add(interB);
                 réseau.intersections.remove(origine);
                 réseau.routes.add(routeIntersecté2);
+                intersectionsActives.remove(origine);
+
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -405,6 +421,14 @@ public class UsineRéseau {
                     }
                     return false;
                 }
+
+                if(!réseau.routes.contains(réseau.intersections.get(i).avoirRoutes().get(j))){
+                    System.err.println("Une intersection pointant vers une route qui n'est pas suivie a été trouvée");
+                    for (StackTraceElement e : Thread.currentThread().getStackTrace()) {
+                        System.err.println(e);
+                    }
+                    return false;
+                }
             }
         }
 
@@ -430,6 +454,17 @@ public class UsineRéseau {
                 !réseau.routes.get(i).intersectionB.avoirRoutes().contains(réseau.routes.get(i))
             ){
                 System.err.println("Une route qui pointe vers une intersection qui ne pointe pas en retour à été trouvée");
+                for (StackTraceElement e : Thread.currentThread().getStackTrace()) {
+                    System.err.println(e);
+                }
+                return false;
+            }
+
+            if(
+                !réseau.intersections.contains(réseau.routes.get(i).intersectionA) ||
+                !réseau.intersections.contains(réseau.routes.get(i).intersectionB)
+            ){
+                System.err.println("Une route qui pointe vers une intersection qui n'est pas suivie a été trouvée.");
                 for (StackTraceElement e : Thread.currentThread().getStackTrace()) {
                     System.err.println(e);
                 }

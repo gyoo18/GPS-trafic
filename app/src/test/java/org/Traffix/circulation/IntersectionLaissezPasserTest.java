@@ -176,13 +176,13 @@ public class IntersectionLaissezPasserTest {
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(1));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(1));
     }
 
     @Test
@@ -206,13 +206,13 @@ public class IntersectionLaissezPasserTest {
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(1));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(1));
     }
 
     @Test
@@ -238,13 +238,13 @@ public class IntersectionLaissezPasserTest {
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(1));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(1));
     }
 
     @Test
@@ -270,13 +270,13 @@ public class IntersectionLaissezPasserTest {
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(3));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(3));
     }
 
     @Test
@@ -302,13 +302,13 @@ public class IntersectionLaissezPasserTest {
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,-100))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(2));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(2));
     }
 
     @Test
@@ -334,13 +334,13 @@ public class IntersectionLaissezPasserTest {
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(-100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(2));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(2));
         véhicule.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
     }
 
     @Test
@@ -366,13 +366,13 @@ public class IntersectionLaissezPasserTest {
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(2));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(2));
         véhicule.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(1));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(1));
     }
 
     @Test
@@ -401,15 +401,15 @@ public class IntersectionLaissezPasserTest {
         routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.01f, true);
         }
 
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.01f, true);
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(1));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(1));
     }
 
     @Test
@@ -438,15 +438,15 @@ public class IntersectionLaissezPasserTest {
         routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule2.routeActuelle, réseau.routes.get(2));
+        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(2));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
-        assertEquals(véhicule2.routeActuelle, réseau.routes.get(3));
+        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(3));
     }
 
     @Test
@@ -475,18 +475,18 @@ public class IntersectionLaissezPasserTest {
         routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f){
+            if((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(0), réseau.routes.get(2)), true);
             }
         }
 
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(3));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(3));
     }
 
     @Test
@@ -515,18 +515,18 @@ public class IntersectionLaissezPasserTest {
         routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f){
+            if((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(0), réseau.routes.get(2)), true);
             }
         }
 
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(2));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(2));
     }
 
     @Test
@@ -555,18 +555,18 @@ public class IntersectionLaissezPasserTest {
         routine = new String[]{réseau.avoirAdresse(new Vec2(-100,0))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
+            if((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur()/véhicule.vitesse < 5f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(2), réseau.routes.get(0)), false);
             }
         }
 
-        assertEquals(véhicule2.routeActuelle, réseau.routes.get(2));
+        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(2));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
-        assertEquals(véhicule2.routeActuelle, réseau.routes.get(0));
+        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(0));
     }
 
     @Test
@@ -595,18 +595,18 @@ public class IntersectionLaissezPasserTest {
         routine = new String[]{réseau.avoirAdresse(new Vec2(-100,0))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule2.positionRelative)*véhicule2.routeActuelle.avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
+            if((1f-véhicule2.positionRelative)*véhicule2.routeActuelle().avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur()/véhicule.vitesse < 5f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(2), réseau.routes.get(0)), false);
             }
         }
 
-        assertEquals(véhicule2.routeActuelle, réseau.routes.get(2));
+        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(2));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
-        assertEquals(véhicule2.routeActuelle, réseau.routes.get(0));
+        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(0));
     }
 
     @Test
@@ -635,18 +635,18 @@ public class IntersectionLaissezPasserTest {
         routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule2.positionRelative)*véhicule2.routeActuelle.avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
+            if((1f-véhicule2.positionRelative)*véhicule2.routeActuelle().avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur()/véhicule.vitesse < 5f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(2), réseau.routes.get(1)), false);
             }
         }
 
-        assertEquals(véhicule2.routeActuelle, réseau.routes.get(2));
+        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(2));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
-        assertEquals(véhicule2.routeActuelle, réseau.routes.get(1));
+        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(1));
     }
 
     @Test
@@ -675,18 +675,18 @@ public class IntersectionLaissezPasserTest {
         routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
+            if((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur()/véhicule.vitesse < 5f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(2), réseau.routes.get(1)), true);
             }
         }
 
-        assertEquals(véhicule2.routeActuelle, réseau.routes.get(2));
+        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(2));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
-        assertEquals(véhicule2.routeActuelle, réseau.routes.get(1));
+        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(1));
     }
 
 

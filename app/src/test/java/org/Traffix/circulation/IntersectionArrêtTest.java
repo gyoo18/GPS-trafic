@@ -110,15 +110,15 @@ public class IntersectionArrêtTest {
     private void testContinue(Véhicule véhicule, Réseau réseau){
 
         // Avancer le véhicule jusqu'à l'intersection
-        while ((1f - véhicule.positionRelative) * véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f - véhicule.positionRelative) * véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             réseau.miseÀJour(0.15f, false);
         }
 
         véhicule.miseÀJour(0.1f, true);     // Demander à s'engager
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));  // La demande devrait être refusée et être acceptée au prochain tour
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));  // La demande devrait être refusée et être acceptée au prochain tour
         véhicule.miseÀJour(0.1f, true);     // Demander à nouveau et s'engager
-        assertEquals(véhicule.routeActuelle, réseau.routes.get(1));
+        assertEquals(véhicule.routeActuelle(), réseau.routes.get(1));
     }
 
     // ======== TESTS AVEC UN VÉHICULE DERRIÈRE L'AUTRE ========
@@ -156,7 +156,7 @@ public class IntersectionArrêtTest {
         v1.positionRelative = 0.05f;
 
         // Avancer les deux véhicules jusqu'à ce que v2 soit à l'intersection
-        while ((1f - v2.positionRelative) * v2.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f - v2.positionRelative) * v2.routeActuelle().avoirLongueur() >= 0.1f) {
             v1.miseÀJour(0.1f, true);
             v2.miseÀJour(0.1f, true);
             réseau.miseÀJour(0.15f, false);
@@ -164,7 +164,7 @@ public class IntersectionArrêtTest {
 
         v1.miseÀJour(0.1f, true);   // v1 devrait être passé
         v2.miseÀJour(0.1f, true);   // v2 demande à passer
-        assertEquals(v2.routeActuelle, routeXnég); // demande refusée pour l'instant
+        assertEquals(v2.routeActuelle(), routeXnég); // demande refusée pour l'instant
 
         // Laisser le temps à v1 de dégager la voie en face pour que v2 s'y engage
         while (!routeXpos.sensBPossèdePlace(v1.longueur)) {
@@ -174,7 +174,7 @@ public class IntersectionArrêtTest {
 
         v1.miseÀJour(0.1f, true);
         v2.miseÀJour(0.1f, true);   // 2ème demande de passage
-        assertEquals(v2.routeActuelle, routeXpos); // demande acceptée
+        assertEquals(v2.routeActuelle(), routeXpos); // demande acceptée
     }
 
     // ======== TESTS AVEC UN CONFLIT DE PASSAGE ========
@@ -206,7 +206,7 @@ public class IntersectionArrêtTest {
         Véhicule v2 = nouveauVéhicule(réseau, routeYnég, new Vec2(100, 0));
 
         // Avancer les deux véhicules jusqu'à ce que v1 soit à l'intersection
-        while ((1f - v1.positionRelative) * v1.routeActuelle.avoirLongueur() >= 0.1f) {
+        while ((1f - v1.positionRelative) * v1.routeActuelle().avoirLongueur() >= 0.1f) {
             v1.miseÀJour(0.1f, true);
             v2.miseÀJour(0.1f, true);
             réseau.miseÀJour(0.15f, false);
@@ -220,7 +220,7 @@ public class IntersectionArrêtTest {
         v1.miseÀJour(0.1f, true);    // v1 s'engage
         v2.miseÀJour(0.1f, true);    // v2 ne fait pas de demande, car la route est occupée
         réseau.miseÀJour(0.1f, false);
-        assertEquals(v1.routeActuelle, routeXpos);  // v1 est passé
+        assertEquals(v1.routeActuelle(), routeXpos);  // v1 est passé
 
         // Laisser le temps à v1 de dégager la voie en face pour que v2 s'y engage
         while (!réseau.routes.get(1).sensBPossèdePlace(v1.longueur)) {
@@ -233,7 +233,7 @@ public class IntersectionArrêtTest {
         v1.miseÀJour(0.1f, true);
         v2.miseÀJour(0.1f, true);   // v2 s'engage
         réseau.miseÀJour(0.1f, false);
-        assertEquals(v2.routeActuelle,routeXpos);   // v2 est passé
+        assertEquals(v2.routeActuelle(),routeXpos);   // v2 est passé
     }
 
     // ======== MÉTHODES PRIVÉES ========

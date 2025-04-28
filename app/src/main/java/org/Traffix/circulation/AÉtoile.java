@@ -1,5 +1,6 @@
 package org.Traffix.circulation;
 
+import java.awt.datatransfer.FlavorEvent;
 import java.util.ArrayList;
 
 import org.Traffix.maths.Vec2;
@@ -46,7 +47,7 @@ public class AÉtoile {
         
         while (true) {
             // Chercher le meilleur poid
-            meilleurPoid = Float.MAX_VALUE;
+            meilleurPoid = Float.POSITIVE_INFINITY;
             curseur = -1;
             for (int i = 0; i < noeudsActifs.size(); i++) {
                 if(poids.get(i) < meilleurPoid){
@@ -56,7 +57,7 @@ public class AÉtoile {
             }
 
             if (curseur == -1){
-                System.err.println("[ERREUR] aucun chemin n'existe entre les destinations");
+                System.err.println("[ERREUR] aucun chemin n'existe entre les destinations. Départ : "+adresseA+", Destination : "+adresseB);
                 for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
                     System.err.println(element);
                 }
@@ -96,16 +97,16 @@ public class AÉtoile {
                     }
 
                     noeudsActifs.add(nRoute);
-                    temps.add(temps.get(curseur)+(nRoute.avoirLongueur()/Math.min(nRoute.avoirLimiteEffective(),nRoute.avoirVitesseVéhicules(interB==nRoute.intersectionB))));
+                    temps.add(temps.get(curseur)+Math.min(nRoute.avoirLongueur()/Math.min(nRoute.avoirLimiteEffective(),nRoute.avoirVitesseVéhicules(interB==nRoute.intersectionB)),Float.MAX_VALUE-1));
                     poids.add(temps.getLast()+Vec2.distance(interB.position,posDest)+5f*(float)chemins.get(curseur).size());
                     chemins.add((ArrayList<Route>)chemins.get(curseur).clone());
                     chemins.getLast().add(nRoute);
 
-                    for (int k = 0; k < chemins.getLast().size()-1; k++) {
-                        if(!chemins.getLast().get(k).intersectionA.routes.contains(chemins.getLast().get(k+1)) && !chemins.getLast().get(k).intersectionB.routes.contains(chemins.getLast().get(k+1))){
-                            throw new RuntimeException("Attention");
-                        }
-                    }
+                    // for (int k = 0; k < chemins.getLast().size()-1; k++) {
+                    //     if(!chemins.getLast().get(k).intersectionA.routes.contains(chemins.getLast().get(k+1)) && !chemins.getLast().get(k).intersectionB.routes.contains(chemins.getLast().get(k+1))){
+                    //         throw new RuntimeException("Attention");
+                    //     }
+                    // }
                 }
             }
 

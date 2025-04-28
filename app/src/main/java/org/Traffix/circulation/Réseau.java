@@ -199,6 +199,7 @@ public class Réseau {
     }
 
     private void recyclerVéhicule(Véhicule v){
+        System.out.print("Recyclage de "+v+", adresse originale : "+v.avoirAdresse());
         String[] routine = new String[5];
         for (int k = 0; k < routine.length; k++) {
             while(true){
@@ -216,11 +217,20 @@ public class Réseau {
                 break;
             }
         }
-        v.routeActuelle.retirerVéhiculeSensA(v);
-        v.routeActuelle.retirerVéhiculeSensB(v);
-        v.routeActuelle = routes.get(Maths.randint(0,routes.size()-1));
+        v.routeActuelle().retirerVéhiculeSensA(v);
+        v.routeActuelle().retirerVéhiculeSensB(v);
+        v.routeActuelle(null);
+        while(v.routeActuelle() == null){
+            Route r = routes.get(Maths.randint(0,routes.size()-1));
+            if(r.sensAPossèdePlace(v.longueur)){
+                v.routeActuelle(r);
+                v.estSensA = true;
+                v.routeActuelle().ajouterVéhiculeSensA(v);
+            }
+        }
         v.avoirNavigateur().donnerRoutine(routine);
         v.avoirNavigateur().estBrisé = false;
+        System.out.println(", nouvelle adresse : "+v.avoirAdresse());
     }
 
     // Merci à Jonas K sur StackOverFlow.
