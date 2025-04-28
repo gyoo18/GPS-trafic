@@ -217,15 +217,15 @@ public class Réseau {
                 break;
             }
         }
-        v.routeActuelle().retirerVéhiculeSensA(v);
-        v.routeActuelle().retirerVéhiculeSensB(v);
-        v.routeActuelle(null);
-        while(v.routeActuelle() == null){
+        Route routeActuelle = v.routeActuelle;
+        routeActuelle.retirerVéhiculeSensA(v);
+        routeActuelle.retirerVéhiculeSensB(v);
+        while(v.routeActuelle == null){
             Route r = routes.get(Maths.randint(0,routes.size()-1));
             if(r.sensAPossèdePlace(v.longueur)){
-                v.routeActuelle(r);
-                v.estSensA = true;
-                v.routeActuelle().ajouterVéhiculeSensA(v);
+                r.ajouterVéhiculeSensA(v);
+            }else if(r.sensBPossèdePlace(v.longueur)){
+                r.ajouterVéhiculeSensB(v);
             }
         }
         v.avoirNavigateur().donnerRoutine(routine);

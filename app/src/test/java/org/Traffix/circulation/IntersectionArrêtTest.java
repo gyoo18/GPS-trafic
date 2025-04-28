@@ -20,13 +20,23 @@ public class IntersectionArrêtTest {
     public static void main(String[] args){
         IntersectionArrêtTest.init();
         IntersectionArrêtTest a = new IntersectionArrêtTest();
+        a.ralentis2();
+        a.ralentis3();
+        a.ralentis4();
+        a.continue2();
+        a.continue3();
+        a.continue4();
+        a.continue2voitureDerrière();
+        a.continue3voitureDerrière();
+        a.continue4voitureDerrière();
         a.continue3Conflit();
+        a.continue4Conflit();
     }
 
     @BeforeClass
     public static void init() {
         try {
-            System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("IntersectionArrêtTest.log"))));
+            //System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("IntersectionArrêtTest.log"))));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -40,7 +50,8 @@ public class IntersectionArrêtTest {
         System.out.println("====== ralentis2 =====");
         Réseau réseau = créerIntersection2Routes();
         Route routeXnég = réseau.routes.get(0);
-        Véhicule véhicule = nouveauVéhicule(réseau, routeXnég, new Vec2(100, 0));
+        Véhicule véhicule = nouveauVéhicule(réseau, new Vec2(100, 0));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
         
         testRalentis(véhicule, réseau);
     }
@@ -50,7 +61,8 @@ public class IntersectionArrêtTest {
         System.out.println("====== ralentis3 =====");
         Réseau réseau = créerIntersection3Routes();
         Route routeXnég = réseau.routes.get(0);
-        Véhicule véhicule = nouveauVéhicule(réseau, routeXnég, new Vec2(100, 0));
+        Véhicule véhicule = nouveauVéhicule(réseau, new Vec2(100, 0));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
         
         testRalentis(véhicule, réseau);
     }
@@ -60,7 +72,8 @@ public class IntersectionArrêtTest {
         System.out.println("====== ralentis4 =====");
         Réseau réseau = créerIntersection4Routes();
         Route routeXnég = réseau.routes.get(0);
-        Véhicule véhicule = nouveauVéhicule(réseau, routeXnég, new Vec2(100, 0));
+        Véhicule véhicule = nouveauVéhicule(réseau, new Vec2(100, 0));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
         
         testRalentis(véhicule, réseau);
     }
@@ -82,7 +95,8 @@ public class IntersectionArrêtTest {
         System.out.println("====== continue2 =====");
         Réseau réseau = créerIntersection2Routes();
         Route routeXnég = réseau.routes.get(0);
-        Véhicule véhicule = nouveauVéhicule(réseau, routeXnég, new Vec2(100, 0));
+        Véhicule véhicule = nouveauVéhicule(réseau, new Vec2(100, 0));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
         
         testContinue(véhicule, réseau);
     }
@@ -92,7 +106,8 @@ public class IntersectionArrêtTest {
         System.out.println("====== continue3 =====");
         Réseau réseau = créerIntersection3Routes();
         Route routeXnég = réseau.routes.get(0);
-        Véhicule véhicule = nouveauVéhicule(réseau, routeXnég, new Vec2(100, 0));
+        Véhicule véhicule = nouveauVéhicule(réseau, new Vec2(100, 0));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
         
         testContinue(véhicule, réseau);
     }
@@ -102,7 +117,8 @@ public class IntersectionArrêtTest {
         System.out.println("====== continue4 =====");
         Réseau réseau = créerIntersection4Routes();
         Route routeXnég = réseau.routes.get(0);
-        Véhicule véhicule = nouveauVéhicule(réseau, routeXnég, new Vec2(100, 0));
+        Véhicule véhicule = nouveauVéhicule(réseau, new Vec2(100, 0));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
         
         testContinue(véhicule, réseau);
     }
@@ -110,15 +126,15 @@ public class IntersectionArrêtTest {
     private void testContinue(Véhicule véhicule, Réseau réseau){
 
         // Avancer le véhicule jusqu'à l'intersection
-        while ((1f - véhicule.positionRelative) * véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f - véhicule.positionRelative) * véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             réseau.miseÀJour(0.15f, false);
         }
 
         véhicule.miseÀJour(0.1f, true);     // Demander à s'engager
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));  // La demande devrait être refusée et être acceptée au prochain tour
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));  // La demande devrait être refusée et être acceptée au prochain tour
         véhicule.miseÀJour(0.1f, true);     // Demander à nouveau et s'engager
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(1));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(1));
     }
 
     // ======== TESTS AVEC UN VÉHICULE DERRIÈRE L'AUTRE ========
@@ -151,12 +167,14 @@ public class IntersectionArrêtTest {
 
         Route routeXnég = réseau.routes.get(0);
         Route routeXpos = réseau.routes.get(1);
-        Véhicule v1 = nouveauVéhicule(réseau, routeXnég, new Vec2(100, 0));
-        Véhicule v2 = nouveauVéhicule(réseau, routeXnég, new Vec2(100, 0));
-        v1.positionRelative = 0.05f;
+        Véhicule v1 = nouveauVéhicule(réseau, new Vec2(100, 0));
+        Véhicule v2 = nouveauVéhicule(réseau, new Vec2(100, 0));
+        routeXnég.ajouterVéhiculeSensA(v1);
+        v1.positionRelative = 0.06f;
+        routeXnég.ajouterVéhiculeSensA(v2);
 
         // Avancer les deux véhicules jusqu'à ce que v2 soit à l'intersection
-        while ((1f - v2.positionRelative) * v2.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f - v2.positionRelative) * v2.routeActuelle.avoirLongueur() >= 0.1f) {
             v1.miseÀJour(0.1f, true);
             v2.miseÀJour(0.1f, true);
             réseau.miseÀJour(0.15f, false);
@@ -164,7 +182,7 @@ public class IntersectionArrêtTest {
 
         v1.miseÀJour(0.1f, true);   // v1 devrait être passé
         v2.miseÀJour(0.1f, true);   // v2 demande à passer
-        assertEquals(v2.routeActuelle(), routeXnég); // demande refusée pour l'instant
+        assertEquals(v2.routeActuelle, routeXnég); // demande refusée pour l'instant
 
         // Laisser le temps à v1 de dégager la voie en face pour que v2 s'y engage
         while (!routeXpos.sensBPossèdePlace(v1.longueur)) {
@@ -174,7 +192,7 @@ public class IntersectionArrêtTest {
 
         v1.miseÀJour(0.1f, true);
         v2.miseÀJour(0.1f, true);   // 2ème demande de passage
-        assertEquals(v2.routeActuelle(), routeXpos); // demande acceptée
+        assertEquals(v2.routeActuelle, routeXpos); // demande acceptée
     }
 
     // ======== TESTS AVEC UN CONFLIT DE PASSAGE ========
@@ -202,11 +220,13 @@ public class IntersectionArrêtTest {
         Route routeXpos = réseau.routes.get(1);
         Route routeYnég = réseau.routes.get(2);
         Intersection inter = réseau.intersections.get(1);
-        Véhicule v1 = nouveauVéhicule(réseau, routeXnég, new Vec2(100, 0));
-        Véhicule v2 = nouveauVéhicule(réseau, routeYnég, new Vec2(100, 0));
+        Véhicule v1 = nouveauVéhicule(réseau, new Vec2(100, 0));
+        Véhicule v2 = nouveauVéhicule(réseau, new Vec2(100, 0));
+        routeXnég.ajouterVéhiculeSensA(v1);
+        routeYnég.ajouterVéhiculeSensA(v2);
 
         // Avancer les deux véhicules jusqu'à ce que v1 soit à l'intersection
-        while ((1f - v1.positionRelative) * v1.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f - v1.positionRelative) * v1.routeActuelle.avoirLongueur() >= 0.1f) {
             v1.miseÀJour(0.1f, true);
             v2.miseÀJour(0.1f, true);
             réseau.miseÀJour(0.15f, false);
@@ -220,7 +240,7 @@ public class IntersectionArrêtTest {
         v1.miseÀJour(0.1f, true);    // v1 s'engage
         v2.miseÀJour(0.1f, true);    // v2 ne fait pas de demande, car la route est occupée
         réseau.miseÀJour(0.1f, false);
-        assertEquals(v1.routeActuelle(), routeXpos);  // v1 est passé
+        assertEquals(v1.routeActuelle, routeXpos);  // v1 est passé
 
         // Laisser le temps à v1 de dégager la voie en face pour que v2 s'y engage
         while (!réseau.routes.get(1).sensBPossèdePlace(v1.longueur)) {
@@ -233,7 +253,7 @@ public class IntersectionArrêtTest {
         v1.miseÀJour(0.1f, true);
         v2.miseÀJour(0.1f, true);   // v2 s'engage
         réseau.miseÀJour(0.1f, false);
-        assertEquals(v2.routeActuelle(),routeXpos);   // v2 est passé
+        assertEquals(v2.routeActuelle,routeXpos);   // v2 est passé
     }
 
     // ======== MÉTHODES PRIVÉES ========
@@ -244,7 +264,7 @@ public class IntersectionArrêtTest {
         réseau.intersections.add(new IntersectionArrêt(new Vec2(-100, 0)));
         réseau.intersections.add(new IntersectionArrêt(new Vec2(0, 0)));
         réseau.intersections.add(new IntersectionArrêt(new Vec2(100, 0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.construireTronçons();
         générerNumérosRues(réseau);
@@ -270,8 +290,8 @@ public class IntersectionArrêtTest {
         return réseau;
     }
 
-    private Véhicule nouveauVéhicule(Réseau réseau, Route origine, Vec2 destination) {
-        Véhicule véhicule = new Véhicule(4.2f, origine);
+    private Véhicule nouveauVéhicule(Réseau réseau, Vec2 destination) {
+        Véhicule véhicule = new Véhicule(4.2f);
         String[] routine = { réseau.avoirAdresse(destination) };
         véhicule.avoirNavigateur().donnerRoutine(routine);
         return véhicule;
@@ -289,7 +309,7 @@ public class IntersectionArrêtTest {
             // Trouver l'intersection au bout
             Intersection interA = null;
             for (int j = 0; j < tronçon.get(0).intersectionA.routes.size(); j++) {
-                if(tronçon.get(0).intersectionA.routes.get(j) != tronçon.get(0) && tronçon.get(0).intersectionA.routes.get(j).nom == tronçon.get(0).nom){
+                if(tronçon.get(0).intersectionA.routes.get(j) != tronçon.get(0) && tronçon.get(0).intersectionA.routes.get(j).nom.equals(tronçon.get(0).nom)){
                     interA = tronçon.get(0).intersectionB;
                 }
             }
@@ -302,16 +322,15 @@ public class IntersectionArrêtTest {
             for (int i = 0; i < tronçon.size(); i++) {
                 Route route = tronçon.get(i);
                 int nbAdresses = (int)Math.ceil(tronçon.get(i).avoirLongueur()/LARGEUR_MAISON);
-                Vec2 tanAbs = Vec2.sous(route.intersectionA.position,route.intersectionB.position).norm().mult(interA==route.intersectionA?-1f:1f);
-                Vec2 tanLoc = Vec2.sous(route.intersectionA.position,route.intersectionB.position).norm();
-                Vec2 cotan = new Vec2(tanLoc.y,-tanLoc.x);
+                Vec2 tan = Vec2.sous(route.intersectionA.position,route.intersectionB.position).norm().mult(interA==route.intersectionA?-1f:1f);
+                Vec2 cotan = new Vec2(tan.y,-tan.x);
 
                 int[] numérosSensA = new int[nbAdresses];
                 int[] numérosSensB = new int[nbAdresses];
                 Vec2[] positionsSensA = new Vec2[nbAdresses];
                 Vec2[] positionsSensB = new Vec2[nbAdresses];
                 for (int j = 0; j < nbAdresses; j++) {
-                    Vec2 pos = Vec2.mult(tanAbs,LARGEUR_MAISON*(float)j).addi(interA.position);
+                    Vec2 pos = Vec2.mult(tan,LARGEUR_MAISON*(float)j).addi(interA.position);
                     if(interA == route.intersectionA){
                         numérosSensA[j] = 2*j+adressesCompte;
                         numérosSensB[j] = 2*j+1+adressesCompte;

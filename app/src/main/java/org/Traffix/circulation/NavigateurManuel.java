@@ -12,87 +12,94 @@ public class NavigateurManuel extends Navigateur {
         ACCÉLÉRER,
         RALENTIR,
         TOURNER_DROITE,
-        TOURNER_GAUCHE
+        TOURNER_GAUCHE,
+        LÂCHER,
+        DEMI_TOUR
     }
 
     private final int OPTION_GAUCHE = 0;
     private final int OPTION_DROIT = 1;
     private final int OPTION_DROITE = 2;
 
-    private ArrayList<Commande> commandes = new ArrayList<>();
+    private Commande action = Commande.LÂCHER;
     private Route[] optionsTournants = new Route[3];
     private int optionChoisie = OPTION_DROIT;
 
     public NavigateurManuel(Véhicule véhicule) {
         super(véhicule);
+        calculerOptions();
     }
 
     public void miseÀJour(float deltaTempsSecondes, boolean debug){
+
         float accélération = 0;
         optionChoisie = OPTION_DROIT;
-        if(commandes.size() > 0){
-            Commande commande = commandes.remove(0);
-            switch(commande){
-                case ACCÉLÉRER:{
-                    accélération = véhicule.ACCÉLÉRATION;
-                    break;
+        switch(action){
+            case ACCÉLÉRER:{
+                accélération = véhicule.ACCÉLÉRATION;
+                break;
+            }
+            case RALENTIR:{
+                accélération = -véhicule.ACCÉLÉRATION;
+                break;
+            }
+            case TOURNER_DROITE:{
+                optionChoisie = OPTION_DROITE;
+                break;
+            }
+            case TOURNER_GAUCHE:{
+                optionChoisie = OPTION_GAUCHE;
+                break;
+            }
+            case DEMI_TOUR:{
+                if(véhicule.estSensA && véhicule.routeActuelle.sensBPossèdePlace(véhicule.longueur)){
+                    Route routeActuelle = véhicule.routeActuelle;
+                    routeActuelle.retirerVéhiculeSensA(véhicule);
+                    routeActuelle.ajouterVéhiculeSensB(véhicule);
+                    véhicule.vitesse = 0;
+                    action = Commande.LÂCHER;
+                }else if(!véhicule.estSensA && véhicule.routeActuelle.sensAPossèdePlace(véhicule.longueur)){
+                    Route routeActuelle = véhicule.routeActuelle;
+                    routeActuelle.retirerVéhiculeSensB(véhicule);
+                    routeActuelle.ajouterVéhiculeSensA(véhicule);
+                    véhicule.vitesse = 0;
+                    action = Commande.LÂCHER;
                 }
-                case RALENTIR:{
-                    accélération = -véhicule.ACCÉLÉRATION;
-                    break;
-                }
-                case TOURNER_DROITE:{
-                    optionChoisie = OPTION_DROITE;
-                    break;
-                }
-                case TOURNER_GAUCHE:{
-                    optionChoisie = OPTION_GAUCHE;
-                    break;
-                }
-                default:{
-                    throw new IllegalArgumentException("La valeur "+commande+" n'est pas supportée.");
-                }
+                break;
+            }
+            case LÂCHER:{break;}
+            default:{
+                throw new IllegalArgumentException("La valeur "+action+" n'est pas supportée.");
             }
         }
 
         Intersection interB = véhicule.estSensA?véhicule.routeActuelle.intersectionA:véhicule.routeActuelle.intersectionB;
-
-        boolean estDestination = itinéraireActuel[itinéraireActuel.length-1]==prochainTournant;
-        float distanceDest = Vec2.distance(véhicule.position(), posDest);
-
         float distanceInter = (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur();
 
-        if(distanceDest < 0.1f && estDestination){
-            // Si le véhicule est arrivé à destination.
-            avancerRoutine();
-            super.chercherProchainTournant();
-        }else if(distanceInter < 0.1f && !estDestination){
-            // Si le véhicule est à l'intersection.
+        if(distanceInter < 0.1f && optionsTournants[0] != null){
+            boolean estRouteChoisieSensA = interB == optionsTournants[optionChoisie].intersectionB;
             if(
-                interB.peutEngager(véhicule.routeActuelle, optionsTournants[optionChoisie]) && // S'il a le droit de s'engager dans l'intersection
-                ((interB==optionsTournants[optionChoisie].intersectionA && optionsTournants[optionChoisie].sensBPossèdePlace(véhicule.longueur)) || // Si le prochain tournant a la place restante
-                 (interB==optionsTournants[optionChoisie].intersectionB && optionsTournants[optionChoisie].sensAPossèdePlace(véhicule.longueur)))  // nécessaire pour que le véhicule s'engage.
+                (estRouteChoisieSensA && optionsTournants[optionChoisie].sensAPossèdePlace(véhicule.longueur)) ||
+                (!estRouteChoisieSensA && optionsTournants[optionChoisie].sensBPossèdePlace(véhicule.longueur))
             ){
-                if(véhicule.estSensA){
-                    véhicule.routeActuelle.retirerVéhiculeSensA();
-                }else{
-                    véhicule.routeActuelle.retirerVéhiculeSensB();
-                }
+                if(interB.peutEngager(véhicule.routeActuelle, optionsTournants[optionChoisie])){
+                    if(véhicule.estSensA){
+                        véhicule.routeActuelle.retirerVéhiculeSensA(véhicule);
+                    }else{
+                        véhicule.routeActuelle.retirerVéhiculeSensB(véhicule);
+                    }
 
-                if(interB == prochainTournant.intersectionA){
-                    prochainTournant.ajouterVéhiculeSensB(véhicule);
-                }else{
-                    prochainTournant.ajouterVéhiculeSensA(véhicule);
-                }
+                    if(estRouteChoisieSensA){
+                        optionsTournants[optionChoisie].ajouterVéhiculeSensA(véhicule);
+                    }else{
+                        optionsTournants[optionChoisie].ajouterVéhiculeSensB(véhicule); 
+                    }
 
-                véhicule.estSensA = interB == prochainTournant.intersectionB;
-                véhicule.positionRelative = 0;
-                véhicule.routeActuelle = prochainTournant;
-                calculerOptions();
-                super.chercherProchainTournant();
+                    calculerOptions();
+                }
             }
         }
-
+        
         véhicule.vitesse += Math.min(véhicule.ACCÉLÉRATION,Math.abs(accélération))*Math.signum(accélération)*deltaTempsSecondes;
         véhicule.avancer(deltaTempsSecondes);
     }
@@ -142,36 +149,56 @@ public class NavigateurManuel extends Navigateur {
                 maxDroiteI = i;
             }
             if(-orientations[i] > maxGauche){
-                maxGauche = orientations[i];
+                maxGauche = -orientations[i];
                 maxGaucheI = i;
             }
         }
 
-        optionsTournants[OPTION_GAUCHE] = interB.routes.get(maxGaucheI);
-        optionsTournants[OPTION_DROIT] = interB.routes.get(maxAlignementI);
-        optionsTournants[OPTION_DROITE] = interB.routes.get(maxDroiteI);
+        if(maxAlignementI == -1){
+            optionsTournants[OPTION_GAUCHE] = null;
+            optionsTournants[OPTION_DROIT]  = null;
+            optionsTournants[OPTION_DROITE] = null;
+        }else{
+            optionsTournants[OPTION_GAUCHE] = interB.routes.get(maxGaucheI);
+            optionsTournants[OPTION_DROIT] = interB.routes.get(maxAlignementI);
+            optionsTournants[OPTION_DROITE] = interB.routes.get(maxDroiteI);
+        }
     }
 
     @Override
-    protected Route chercherProchainTournant(){
+    public void donnerRoutine(String[] adresses){
+        super.donnerRoutine(adresses);
+        prochainTournant = chercherProchainTournant(false);
+    }
+
+    @Override
+    protected Route chercherProchainTournant(boolean debug){
+        if(véhicule.routeActuelle == null){
+            return null;
+        }
+
         if (itinéraireActuel == null){
-            itinéraireActuel = AÉtoile.chercherChemin(véhicule.avoirAdresse(), routine[indexeRoutine]);
+            itinéraireActuel = AÉtoile.chercherChemin(véhicule.avoirAdresse(), routine[indexeRoutine], véhicule.estSensA);
             posDest = itinéraireActuel[itinéraireActuel.length-1].avoirPosition(extraireNuméro(routine[indexeRoutine]));
             indexeRouteActuelle = 0;
 
-            itinéraireObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel));
+            itinéraireObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel, 1.5f));
         }
 
         if(System.currentTimeMillis()-tempsDernierRecalcul > CYCLE_RECALCUL){
-            itinéraireActuel = AÉtoile.chercherChemin(véhicule.avoirAdresse(), routine[indexeRoutine]);
+            itinéraireActuel = AÉtoile.chercherChemin(véhicule.avoirAdresse(), routine[indexeRoutine], véhicule.estSensA);
             tempsDernierRecalcul = System.currentTimeMillis();
             indexeRouteActuelle = 0;
 
-            itinéraireObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel));
+            itinéraireObjet.donnerMaillage(GénérateurMaillage.faireMaillageItinéraire(itinéraireActuel, 4.5f));
         }
 
         Route retour = itinéraireActuel[indexeRouteActuelle];
         indexeRouteActuelle++;
         return retour;
+    }
+
+    public void donnerCommande(Commande commande){
+        action = commande;
     }
 }

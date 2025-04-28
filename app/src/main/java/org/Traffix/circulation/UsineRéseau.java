@@ -202,16 +202,15 @@ public class UsineRéseau {
                 for (int i = 0; i < tronçon.size(); i++) {
                     Route route = tronçon.get(i);
                     int nbAdresses = (int)Math.ceil(tronçon.get(i).avoirLongueur()/LARGEUR_MAISON);
-                    Vec2 tanAbs = Vec2.sous(route.intersectionA.position,route.intersectionB.position).norm().mult(interA==route.intersectionA?-1f:1f);
-                    Vec2 tanLoc = Vec2.sous(route.intersectionA.position,route.intersectionB.position).norm();
-                    Vec2 cotan = new Vec2(tanLoc.y,-tanLoc.x);
+                    Vec2 tan = Vec2.sous(route.intersectionA.position,route.intersectionB.position).norm().mult(interA==route.intersectionA?-1f:1f);
+                    Vec2 cotan = new Vec2(tan.y,-tan.x);
 
                     int[] numérosSensA = new int[nbAdresses];
                     int[] numérosSensB = new int[nbAdresses];
                     Vec2[] positionsSensA = new Vec2[nbAdresses];
                     Vec2[] positionsSensB = new Vec2[nbAdresses];
                     for (int j = 0; j < nbAdresses; j++) {
-                        Vec2 pos = Vec2.mult(tanAbs,LARGEUR_MAISON*(float)j).addi(interA.position);
+                        Vec2 pos = Vec2.mult(tan,LARGEUR_MAISON*(float)j).addi(interA.position);
                         if(interA == route.intersectionA){
                             numérosSensA[j] = 2*j+adressesCompte;
                             numérosSensB[j] = 2*j+1+adressesCompte;
@@ -266,14 +265,19 @@ public class UsineRéseau {
             }
             while(réseau.véhicules[i] == null){
                 Route route = réseau.routes.get(Maths.randint(0, réseau.routes.size()-1));
-                if(route.sensAPossèdePlace(4.2f) && route.possèdeAdresses){
-                    réseau.véhicules[i] = new Véhicule(4.2f,route);
-                    réseau.véhicules[i].estSensA = true;
-                    réseau.véhicules[i].routeActuelle().ajouterVéhiculeSensA(réseau.véhicules[i]);
+                if(route.possèdeAdresses && route.sensAPossèdePlace(4.2f)){
+                    réseau.véhicules[i] = new Véhicule(4.2f);
+                    route.ajouterVéhiculeSensA(réseau.véhicules[i]);
+                    réseau.véhicules[i].avoirNavigateur().donnerRoutine(routine);
+                }else if(route.possèdeAdresses && route.sensBPossèdePlace(4.2f)){
+                    réseau.véhicules[i] = new Véhicule(4.2f);
+                    route.ajouterVéhiculeSensB(réseau.véhicules[i]);
                     réseau.véhicules[i].avoirNavigateur().donnerRoutine(routine);
                 }
             }
         }
+
+        //réseau.véhicules[0].changerNavigateur( new NavigateurManuel(réseau.véhicules[0]) );
 
         System.out.println("Réseau Généré");
         return réseau;

@@ -16,9 +16,10 @@ public class Véhicule {
 
     public final float longueur; // en mètres
     public float positionRelative = 0; // Position en % entre les deux intersections de la route actuelle.
-    public float vitesse = 0; // en m/s
+    public float vitesse = 0;        // en m/s
+    public float vitesseMoyenne = 0; // en m/s
     public boolean estSensA = false; // définit si le véhicule se trouve sur la voie A ou la voie B.
-    private Route routeActuelle;
+    public Route routeActuelle;
     private Navigateur navigateur;
 
     public Objet objetRendus = null;
@@ -27,9 +28,8 @@ public class Véhicule {
 
     private ArrayList<String> accèsRouteActuelle = new ArrayList<>();
     
-    public Véhicule(float longueur, Route routeActuelle) {
+    public Véhicule(float longueur) {
         this.longueur = longueur;
-        this.routeActuelle(routeActuelle);
         this.navigateur = new Navigateur(this);  
         
         Maillage maillage = GénérateurMaillage.générerGrille(2, 2);
@@ -42,8 +42,8 @@ public class Véhicule {
         objetRendus = new Objet("véhicule",maillage,nuanceur,new Vec4(0.9f,0.3f,0.3f,1f),null,new Transformée().échelonner(new Vec3(2f, 1f, longueur)));
     }
     
-    public Véhicule(float longueur, float position, float vitesse, Route routeActuelle, Navigateur navigateur) {
-        this(longueur, routeActuelle);
+    public Véhicule(float longueur, Navigateur navigateur) {
+        this(longueur);
         this.navigateur = navigateur;
     }
     
@@ -67,7 +67,7 @@ public class Véhicule {
     }
     
     public float distance(Véhicule autreVéhicule) {
-        if (this.routeActuelle() == autreVéhicule.routeActuelle()) {
+        if (this.routeActuelle == autreVéhicule.routeActuelle) {
             return Math.abs(this.positionRelative - autreVéhicule.positionRelative)*routeActuelle.avoirLongueur();
         } else {
             return -1;  // Pas sur la même route
@@ -117,21 +117,6 @@ public class Véhicule {
         navigateur.miseÀJour(deltaTempsSecondes, debug);
         Vec2 dir = Vec2.sous(routeActuelle.intersectionA.position,routeActuelle.intersectionB.position).norm().mult(estSensA?-1f:1f);
         objetRendus.avoirTransformée().positionner(new Vec3(position().x,0.3f,position().y)).faireRotation(new Vec3((float)Math.toRadians(0),(float)Math.atan2(dir.x, dir.y),0));
-    }
-
-    public Route routeActuelle(){
-        // accèsRouteActuelle.add("===== Nouvel accès ===== t: "+System.currentTimeMillis());
-        // for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
-        //     accèsRouteActuelle.add(element.toString());
-        // }
-        return routeActuelle;
-    }
-
-    public void routeActuelle(Route n){
-        // accèsRouteActuelle.add("===== Nouvelle valeur : "+n+", nom : "+n.nom+" ===== t: "+System.currentTimeMillis());
-        // for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
-        //     accèsRouteActuelle.add(element.toString());
-        // }
-        this.routeActuelle = n;
+        vitesseMoyenne = (vitesse + vitesseMoyenne*59f)/60f;
     }
 }

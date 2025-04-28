@@ -20,8 +20,10 @@ import org.Traffix.GUI.Destination.Type;
 import org.Traffix.OpenGL.Caméra;
 import org.Traffix.OpenGL.GLCanvas;
 import org.Traffix.circulation.AÉtoile;
+import org.Traffix.circulation.NavigateurManuel;
 import org.Traffix.circulation.Route;
 import org.Traffix.circulation.Réseau;
+import org.Traffix.circulation.NavigateurManuel.Commande;
 import org.Traffix.maths.Mat4;
 import org.Traffix.maths.Maths;
 import org.Traffix.maths.Vec2;
@@ -84,8 +86,8 @@ public class GestionnaireContrôles {
                 float scroll = (float)e.getPreciseWheelRotation();
                 Caméra cam = miniCarte.scène.caméra;
                 cam.avoirVue().donnerRayon(Math.clamp( cam.avoirVue().avoirRayon()*(float)Math.pow(2.0,scroll), 20f, 2000f));
-                cam.planProche = 1f; //cam.avoirVue().avoirRayon() - 10f;
-                cam.planLoin = 2000f; //cam.avoirVue().avoirRayon() + 10f;
+                cam.planProche = cam.avoirVue().avoirRayon() - 10f;
+                cam.planLoin = cam.avoirVue().avoirRayon() + 10f;
                 cam.refaireProjection();
                 miniCarte.revalidate();
                 miniCarte.repaint();
@@ -113,6 +115,61 @@ public class GestionnaireContrôles {
         };
         miniCarte.canvas.addMouseListener(ma);
         miniCarte.canvas.addMouseMotionListener(ma);
+
+        ((JButton) fenêtre.obtenirÉlémentParID("boutonAccélérer")).addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.ACCÉLÉRER);
+            }
+            @Override
+            public void mouseReleased(MouseEvent e){
+                ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.LÂCHER);
+            }
+        });
+
+        ((JButton) fenêtre.obtenirÉlémentParID("boutonRalentir")).addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.RALENTIR);
+            }
+            @Override
+            public void mouseReleased(MouseEvent e){
+                ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.LÂCHER);
+            }
+        });
+
+        ((JButton) fenêtre.obtenirÉlémentParID("boutonTournerGauche")).addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.TOURNER_GAUCHE);
+            }
+            @Override
+            public void mouseReleased(MouseEvent e){
+                ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.LÂCHER);
+            }
+        });
+
+        ((JButton) fenêtre.obtenirÉlémentParID("boutonTournerDroit")).addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.TOURNER_DROITE);
+            }
+            @Override
+            public void mouseReleased(MouseEvent e){
+                ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.LÂCHER);
+            }
+        });
+
+        ((JButton) fenêtre.obtenirÉlémentParID("boutonDemiTour")).addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.DEMI_TOUR);
+            }
+            @Override
+            public void mouseReleased(MouseEvent e){
+                ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.LÂCHER);
+            }
+        });
     }
 
     private static void ajouterDestination(Destination destination, JPanel liste, Fenêtre fenêtre, Réseau réseau){
@@ -244,7 +301,7 @@ public class GestionnaireContrôles {
 
         int tempsSec = 0;
         for (int i = 1; i < destinations.size(); i++) {
-            Route[] chemin = AÉtoile.chercherChemin(destinations.get(i-1).adresse, destinations.get(i).adresse);
+            Route[] chemin = AÉtoile.chercherChemin(destinations.get(i-1).adresse, destinations.get(i).adresse, réseau.véhicules[0].estSensA);
             if(chemin == null){
                 ((JLabel) fenêtre.obtenirÉlémentParID("adresseEntréeMessageErreur")).setText("Erreur : il n'existe aucun chemin entre "+destinations.get(i-1).adresse+" et "+destinations.get(i).adresse);
                 break;
@@ -253,5 +310,11 @@ public class GestionnaireContrôles {
             tempsSec += AÉtoile.avoirDuréeDernierTrajetSec();
             destinations.get(i).changerDurée(tempsSec);
         }
+
+        String[] chemin = new String[destinations.size()];
+        for (int i = 0; i < chemin.length; i++) {
+            chemin[i] = destinations.get(i).adresse;
+        }
+        réseau.véhicules[0].avoirNavigateur().donnerRoutine(chemin);
     }
 }

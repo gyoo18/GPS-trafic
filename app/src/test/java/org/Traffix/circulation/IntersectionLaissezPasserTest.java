@@ -12,10 +12,26 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class IntersectionLaissezPasserTest {
+
+    public static void main(String[] args){
+        IntersectionLaissezPasserTest.init();;
+        IntersectionLaissezPasserTest a = new IntersectionLaissezPasserTest();
+        a.passe2();
+        a.passe3();
+        a.passe4();
+        a.passe3Côté();
+        a.passe4Côté();
+        a.continue2();
+        a.continue3();
+        a.continue4();
+        a.passeConflitPrioritaire();
+        a.passeConflitCéder();
+    }
+
     @BeforeClass
     public static void init(){
         try {
-            System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("IntersectionLaissezPasserTest.log"))));
+            //System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("IntersectionLaissezPasserTest.log"))));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -30,17 +46,18 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
 
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(0));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while (véhicule.positionRelative < 1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             assertEquals(réseau.intersections.get(1).peutPasser(réseau.routes.get(0), réseau.routes.get(1)), true);
         }
@@ -56,14 +73,15 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,-100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
 
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(0));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
@@ -83,18 +101,19 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,-100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
 
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(2));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while (véhicule.positionRelative < 1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             assertEquals(réseau.intersections.get(1).peutPasser(réseau.routes.get(2), réseau.routes.get(1)), false);
         }
@@ -111,7 +130,7 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,-100)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
@@ -119,11 +138,12 @@ public class IntersectionLaissezPasserTest {
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(0));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while (véhicule.positionRelative < 1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             assertEquals(réseau.intersections.get(1).peutPasser(réseau.routes.get(0), réseau.routes.get(1)), true);
         }
@@ -140,18 +160,19 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,-100)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
 
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(2));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while (véhicule.positionRelative < 1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             assertEquals(réseau.intersections.get(1).peutPasser(réseau.routes.get(2), réseau.routes.get(1)), false);
         }
@@ -166,23 +187,24 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
 
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(0));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(1));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(1));
     }
 
     @Test
@@ -195,24 +217,25 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,-100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
 
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(0));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(1));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(1));
     }
 
     @Test
@@ -226,7 +249,7 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,-100)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
@@ -234,17 +257,18 @@ public class IntersectionLaissezPasserTest {
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(0));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(1));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(1));
     }
 
     @Test
@@ -258,7 +282,7 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
@@ -266,17 +290,18 @@ public class IntersectionLaissezPasserTest {
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(0));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(3));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(3));
     }
 
     @Test
@@ -290,7 +315,7 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
@@ -298,17 +323,18 @@ public class IntersectionLaissezPasserTest {
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(0));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,-100))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(2));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(2));
     }
 
     @Test
@@ -322,7 +348,7 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
@@ -330,17 +356,18 @@ public class IntersectionLaissezPasserTest {
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(2));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(-100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(2));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(2));
         véhicule.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
     }
 
     @Test
@@ -354,7 +381,7 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
@@ -362,17 +389,18 @@ public class IntersectionLaissezPasserTest {
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(2));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(2));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(2));
         véhicule.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(1));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(1));
     }
 
     @Test
@@ -386,7 +414,7 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
@@ -394,22 +422,24 @@ public class IntersectionLaissezPasserTest {
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(0));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
-        Véhicule véhicule2 = new Véhicule(4.2f, réseau.routes.get(2));
+        Véhicule véhicule2 = new Véhicule(4.2f);
+        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule2);
         routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.01f, true);
         }
 
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.01f, true);
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(1));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(1));
     }
 
     @Test
@@ -423,7 +453,7 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
@@ -431,22 +461,24 @@ public class IntersectionLaissezPasserTest {
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(0));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
-        Véhicule véhicule2 = new Véhicule(4.2f, réseau.routes.get(2));
+        Véhicule véhicule2 = new Véhicule(4.2f);
+        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule2);
         routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
         }
 
-        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(2));
+        assertEquals(véhicule2.routeActuelle, réseau.routes.get(2));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
-        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(3));
+        assertEquals(véhicule2.routeActuelle, réseau.routes.get(3));
     }
 
     @Test
@@ -460,7 +492,7 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
@@ -468,25 +500,27 @@ public class IntersectionLaissezPasserTest {
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(0));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
-        Véhicule véhicule2 = new Véhicule(4.2f, réseau.routes.get(2));
+        Véhicule véhicule2 = new Véhicule(4.2f);
+        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule2);
         routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f){
+            if((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(0), réseau.routes.get(2)), true);
             }
         }
 
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(3));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(3));
     }
 
     @Test
@@ -500,7 +534,7 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
@@ -508,25 +542,27 @@ public class IntersectionLaissezPasserTest {
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(0));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,-100))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
-        Véhicule véhicule2 = new Véhicule(4.2f, réseau.routes.get(2));
+        Véhicule véhicule2 = new Véhicule(4.2f);
+        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule2);
         routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f){
+            if((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(0), réseau.routes.get(2)), true);
             }
         }
 
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(0));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(0));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
-        assertEquals(véhicule.routeActuelle(), réseau.routes.get(2));
+        assertEquals(véhicule.routeActuelle, réseau.routes.get(2));
     }
 
     @Test
@@ -540,7 +576,7 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
@@ -548,25 +584,27 @@ public class IntersectionLaissezPasserTest {
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(0));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
-        Véhicule véhicule2 = new Véhicule(4.2f, réseau.routes.get(2));
+        Véhicule véhicule2 = new Véhicule(4.2f);
+        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule2);
         routine = new String[]{réseau.avoirAdresse(new Vec2(-100,0))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur()/véhicule.vitesse < 5f){
+            if((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(2), réseau.routes.get(0)), false);
             }
         }
 
-        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(2));
+        assertEquals(véhicule2.routeActuelle, réseau.routes.get(2));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
-        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(0));
+        assertEquals(véhicule2.routeActuelle, réseau.routes.get(0));
     }
 
     @Test
@@ -580,7 +618,7 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
@@ -588,25 +626,27 @@ public class IntersectionLaissezPasserTest {
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(1));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(1).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,-100))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
-        Véhicule véhicule2 = new Véhicule(4.2f, réseau.routes.get(2));
+        Véhicule véhicule2 = new Véhicule(4.2f);
+        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule2);
         routine = new String[]{réseau.avoirAdresse(new Vec2(-100,0))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule2.positionRelative)*véhicule2.routeActuelle().avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur()/véhicule.vitesse < 5f){
+            if((1f-véhicule2.positionRelative)*véhicule2.routeActuelle.avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(2), réseau.routes.get(0)), false);
             }
         }
 
-        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(2));
+        assertEquals(véhicule2.routeActuelle, réseau.routes.get(2));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
-        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(0));
+        assertEquals(véhicule2.routeActuelle, réseau.routes.get(0));
     }
 
     @Test
@@ -620,7 +660,7 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
@@ -628,25 +668,27 @@ public class IntersectionLaissezPasserTest {
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(0));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
-        Véhicule véhicule2 = new Véhicule(4.2f, réseau.routes.get(2));
+        Véhicule véhicule2 = new Véhicule(4.2f);
+        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule2);
         routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule2.positionRelative)*véhicule2.routeActuelle().avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur()/véhicule.vitesse < 5f){
+            if((1f-véhicule2.positionRelative)*véhicule2.routeActuelle.avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(2), réseau.routes.get(1)), false);
             }
         }
 
-        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(2));
+        assertEquals(véhicule2.routeActuelle, réseau.routes.get(2));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
-        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(1));
+        assertEquals(véhicule2.routeActuelle, réseau.routes.get(1));
     }
 
     @Test
@@ -660,7 +702,7 @@ public class IntersectionLaissezPasserTest {
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
         réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(0), réseau.intersections.get(1)));
+        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
         réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
         réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
@@ -668,25 +710,27 @@ public class IntersectionLaissezPasserTest {
         réseau.construireTronçons();
         générerNumérosRues(réseau);
 
-        Véhicule véhicule = new Véhicule(4.2f, réseau.routes.get(1));
+        Véhicule véhicule = new Véhicule(4.2f);
+        réseau.routes.get(1).ajouterVéhiculeSensA(véhicule);
         String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,-100))};
         véhicule.avoirNavigateur().donnerRoutine(routine);
-        Véhicule véhicule2 = new Véhicule(4.2f, réseau.routes.get(2));
+        Véhicule véhicule2 = new Véhicule(4.2f);
+        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule2);
         routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
         véhicule2.avoirNavigateur().donnerRoutine(routine);
         
-        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f) {
+        while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
             véhicule2.miseÀJour(0.1f, true);
-            if((1f-véhicule2.positionRelative)*véhicule.routeActuelle().avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle().avoirLongueur()/véhicule.vitesse < 5f){
+            if((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f && véhicule.vitesse != 0f && (1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur()/véhicule.vitesse < 5f){
                 assertEquals(réseau.intersections.get(1).peutEngager(réseau.routes.get(2), réseau.routes.get(1)), true);
             }
         }
 
-        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(2));
+        assertEquals(véhicule2.routeActuelle, réseau.routes.get(2));
         véhicule.miseÀJour(0.1f, true);
         véhicule2.miseÀJour(0.1f, true);
-        assertEquals(véhicule2.routeActuelle(), réseau.routes.get(1));
+        assertEquals(véhicule2.routeActuelle, réseau.routes.get(1));
     }
 
 
@@ -715,16 +759,15 @@ public class IntersectionLaissezPasserTest {
             for (int i = 0; i < tronçon.size(); i++) {
                 Route route = tronçon.get(i);
                 int nbAdresses = (int)Math.ceil(tronçon.get(i).avoirLongueur()/LARGEUR_MAISON);
-                Vec2 tanAbs = Vec2.sous(route.intersectionA.position,route.intersectionB.position).norm().mult(interA==route.intersectionA?-1f:1f);
-                Vec2 tanLoc = Vec2.sous(route.intersectionA.position,route.intersectionB.position).norm();
-                Vec2 cotan = new Vec2(tanLoc.y,-tanLoc.x);
+                Vec2 tan = Vec2.sous(route.intersectionA.position,route.intersectionB.position).norm().mult(interA==route.intersectionA?-1f:1f);
+                Vec2 cotan = new Vec2(tan.y,-tan.x);
 
                 int[] numérosSensA = new int[nbAdresses];
                 int[] numérosSensB = new int[nbAdresses];
                 Vec2[] positionsSensA = new Vec2[nbAdresses];
                 Vec2[] positionsSensB = new Vec2[nbAdresses];
                 for (int j = 0; j < nbAdresses; j++) {
-                    Vec2 pos = Vec2.mult(tanAbs,LARGEUR_MAISON*(float)j).addi(interA.position);
+                    Vec2 pos = Vec2.mult(tan,LARGEUR_MAISON*(float)j).addi(interA.position);
                     if(interA == route.intersectionA){
                         numérosSensA[j] = 2*j+adressesCompte;
                         numérosSensB[j] = 2*j+1+adressesCompte;

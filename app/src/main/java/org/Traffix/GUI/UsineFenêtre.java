@@ -256,6 +256,14 @@ public class UsineFenêtre {
         carteInfosGaucheBas.add(boutonBas,gbc);
         fenêtre.ajouterÉlémentParID(boutonBas, "boutonRalentir");
 
+        Bouton boutonDemiTour = new Bouton("🗘");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.gridheight = 1;
+        carteInfosGaucheBas.add(boutonDemiTour,gbc);
+        fenêtre.ajouterÉlémentParID(boutonDemiTour, "boutonDemiTour");
+
         //////////////////////////////////////////////////////////////////////////////////////////////
         /// Paramètres                                                                             ///
         //////////////////////////////////////////////////////////////////////////////////////////////

@@ -22,7 +22,7 @@ public class IntersectionLaissezPasser extends Intersection {
         super(pos);
     }
 
-    public IntersectionLaissezPasser(Vec2 pos, ArrayList routes){
+    public IntersectionLaissezPasser(Vec2 pos, ArrayList<Route> routes){
         super(pos, routes);
     }
 
@@ -38,7 +38,9 @@ public class IntersectionLaissezPasser extends Intersection {
 
         if (routeDépart == null || routeDestination == null){
             System.err.println("[ERREUR] routeDépart et routeDestination ne peuvent pas être null");
-            System.err.println(Thread.currentThread().getStackTrace());
+            for (StackTraceElement s : Thread.currentThread().getStackTrace()) {
+                System.err.println(s);
+            }
             return false;
         }
 
@@ -83,7 +85,9 @@ public class IntersectionLaissezPasser extends Intersection {
 
         if (routeDépart == null || routeDestination == null){
             System.err.println("[ERREUR] routeDépart et routeDestination ne peuvent pas être null");
-            System.err.println(Thread.currentThread().getStackTrace());
+            for (StackTraceElement s : Thread.currentThread().getStackTrace()) {
+                System.err.println(s);
+            }
             return false;
         }
 

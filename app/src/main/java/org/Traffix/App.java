@@ -114,11 +114,12 @@ public class App {
         while(fenêtre.active){
             long deltaTempsMillis = System.currentTimeMillis()-tempsA;
             tempsA = System.currentTimeMillis();
-            réseau.miseÀJour(0f*(float)deltaTempsMillis/1000f, false);
+            réseau.miseÀJour(10f*(float)deltaTempsMillis/1000f, false);
             carte.scène.caméra.positionner(réseau.véhicules[0].objetRendus.avoirTransformée().avoirPos());
             carte.scène.caméra.faireRotation( new Vec3((float)Math.toRadians(-45f), réseau.véhicules[0].objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f));
             miniCarte.scène.caméra.positionner(réseau.véhicules[0].objetRendus.avoirTransformée().avoirPos());
             miniCarte.scène.caméra.faireRotation( new Vec3((float)Math.toRadians(-90f), réseau.véhicules[0].objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f));
+            System.out.println(réseau.véhicules[0].vitesseMoyenne);
         }        
 
         fenêtre.fermer();

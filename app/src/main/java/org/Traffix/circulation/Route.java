@@ -82,13 +82,13 @@ public class Route {
         if(dansSensA && véhiculesSensA.size() > 2){
             vitesseVéhicules = 0;
             for (int i = 0; i < véhiculesSensA.size(); i++) {
-                vitesseVéhicules += véhiculesSensA.get(i).vitesse;
+                vitesseVéhicules += véhiculesSensA.get(i).vitesseMoyenne;
             }
             vitesseVéhicules = vitesseVéhicules/véhiculesSensA.size();
         }else if(!dansSensA && véhiculesSensB.size() > 2){
             vitesseVéhicules = 0;
             for (int i = 0; i < véhiculesSensB.size(); i++) {
-                vitesseVéhicules += véhiculesSensB.get(i).vitesse;
+                vitesseVéhicules += véhiculesSensB.get(i).vitesseMoyenne;
             }
             vitesseVéhicules = vitesseVéhicules/véhiculesSensB.size();
         }
@@ -216,6 +216,8 @@ public class Route {
 
         véhiculesSensA.add(véhicule);
         véhicule.positionRelative = 0;
+        véhicule.estSensA = true;
+        véhicule.routeActuelle = this;
     }
 
     /**
@@ -238,6 +240,8 @@ public class Route {
 
         véhiculesSensB.add(véhicule);
         véhicule.positionRelative = 0;
+        véhicule.estSensA = false;
+        véhicule.routeActuelle = this;
     }
 
     /**
@@ -279,6 +283,8 @@ public class Route {
         // }
         if (véhiculesSensA.contains(v)){
             véhiculesSensA.remove(v);
+            v.routeActuelle = null;
+            v.positionRelative = -1;
         }
     }
 
@@ -289,6 +295,8 @@ public class Route {
         // }
         if (véhiculesSensB.contains(v)){
             véhiculesSensB.remove(v);
+            v.routeActuelle = null;
+            v.positionRelative = -1;
         }
     }
 
