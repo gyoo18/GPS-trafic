@@ -96,44 +96,19 @@ public class GestionnaireContrôles {
             @Override
             public void mousePressed(MouseEvent e){
                 
-                Caméra caméra = miniCarte.scène.caméra;
-                float xPosRel = (float)e.getX()/(float)miniCarte.getWidth(); // Position du curseur, relative à la miniCarte
-                float yPosRel = (float)e.getY()/(float)miniCarte.getHeight();
-                float ratio = (float)miniCarte.getWidth()/(float)miniCarte.getHeight();
-
                 // Obtenir la position du curseur sur la carte
-
-                // Comme la transformée de la caméra est en mode Orbite, caméra.avoirPos() renvoie le centre d'orbite.
-                // Il faut donc manuellement calculer la position de la caméra.
-                Vec3 camPos = Mat4.mulV(caméra.avoirVue().avoirInv(), new Vec3(0f));
-
-                // Construction du vecteur qui pointe dans la direction du curseur
-                // Direction vers laquelle pointe la caméra
-                Vec3 camDir = Vec3.sous(caméra.avoirPos(),camPos).norm();
-                // Transformation de la position relative du curseur sur un plan en 3D à planProche de
-                // distance en face de la caméra
-                float posX =  (float)Math.tan((Math.PI/180f)*caméra.FOV/2f)*(xPosRel*2f - 1f)*caméra.planProche;
-                float posY = -(float)Math.tan((Math.PI/180f)*caméra.FOV/2f)*(yPosRel*2f - 1f)*caméra.planProche/ratio;
-                // Création du vecteur normal qui pointe dans la direction du curseur
-                Vec3 pointeurDir = new Vec3(posX,posY,caméra.planProche).norm();
-                // Il faut maintenant orienter le vecteur dans l'orientation de la caméra avec une transformation matricielle
-                Vec3 Z = camDir; // Vecteur Z de la caméra
-                Vec3 X = new Vec3((float)Math.cos(caméra.avoirRot().y),0,(float)-Math.sin(caméra.avoirRot().y)); // Vecteur X de la caméra
-                Vec3 Y = Vec3.croix(Z, X);  // Vecteur Y de la caméra
-                Mat4 rotation = new Mat4(new float[]{
-                    X.x, X.y, X.z, 0,
-                    Y.x, Y.y, Y.z, 0,
-                    Z.x, Z.y, Z.z, 0,
-                    0,   0,   0,   1
-                });     // Matrice de transformation de l'espace vue vers l'espace univers
-                pointeurDir = Mat4.mulV(rotation, pointeurDir); // Multiplication matricielle
-
+                Vec3 camPos = Mat4.mulV(miniCarte.scène.caméra.avoirVue().avoirInv(), new Vec3(0));
+                Vec3 pointeurDir = Maths.avoirDirPointeurCurseurMonde(miniCarte.scène.caméra, e.getX(), e.getY(), miniCarte.getWidth(), miniCarte.getHeight());
                 Vec3 pointeurPos = Maths.intersectionPlan(new Vec3(0), new Vec3(0,1,0), pointeurDir, camPos);
+
+                // miniCarte.scène.obtenirObjet("pointeur").avoirTransformée().positionner(pointeurPos);
                 
                 Vec2 positionCarte = new Vec2(pointeurPos.x,pointeurPos.z);
                 String adresse = réseau.avoirAdresse(positionCarte);
 
                 ((TexteEntrée) fenêtre.obtenirÉlémentParID("adresseEntrée")).setText(adresse);
+
+                //TODO GestionnaireAccidents
             }
         };
         miniCarte.canvas.addMouseListener(ma);
