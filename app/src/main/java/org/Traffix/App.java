@@ -25,6 +25,7 @@ import org.Traffix.maths.Vec4;
 import org.Traffix.maths.Maths;
 import org.Traffix.maths.Vec2;
 import org.Traffix.utils.Chargeur;
+import org.checkerframework.checker.units.qual.min;
 
 import java.util.ArrayList;
 
@@ -64,6 +65,7 @@ public class App {
         Objet réseauObjet = new Objet("réseau", GénérateurMaillage.faireMaillageRéseau(réseau,1f), nuaRéseau, null, null, new Transformée());
 
         GLCanvas carte = (GLCanvas)fenêtre.obtenirÉlémentParID("GLCarte");
+        carte.bloquer();
         carte.scène.ajouterObjet(plancher);
         carte.scène.ajouterObjet(réseauObjet);
         carte.scène.caméra.positionner(new Vec3(0,20,0));
@@ -78,12 +80,16 @@ public class App {
         }
         Objet itinéraire = réseau.véhicules[0].avoirNavigateur().avoirItinéraire();
         carte.scène.ajouterObjet(itinéraire);
+        carte.débloquer();
+        carte.canvas.surFenêtreModifiée();
 
+        Nuanceur nuanceur2 = nuanceur.copier();
+        Nuanceur nuaRéseau2 = nuaRéseau.copier();
         GLCanvas miniCarte = (GLCanvas)fenêtre.obtenirÉlémentParID("GLCarte2");
-        Objet miniPlancher = plancher.copierProfond(); miniPlancher.donnerTransformée(plancher.avoirTransformée());
+        miniCarte.bloquer();
+        Objet miniPlancher = new Objet("miniPlancher", maillage.copier(), nuanceur2, plancher.avoirCouleur().copier(), null, plancher.avoirTransformée().copier());
         miniCarte.scène.ajouterObjet(miniPlancher);
-        Objet miniRéseau = réseauObjet.copierProfond();
-        miniRéseau.donnerMaillage(GénérateurMaillage.faireMaillageRéseau(réseau, 3f));
+        Objet miniRéseau = new Objet("miniRéseau", GénérateurMaillage.faireMaillageRéseau(réseau, 3f), nuaRéseau2, null, null, new Transformée());
         miniCarte.scène.ajouterObjet(miniRéseau);
         miniCarte.scène.caméra.faireRotation(new Vec3((float)Math.toRadians(-90f),0,0));
         miniCarte.scène.caméra.planProche = 190f;
@@ -92,13 +98,17 @@ public class App {
         miniCarte.scène.caméra.avoirVue().estOrbite = true;
         miniCarte.scène.caméra.avoirVue().changerRayon(200);
         for (int i = 0; i < réseau.véhicules.length; i++) {
-            Objet miniVéhicule = réseau.véhicules[i].objetRendus.copierProfond(); miniVéhicule.donnerTransformée(réseau.véhicules[i].objetRendus.avoirTransformée());
+            Objet miniVéhicule = réseau.véhicules[i].objetRendus.copierProfond();
+            miniVéhicule.donnerNuanceur(nuanceur2);
+            miniVéhicule.donnerTransformée(réseau.véhicules[i].objetRendus.avoirTransformée());
             miniCarte.scène.ajouterObjet(miniVéhicule);
         }
         miniCarte.scène.ajouterObjet(réseau.véhicules[0].avoirNavigateur().avoirMiniItinéraire());
 
-        Objet pointeur = new Objet("pointeur", GénérateurMaillage.générerGrille(2, 2), nuanceur, new Vec4(0,0,1f,1f), null, new Transformée().faireÉchelle(new Vec3(5f)));
+        Objet pointeur = new Objet("pointeur", GénérateurMaillage.générerGrille(2, 2), nuanceur2, new Vec4(0,0,1f,1f), null, new Transformée().faireÉchelle(new Vec3(5f)));
         miniCarte.scène.ajouterObjet(pointeur);
+        miniCarte.débloquer();
+        miniCarte.canvas.surFenêtreModifiée();
 
         long tempsA = System.currentTimeMillis();
         while(fenêtre.active){

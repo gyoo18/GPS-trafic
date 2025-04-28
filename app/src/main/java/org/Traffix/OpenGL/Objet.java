@@ -77,6 +77,7 @@ public class Objet implements Animable{
         if (aMaillage && !maillage.estConstruit){maillage.construire();}
         if (aNuanceur && !nuanceur.estConstruit){nuanceur.construire();}
         if (aTexture && !texture.estConstruit) {texture.construire();}
+        //System.out.println(nom+":"+nuanceur.ID);
         estConstruit = true;
     }
 

@@ -26,6 +26,8 @@ public class GLCanvas extends JPanel {
         private boolean aFenêtreÉtéModifié = false;
         private static final long serialVersionUID = 1L;
 
+        private static boolean occupé = false;
+
         public GLSubCanvas(GLData data){
             super(data);
         }
@@ -43,6 +45,17 @@ public class GLCanvas extends JPanel {
         }
         @Override
         public void paintGL() {
+            if(occupé){
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
+
+            occupé = true;
+
             GL46.glClear(GL46.GL_COLOR_BUFFER_BIT | GL46.GL_DEPTH_BUFFER_BIT);
 
             if(aFenêtreÉtéModifié){
@@ -56,21 +69,26 @@ public class GLCanvas extends JPanel {
                     if(!o.estConstruit){
                         o.construire();
                     }
+                    glErreur(false);
                     
                     if (o.dessiner && o.aMaillage() && o.aNuanceur()){
                         o.avoirMaillage().préparerAuDessin();
+                        glErreur(false);
                         GL46.glUseProgram(o.avoirNuanceur().ID);
+                        glErreur(false);
 
                         if (o.aTexture()){
                             GL46.glActiveTexture(GL46.GL_TEXTURE0);
                             GL46.glBindTexture(GL46.GL_TEXTURE_2D, o.avoirTexture().ID);
                             GL46.glUniform1i(GL46.glGetUniformLocation(o.avoirNuanceur().ID,"Tex"),0);
                         }
+                        glErreur(false);
 
                         if (o.aCouleur()){
                             Vec4 coul = o.avoirCouleur();
                             GL46.glUniform4f(GL46.glGetUniformLocation(o.avoirNuanceur().ID,"Coul"),coul.x,coul.y,coul.z,coul.w);
                         }
+                        glErreur(false);
 
                         if (o.aTransformée()){
                             GL46.glUniformMatrix4fv(GL46.glGetUniformLocation(o.avoirNuanceur().ID,"transforme"),false,o.avoirTransformée().avoirMat().mat);
@@ -79,15 +97,18 @@ public class GLCanvas extends JPanel {
                             GL46.glUniformMatrix4fv(GL46.glGetUniformLocation(o.avoirNuanceur().ID,"transforme"),false, new Mat4().mat);
                             GL46.glUniformMatrix4fv(GL46.glGetUniformLocation(o.avoirNuanceur().ID,"rotation"),false, new Mat4().mat);
                         }
+                        glErreur(false);
 
                         GL46.glUniformMatrix4fv(GL46.glGetUniformLocation(o.avoirNuanceur().ID,"vue"),false,scène.caméra.avoirVue().avoirMat().mat);
                         GL46.glUniformMatrix4fv(GL46.glGetUniformLocation(o.avoirNuanceur().ID,"projection"),false,scène.caméra.projection.mat);
+                        glErreur(false);
 
                         if (o.avoirMaillage().estIndexé){
                             GL46.glDrawElements(GL46.GL_TRIANGLES, o.avoirMaillage().NSommets, GL46.GL_UNSIGNED_INT,0);
                         }else {
                             GL46.glDrawArrays(GL46.GL_TRIANGLES, 0, o.avoirMaillage().NSommets);
                         }
+                        glErreur(false);
                     }
                 }
             }
@@ -95,6 +116,8 @@ public class GLCanvas extends JPanel {
             glErreur(false);
             swapBuffers();
             repaint();
+
+            occupé = false;
         }
 
         public boolean glErreur(boolean direNoError) {
@@ -139,6 +162,21 @@ public class GLCanvas extends JPanel {
             GL46.glViewport(0, 0, getFramebufferWidth(), getFramebufferHeight());
             scène.surModificationFenêtre((float)getFramebufferWidth()/(float)getFramebufferHeight());
         }
+
+        public synchronized void bloquer(){
+            while (occupé) {
+                try {
+                    Thread.sleep(10);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            occupé = true;
+        }
+
+        public synchronized void débloquer(){
+            occupé = false;
+        }
     }
 
     public GLCanvas(){
@@ -160,5 +198,13 @@ public class GLCanvas extends JPanel {
     public synchronized void détruire(){
         GL.destroy();
         continuer = false;
+    }
+
+    public void bloquer(){
+        canvas.bloquer();
+    }
+
+    public void débloquer(){
+        canvas.débloquer();
     }
 }
