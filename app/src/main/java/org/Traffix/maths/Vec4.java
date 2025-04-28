@@ -270,4 +270,9 @@ public class Vec4 implements Animable{
         z = (float)cléB[2];
         w = (float)cléB[3];
     }
+
+    @Override
+    public String toString(){
+        return "["+x+";"+y+";"+z+";"+w+"]";
+    }
 }

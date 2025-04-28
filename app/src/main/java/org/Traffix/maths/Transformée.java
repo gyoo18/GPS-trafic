@@ -358,4 +358,9 @@ public class Transformée implements Animable{
         nModifié++;
         nInvModifié++;
     }
+
+    @Override
+    public String toString() {
+        return "{ pos:"+pos+" rot:"+rot+" éch:"+éch+(estOrbite?" estOrbite, r:"+rayon:"")+" }";
+    }
 }
