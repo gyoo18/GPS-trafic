@@ -5,15 +5,29 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
+import org.Traffix.OpenGL.GLCanvas;
+import org.Traffix.OpenGL.GénérateurMaillage;
+import org.Traffix.OpenGL.Maillage;
+import org.Traffix.OpenGL.Nuanceur;
+import org.Traffix.OpenGL.Objet;
 import org.Traffix.circulation.GestionnaireAccidents.Accident.TypeAccident;
 import org.Traffix.maths.Maths;
+import org.Traffix.maths.Transformée;
 import org.Traffix.maths.Vec2;
+import org.Traffix.maths.Vec3;
+import org.Traffix.maths.Vec4;
+import org.Traffix.utils.Chargeur;
+import org.checkerframework.checker.units.qual.min;
 import org.checkerframework.checker.units.qual.t;
 
 public class GestionnaireAccidents {
 
     private static ArrayList<Accident> accidents = new ArrayList<>();
     private static Réseau réseau = null;
+    private static GLCanvas carte;
+    private static GLCanvas miniCarte;
 
     public static class Accident {
 
@@ -23,6 +37,9 @@ public class GestionnaireAccidents {
 
         public final String description;
         public final TypeAccident type;
+
+        public final Objet objetRendus;
+        public final Objet miniObjetRendus;
 
         public enum TypeAccident {
             ACCIDENT_VÉHICULE("Collision entre véhicules"),
@@ -39,25 +56,9 @@ public class GestionnaireAccidents {
     
         }
 
-        private ArrayList<Route> routesAffectés = new ArrayList<>();
+        private Route[] routesAffectés;
         private Vec2 position;
         private float rayon;
-
-        ÉcouteurAccidentRetiré écouteur = new ÉcouteurAccidentRetiré() {
-            private Accident a;
-            public ÉcouteurAccidentRetiré init(Accident a){
-                this.a = a;
-                return this;
-            }
-
-            @Override
-            public void retiré(Accident a, Route route){
-                if(this.a != a){
-                    System.out.println("Événement destruction reçus de "+a.description+" par "+this.a.description);
-                    this.a.affecterRoute(route);
-                }
-            }
-        }.init(this);
 
         public Accident(TypeAccident type, Vec2 position, float rayon, float durée, float pourcentageRalentissement) {
             if(type != null){
@@ -73,7 +74,8 @@ public class GestionnaireAccidents {
             if(rayon >= 0f){
                 this.rayon = rayon;
             }else{
-                this.rayon = (float)Math.random()*1000f;
+                this.rayon = (float)Math.random();
+                this.rayon *= this.rayon*300f;
             }
             if(durée > 0f){
                 this.durée = durée;
@@ -90,10 +92,15 @@ public class GestionnaireAccidents {
                 throw new RuntimeException("[ERREUR] Le gestionnaire d'accidents ne possède pas de réseau.");
             }
 
+            Maillage m;
+            Maillage miniM;
+            Transformée t;
+
             ArrayList<Route> routes = GestionnaireAccidents.réseau.routes;
             switch (this.type) {
                 case TypeAccident.ACCIDENT_VÉHICULE:
                 case TypeAccident.VÉHICULE_EN_PANNE:{
+                    this.rayon = 10f;
                     float minDist = Float.MAX_VALUE;
                     Route minDistRoute = null;
                     for(int i = 0; i < routes.size(); i++){
@@ -105,10 +112,14 @@ public class GestionnaireAccidents {
                     }
                     ArrayList<Route> tronçon = réseau.tronçons.get(minDistRoute.nom);
                     for (int i = 0; i < tronçon.size(); i++) {
-                        tronçon.get(i).écouteurAccidentRetirés.add(this.écouteur);
+                        tronçon.get(i).ajouterAccident(this);
                     }
-                    routesAffectés.addAll(réseau.tronçons.get(minDistRoute.nom));
-                    this.description = this.type.toString()+" sur "+minDistRoute.nom+". Gravité : "+this.pourcentageRalentissement*100f+"% durée : "+this.durée+"s";
+                    routesAffectés = new Route[réseau.tronçons.get(minDistRoute.nom).size()];
+                    réseau.tronçons.get(minDistRoute.nom).toArray(routesAffectés);
+                    m = GénérateurMaillage.faireMaillageItinéraire(routesAffectés, 3f);
+                    miniM = GénérateurMaillage.faireMaillageItinéraire(routesAffectés, 6f);
+                    t = new Transformée().positionner(new Vec3(0,-0.05f,0));
+                    this.description = this.type.toString()+" sur "+minDistRoute.nom+". Gravité : "+(int)(this.pourcentageRalentissement*100f)+"% durée : "+formatterTemps((int)this.durée,false);
                     break;
                 }
                 case TypeAccident.TRAVAUX:
@@ -116,6 +127,7 @@ public class GestionnaireAccidents {
                 case TypeAccident.MANIFESTATION:{
                     float minDist = Float.MAX_VALUE;
                     Route minDistRoute = null;
+                    ArrayList<Route> routestmp = new ArrayList<>();
                     for(int i = 0; i < routes.size(); i++){
                         float dist = Maths.distanceSegmentPoint( routes.get(i).intersectionA.position,routes.get(i).intersectionB.position, this.position);
                         if(dist < minDist){
@@ -123,17 +135,39 @@ public class GestionnaireAccidents {
                             minDistRoute = routes.get(i);
                         }
                         if(dist <= this.rayon){
-                            routesAffectés.add(routes.get(i));
+                            routestmp.add(routes.get(i));
+                            routes.get(i).ajouterAccident(this);
                         }
                     }
-                    this.description = this.type.description+" sur "+(this.rayon/1000f)+"km autour de "+minDistRoute.nom+". Gravité : "+this.pourcentageRalentissement*100f+"% durée : "+this.durée+"s";
+                    routesAffectés = new Route[routestmp.size()];
+                    routestmp.toArray(routesAffectés);
+                    m = GénérateurMaillage.générerDisque(64);
+                    miniM = m.copier();
+                    t = new Transformée().échelonner(new Vec3(this.rayon)).positionner(new Vec3(this.position.x,-0.05f,this.position.y));
+                    this.description = this.type.description+" sur "+((float)((int)this.rayon)/1000f)+"km autour de "+minDistRoute.nom+". Gravité : "+(int)(this.pourcentageRalentissement*100f)+"% durée : "+formatterTemps((int)this.durée,false);
                     break;
                 }
                 default:
                     throw new IllegalArgumentException(this.type.toString()+" n'est pas une valeur supportée.");
             }
 
-            affecterRoutes();
+            Nuanceur nuanceur = null;
+            try {
+                nuanceur = Chargeur.chargerNuanceurFichier("nuaColoré");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Vec4 couleur = new Vec4(0.8f,0.5f,0.5f,1f).mult(1f-this.pourcentageRalentissement); couleur.w = 1f;
+            this.objetRendus = new Objet("Accident", m, nuanceur, couleur, null, t);
+            this.miniObjetRendus = new Objet("miniAccident", miniM, nuanceur.copier(), this.objetRendus.avoirCouleur().copier(), null, t);
+
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    carte.scène.ajouterObjet(objetRendus);
+                    miniCarte.scène.ajouterObjet(miniObjetRendus);
+                }
+            });
             System.out.println("Accident créé : "+this.description);
         }
 
@@ -165,7 +199,8 @@ public class GestionnaireAccidents {
             switch (this.type) {
                 case TypeAccident.ACCIDENT_VÉHICULE:
                 case TypeAccident.VÉHICULE_EN_PANNE:{
-                    routesAffectés.addAll(réseau.tronçons.get(route.nom));
+                    this.rayon = 10f;
+                    //routesAffectés.addAll(réseau.tronçons.get(route.nom));
                     this.description = this.type.toString()+" sur "+route.nom+". Gravité : "+this.pourcentageRalentissement*100f+"% durée : "+this.durée+"s";
                     break;
                 }
@@ -175,7 +210,7 @@ public class GestionnaireAccidents {
                     for(int i = 0; i < routes.size(); i++){
                         float dist = Maths.distanceLignePoint( Vec2.sous(routes.get(i).intersectionA.position,routes.get(i).intersectionB.position), routes.get(i).intersectionA.position, this.position);
                         if(dist <= this.rayon){
-                            routesAffectés.add(routes.get(i));
+                            //routesAffectés.add(routes.get(i));
                         }
                     }
                     this.description = this.type.description+" sur "+(this.rayon/1000f)+"km autour de "+route.nom+". Gravité : "+this.pourcentageRalentissement*100f+"% durée : "+this.durée+"s";
@@ -184,41 +219,54 @@ public class GestionnaireAccidents {
                 default:
                     throw new IllegalArgumentException(this.type.toString()+" n'est pas une valeur supportée.");
             }
-            affecterRoutes();
+
+            Nuanceur nuanceur = null;
+            try {
+                nuanceur = Chargeur.chargerNuanceurFichier("nuaColoré");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Vec4 couleur = new Vec4(0.8f,0.5f,0.5f,1f).mult(1f-this.pourcentageRalentissement); couleur.w = 1f;
+            this.objetRendus = new Objet("Accident", GénérateurMaillage.générerDisque(16), nuanceur, couleur, null, new Transformée().échelonner(new Vec3(this.rayon)).positionner(new Vec3(this.position.x,-0.05f,this.position.y)));
+            this.miniObjetRendus = new Objet("miniAccident", GénérateurMaillage.générerDisque(16), nuanceur.copier(), this.objetRendus.avoirCouleur().copier(), null, this.objetRendus.avoirTransformée());
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    carte.scène.ajouterObjet(objetRendus);
+                    miniCarte.scène.ajouterObjet(miniObjetRendus);
+                }
+            });
             System.out.println("Accident créé : "+this.description);
-        }
-
-        public void affecterRoutes(){
-            for (int i = 0; i < routesAffectés.size(); i++) {
-                routesAffectés.get(i).facteurRalentissement = Math.min(routesAffectés.get(i).facteurRalentissement, (1f-pourcentageRalentissement));
-            }
-        }
-
-        public void affecterRoute(Route route){
-            if(routesAffectés.contains(route)){
-                route.facteurRalentissement = Math.min(route.facteurRalentissement, (1f-pourcentageRalentissement));
-            }
         }
 
         public void détruire(){
             System.out.println("Accident détruit : "+this.description);
-            for (int i = 0; i < routesAffectés.size(); i++) {
-                for (int j = 0; j < routesAffectés.get(i).écouteurAccidentRetirés.size(); j++) {
-                    routesAffectés.get(i).écouteurAccidentRetirés.get(j).retiré(this, routesAffectés.get(i));
-                }
-                routesAffectés.get(i).écouteurAccidentRetirés.remove(écouteur);
+            for (int i = 0; i < routesAffectés.length; i++) {
+                routesAffectés[i].retirerAccident(this);
             }
-            this.routesAffectés.clear();
+            this.routesAffectés = null;
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    carte.scène.retirerObjet(objetRendus);
+                    miniCarte.scène.retirerObjet(miniObjetRendus);
+                }
+            });
         }
 
         // Getters et setters
-        public ArrayList<Route>  avoirRoutesAffectés() {
+        public Route[]  avoirRoutesAffectés() {
             return routesAffectés;
         }
     }
 
     public static void donnerRéseau(Réseau r){
         GestionnaireAccidents.réseau = r;
+    }
+
+    public static void donnerGLCanvas(GLCanvas carte, GLCanvas miniCarte){
+        GestionnaireAccidents.carte = carte;
+        GestionnaireAccidents.miniCarte = miniCarte;
     }
 
     public static void miseÀJour() {
@@ -235,5 +283,12 @@ public class GestionnaireAccidents {
         if (Math.random()*100.0 < 0.1){
             accidents.add(new Accident(null, null, -1, -1, -1));
         }
+    }
+
+    private static String formatterTemps(int tempsSec, boolean formatHeure){
+        int sec = tempsSec%60;
+        int tempsMin = (tempsSec/60)%60; //Temps en minutes
+        int tempsH = (tempsSec/3600)%60; //Temps en heures
+        return ""+(tempsH>0?tempsH+(formatHeure?"h":":"):"")+(tempsMin>0||tempsH>0?tempsMin+(formatHeure?"min":":"):"")+(tempsSec>0?sec+(formatHeure?"sec":":"):"");
     }
 }

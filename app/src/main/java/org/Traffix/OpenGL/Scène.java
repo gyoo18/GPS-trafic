@@ -35,6 +35,20 @@ public class Scène {
         return null;
     }
 
+    public void retirerObjet(Objet o){
+        objets.remove(o);
+    }
+
+    public ArrayList<Objet> retirerObjet(String nom){
+        ArrayList<Objet> retour = new ArrayList<>();
+        for (int i = objets.size()-1; i >= 0; i--) {
+            if(objets.get(i).nom.equals(nom)){
+                retour.add(objets.remove(i));
+            }
+        }
+        return retour;
+    }
+
     public Objet[] obtenirObjets(int[] ID){
         LinkedList<Objet> résultatLL = new LinkedList<>();
         for (Objet o : objets){

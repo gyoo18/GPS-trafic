@@ -60,6 +60,7 @@ public class NavigateurManuel extends Navigateur {
                     action = Commande.LÂCHER;
                     itinéraireActuel = null;
                     prochainTournant = chercherProchainTournant(false);
+                    calculerOptions();
                 }else if(!véhicule.estSensA && véhicule.routeActuelle.sensAPossèdePlace(véhicule.longueur)){
                     Route routeActuelle = véhicule.routeActuelle;
                     routeActuelle.retirerVéhiculeSensB(véhicule);
@@ -68,6 +69,7 @@ public class NavigateurManuel extends Navigateur {
                     action = Commande.LÂCHER;
                     itinéraireActuel = null;
                     prochainTournant = chercherProchainTournant(false);
+                    calculerOptions();
                 }
                 break;
             }
@@ -117,6 +119,7 @@ public class NavigateurManuel extends Navigateur {
         }
         
         véhicule.vitesse += Math.min(véhicule.ACCÉLÉRATION,Math.abs(accélération))*Math.signum(accélération)*deltaTempsSecondes;
+        véhicule.vitesse = Math.min(Math.abs(véhicule.vitesse),véhicule.routeActuelle.avoirLimiteEffective())*Math.signum(véhicule.vitesse);
         véhicule.avancer(deltaTempsSecondes);
     }
 
@@ -184,6 +187,7 @@ public class NavigateurManuel extends Navigateur {
     @Override
     public void donnerRoutine(String[] adresses){
         super.donnerRoutine(adresses);
+        itinéraireActuel = null;
         prochainTournant = chercherProchainTournant(false);
     }
 
@@ -213,5 +217,13 @@ public class NavigateurManuel extends Navigateur {
 
     public void donnerCommande(Commande commande){
         action = commande;
+    }
+
+    public Route avoirProchainTournant(){
+        return prochainTournant;
+    }
+
+    public int avoirIndexeRoutine(){
+        return indexeRoutine;
     }
 }

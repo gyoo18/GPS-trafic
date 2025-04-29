@@ -24,28 +24,26 @@ public class Maths {
     }
 
     public static Vec2 pointPlusPrèsLignePoint(Vec2 ligneDir, Vec2 ligneOrigine, Vec2 point){
-        Vec2 dirPoint = Vec2.sous(point,ligneOrigine).norm();
-        float cos0 = Vec2.scal(dirPoint,Vec2.norm(ligneDir));
-        float t = Vec2.distance(point, ligneOrigine)*cos0;
-        return Vec2.mult(Vec2.norm(ligneDir),t).addi(ligneOrigine);
+        Vec2 M = Vec2.norm(ligneDir);
+        float t = Vec2.scal(M,Vec2.sous(point,ligneOrigine));
+        return M.mult(t);
     }
 
     public static Vec2 pointPlusPrèsSegmentPoint(Vec2 posA, Vec2 posB, Vec2 point){
-        Vec2 dirPoint = Vec2.sous(point,posA).norm();
-        float cos0 = Vec2.scal(dirPoint,Vec2.sous(posB,posA).norm());
-        float t = Vec2.distance(point, posA)*cos0;
-        Vec2 pointPlusPrès = Vec2.mult(Vec2.sous(posB,posA).norm(),t).addi(posA);
+        Vec2 M = Vec2.sous(posB,posA).norm();
+        float t = Vec2.scal(M,Vec2.sous(point,posA));
+        Vec2 pointPlusPrès =  M.mult(t).addi(posA);
         if(t < 0){
             return posA.copier();
         }
         if (t > Vec2.distance(posA, posB)){
-            return posB;
+            return posB.copier();
         }
         return pointPlusPrès;
     }
 
     public static float distanceSegmentPoint(Vec2 posA, Vec2 posB, Vec2 point){
-        return Vec2.distance( pointPlusPrèsLignePoint(Vec2.sous(posB, posA), posA, point), point );
+        return Vec2.distance( pointPlusPrèsSegmentPoint(posA, posB, point), point );
     }
 
     /**
