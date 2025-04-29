@@ -2,9 +2,6 @@ package org.Traffix.circulation;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 
 import org.Traffix.maths.Vec2;
@@ -40,22 +37,11 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void passe2(){
         System.out.println("====== passe2 =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
+        Réseau réseau = Communs.créerIntersection2Routes();
+        
+        Route routeXnég = réseau.routes.get(0);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(100,0));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
         
         while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -66,24 +52,11 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void passe3(){
         System.out.println("====== passe3 =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,-100)));
-
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
+        Réseau réseau = Communs.créerIntersection3Routes();
+        
+        Route routeXnég = réseau.routes.get(0);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(100,0));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
         
         while (véhicule.positionRelative < 1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -94,24 +67,11 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void passe3Côté(){
         System.out.println("====== passe3Côté =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,-100)));
-
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
+        Réseau réseau = Communs.créerIntersection2Routes();
+        
+        Route routeYnég = réseau.routes.get(2);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(100,0));
+        routeYnég.ajouterVéhiculeSensA(véhicule);
         
         while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -122,26 +82,11 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void passe4(){
         System.out.println("====== passe4 =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,-100)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,100)));
-
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
+        Réseau réseau = Communs.créerIntersection4Routes();
+        
+        Route routeXnég = réseau.routes.get(0);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(100,0));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
         
         while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -152,25 +97,11 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void passe4Côté(){
         System.out.println("====== passe4Côté =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,-100)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,100)));
-
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
+        Réseau réseau = Communs.créerIntersection3Routes();
+        
+        Route routeYnég = réseau.routes.get(2);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(100,0));
+        routeYnég.ajouterVéhiculeSensA(véhicule);
         
         while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -181,22 +112,11 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void continue2(){
         System.out.println("====== continue2 =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
+        Réseau réseau = Communs.créerIntersection2Routes();
+        
+        Route routeXnég = réseau.routes.get(0);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(100,0));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
         
         while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -210,24 +130,11 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void continue3(){
         System.out.println("====== continue3 =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,-100)));
-
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
+        Réseau réseau = Communs.créerIntersection3Routes();
+        
+        Route routeXnég = réseau.routes.get(0);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(100,0));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
         
         while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -241,26 +148,11 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void continue4(){
         System.out.println("====== continue4 =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,-100)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,100)));
-
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
+        Réseau réseau = Communs.créerIntersection4Routes();
+        
+        Route routeXnég = réseau.routes.get(0);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(100,0));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
         
         while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -274,26 +166,11 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void tourneGauchePrioritaire(){
         System.out.println("====== tourneGauchePrioritaire =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
-
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
+        Réseau réseau = Communs.créerIntersection4Routes();
+        
+        Route routeXnég = réseau.routes.get(0);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(0,100));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
         
         while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -307,26 +184,11 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void tourneDroitePrioritaire(){
         System.out.println("====== tourneDroitePrioritaire =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
-
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,-100))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
+        Réseau réseau = Communs.créerIntersection4Routes();
+        
+        Route routeXnég = réseau.routes.get(0);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(0,-100));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
         
         while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -340,26 +202,11 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void tourneGaucheCéder(){
         System.out.println("====== tourneGaucheCéder =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
-
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(-100,0))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
+        Réseau réseau = Communs.créerIntersection4Routes();
+        
+        Route routeYnég = réseau.routes.get(2);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(-100,0));
+        routeYnég.ajouterVéhiculeSensA(véhicule);
         
         while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -373,26 +220,11 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void tourneDroiteCéder(){
         System.out.println("====== tourneDroiteCéder =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
-
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
+        Réseau réseau = Communs.créerIntersection4Routes();
+        
+        Route routeYnég = réseau.routes.get(2);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(100,0));
+        routeYnég.ajouterVéhiculeSensA(véhicule);
         
         while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -406,30 +238,14 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void passeConflitPrioritaire(){
         System.out.println("====== passeConflitPrioritaire =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
+        Réseau réseau = Communs.créerIntersection4Routes();
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
-        Véhicule véhicule2 = new Véhicule(4.2f);
-        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule2);
-        routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
-        véhicule2.avoirNavigateur().donnerRoutine(routine);
+        Route routeXnég = réseau.routes.get(0);
+        Route routeYnég = réseau.routes.get(2);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(100,0));
+        Véhicule véhicule2 = Communs.nouveauVéhicule(réseau, new Vec2(0,100));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
+        routeYnég.ajouterVéhiculeSensA(véhicule2);
         
         while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -444,31 +260,15 @@ public class IntersectionLaissezPasserTest {
 
     @Test
     public void passeConflitCéder(){
-        System.out.println("====== passeConflitCéder =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
+        System.out.println("====== passeConflitPrioritaire =====");
+        Réseau réseau = Communs.créerIntersection4Routes();
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
-        Véhicule véhicule2 = new Véhicule(4.2f);
-        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule2);
-        routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
-        véhicule2.avoirNavigateur().donnerRoutine(routine);
+        Route routeXnég = réseau.routes.get(0);
+        Route routeYnég = réseau.routes.get(2);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(100,0));
+        Véhicule véhicule2 = Communs.nouveauVéhicule(réseau, new Vec2(0,100));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
+        routeYnég.ajouterVéhiculeSensA(véhicule2);
         
         while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -484,30 +284,14 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void tourneGaucheConflitPrioritaire(){
         System.out.println("====== tourneGaucheConflitPrioritaire =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
+        Réseau réseau = Communs.créerIntersection4Routes();
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
-        Véhicule véhicule2 = new Véhicule(4.2f);
-        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule2);
-        routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
-        véhicule2.avoirNavigateur().donnerRoutine(routine);
+        Route routeXnég = réseau.routes.get(0);
+        Route routeYnég = réseau.routes.get(2);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(0,100));
+        Véhicule véhicule2 = Communs.nouveauVéhicule(réseau, new Vec2(0,100));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
+        routeYnég.ajouterVéhiculeSensA(véhicule2);
         
         while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -526,30 +310,14 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void tourneDroiteConflitPrioritaire(){
         System.out.println("====== tourneDroiteConflitPrioritaire =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
+        Réseau réseau = Communs.créerIntersection4Routes();
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,-100))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
-        Véhicule véhicule2 = new Véhicule(4.2f);
-        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule2);
-        routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
-        véhicule2.avoirNavigateur().donnerRoutine(routine);
+        Route routeXnég = réseau.routes.get(0);
+        Route routeYnég = réseau.routes.get(2);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(0,-100));
+        Véhicule véhicule2 = Communs.nouveauVéhicule(réseau, new Vec2(0,100));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
+        routeYnég.ajouterVéhiculeSensA(véhicule2);
         
         while ((1f-véhicule.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -568,30 +336,14 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void tourneGaucheConflitCéder1(){
         System.out.println("====== tourneGaucheConflitCéder1 =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
+        Réseau réseau = Communs.créerIntersection4Routes();
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
-        Véhicule véhicule2 = new Véhicule(4.2f);
-        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule2);
-        routine = new String[]{réseau.avoirAdresse(new Vec2(-100,0))};
-        véhicule2.avoirNavigateur().donnerRoutine(routine);
+        Route routeXnég = réseau.routes.get(0);
+        Route routeYnég = réseau.routes.get(2);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(0,100));
+        Véhicule véhicule2 = Communs.nouveauVéhicule(réseau, new Vec2(-100,0));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
+        routeYnég.ajouterVéhiculeSensA(véhicule2);
         
         while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -610,30 +362,14 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void tourneGaucheConflitCéder2(){
         System.out.println("====== tourneGaucheConflitCéder2 =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
+        Réseau réseau = Communs.créerIntersection4Routes();
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(1).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,-100))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
-        Véhicule véhicule2 = new Véhicule(4.2f);
-        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule2);
-        routine = new String[]{réseau.avoirAdresse(new Vec2(-100,0))};
-        véhicule2.avoirNavigateur().donnerRoutine(routine);
+        Route routeXpos = réseau.routes.get(1);
+        Route routeYnég = réseau.routes.get(2);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(0,-100));
+        Véhicule véhicule2 = Communs.nouveauVéhicule(réseau, new Vec2(-100,0));
+        routeXpos.ajouterVéhiculeSensA(véhicule);
+        routeYnég.ajouterVéhiculeSensA(véhicule2);
         
         while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);
@@ -652,30 +388,14 @@ public class IntersectionLaissezPasserTest {
     @Test
     public void tourneDroiteConflitCéder1(){
         System.out.println("====== tourneDroiteConflitCéder1 =====");
-        Réseau réseau = new Réseau();
-        AÉtoile.donnerRéseau(réseau);
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(-100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(0,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(100,0)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,-100)));
-        réseau.intersections.add(new IntersectionLaissezPasser(new Vec2(10,100)));
+        Réseau réseau = Communs.créerIntersection4Routes();
 
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(0)));
-        réseau.routes.add(new Route("rue A", 40, réseau.intersections.get(1), réseau.intersections.get(2)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(3)));
-        réseau.routes.add(new Route("rue B", 40, réseau.intersections.get(1), réseau.intersections.get(4)));
-
-        réseau.construireTronçons();
-        générerNumérosRues(réseau);
-
-        Véhicule véhicule = new Véhicule(4.2f);
-        réseau.routes.get(0).ajouterVéhiculeSensA(véhicule);
-        String[] routine = new String[]{réseau.avoirAdresse(new Vec2(0,100))};
-        véhicule.avoirNavigateur().donnerRoutine(routine);
-        Véhicule véhicule2 = new Véhicule(4.2f);
-        réseau.routes.get(2).ajouterVéhiculeSensA(véhicule2);
-        routine = new String[]{réseau.avoirAdresse(new Vec2(100,0))};
-        véhicule2.avoirNavigateur().donnerRoutine(routine);
+        Route routeXnég = réseau.routes.get(0);
+        Route routeYnég = réseau.routes.get(2);
+        Véhicule véhicule = Communs.nouveauVéhicule(réseau, new Vec2(0,100));
+        Véhicule véhicule2 = Communs.nouveauVéhicule(réseau, new Vec2(100,0));
+        routeXnég.ajouterVéhiculeSensA(véhicule);
+        routeYnég.ajouterVéhiculeSensA(véhicule2);
         
         while ((1f-véhicule2.positionRelative)*véhicule.routeActuelle.avoirLongueur() >= 0.1f) {
             véhicule.miseÀJour(0.1f, true);

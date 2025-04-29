@@ -43,22 +43,6 @@ public class GestionnaireAccidents {
         private Vec2 position;
         private float rayon;
 
-        ÉcouteurAccidentRetiré écouteur = new ÉcouteurAccidentRetiré() {
-            private Accident a;
-            public ÉcouteurAccidentRetiré init(Accident a){
-                this.a = a;
-                return this;
-            }
-
-            @Override
-            public void retiré(Accident a, Route route){
-                if(this.a != a){
-                    System.out.println("Événement destruction reçus de "+a.description+" par "+this.a.description);
-                    this.a.affecterRoute(route);
-                }
-            }
-        }.init(this);
-
         public Accident(TypeAccident type, Vec2 position, float rayon, float durée, float pourcentageRalentissement) {
             if(type != null){
                 this.type = type;
