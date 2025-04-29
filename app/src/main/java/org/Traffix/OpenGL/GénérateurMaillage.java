@@ -1,5 +1,6 @@
 package org.Traffix.OpenGL;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.Traffix.OpenGL.Maillage.TypeDonnée;
@@ -46,6 +47,42 @@ public class GénérateurMaillage {
         maillage.ajouterAttributListe(uv, 2);
         maillage.ajouterIndexesListe(indexes);
         return maillage;
+    }
+
+    public static Maillage générerDisque(int résolution){
+        float[] positions = new float[(résolution+1)*3];
+        float[] normales = new float[(résolution+1)*3];
+        int[] indexes = new int[résolution*3];
+
+        positions[0] = 0;
+        positions[1] = 0;
+        positions[2] = 0;
+
+        normales[0] = 0;
+        normales[1] = 1;
+        normales[2] = 0;
+
+        for (int i = 0; i < résolution; i++) {
+            positions[(i+1)*3 + 0] = (float)Math.cos(Math.PI*2.0*((double)i+1)/(double)résolution);
+            positions[(i+1)*3 + 1] = 0;
+            positions[(i+1)*3 + 2] = (float)Math.sin(Math.PI*2.0*((double)i+1)/(double)résolution);
+
+            normales[(i+1)*3 + 0] = 0;
+            normales[(i+1)*3 + 1] = 1;
+            normales[(i+1)*3 + 2] = 0;
+
+            indexes[i*3 + 0] = 0;
+            indexes[i*3 + 1] = i+1;
+            indexes[i*3 + 2] = i+2;
+        }
+
+        indexes[résolution*3-1] = 1;
+
+        Maillage m = new Maillage(Map.of(TypeDonnée.FLOAT, 2), true);
+        m.ajouterAttributListe(positions, 3);
+        m.ajouterAttributListe(normales, 3);
+        m.ajouterIndexesListe(indexes);
+        return m;
     }
 
     public static Maillage faireMaillageRéseau(Réseau réseau, float épaisseur){

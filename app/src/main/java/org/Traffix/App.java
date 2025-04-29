@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import org.Traffix.GUI.Fenêtre;
 import org.Traffix.GUI.GestionnaireContrôles;
+import org.Traffix.GUI.GestionnaireInfos;
 import org.Traffix.GUI.UsineFenêtre;
 import org.Traffix.OpenGL.Caméra;
 import org.Traffix.OpenGL.GLCanvas;
@@ -54,6 +55,7 @@ public class App {
         AÉtoile.donnerRéseau(réseau);
         GestionnaireAccidents.donnerRéseau(réseau);
         GestionnaireContrôles.initialiserGPS(fenêtre,réseau);
+        GestionnaireInfos.init(fenêtre, réseau);
         Véhicule joueur = réseau.véhicules[0];
 
         Maillage maillage = GénérateurMaillage.générerGrille(2, 2);
@@ -114,6 +116,8 @@ public class App {
         miniCarte.débloquer();
         miniCarte.canvas.surFenêtreModifiée();
 
+        GestionnaireAccidents.donnerGLCanvas(carte, miniCarte);
+
         long tempsA = System.currentTimeMillis();
         Caméra caméra = carte.scène.caméra;
         Caméra miniCaméra = miniCarte.scène.caméra;
@@ -121,7 +125,9 @@ public class App {
             long deltaTempsMillis = System.currentTimeMillis()-tempsA;
             tempsA = System.currentTimeMillis();
             réseau.miseÀJour(1f*(float)deltaTempsMillis/1000f, false);
+
             GestionnaireAccidents.miseÀJour();
+            GestionnaireInfos.miseÀJour();
 
             caméra.positionner(Vec3.addi( Vec3.mult(joueur.objetRendus.avoirTransformée().avoirPos(), 0.1f), caméra.avoirPos().mult(0.9f)));
             caméra.faireRotation(Vec3.addi( new Vec3((float)Math.toRadians(-45f), joueur.objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f).mult(0.1f), caméra.avoirRot().mult(0.9f)));

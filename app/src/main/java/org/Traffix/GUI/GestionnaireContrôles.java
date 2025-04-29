@@ -3,9 +3,14 @@ package org.Traffix.GUI;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.util.ArrayList;
 
@@ -170,6 +175,68 @@ public class GestionnaireContrôles {
                 ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.LÂCHER);
             }
         });
+
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
+
+            @Override
+            public boolean dispatchKeyEvent(KeyEvent k) {
+                switch (k.getExtendedKeyCode()) {
+                    case KeyEvent.VK_UP:
+                        ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.ACCÉLÉRER);
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.RALENTIR);
+                        break;
+                    case KeyEvent.VK_LEFT:
+                        ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.TOURNER_GAUCHE);
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.TOURNER_DROITE);
+                        break;
+                    case KeyEvent.VK_SPACE:
+                        ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.DEMI_TOUR);
+                        break;
+                    case KeyEvent.VK_UNDEFINED:
+                        ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.LÂCHER);
+                        break;
+                }
+                return false;
+            }
+        });
+            //  @Override
+            // public void keyPressed(KeyEvent k){
+            //     switch (k.getExtendedKeyCode()) {
+            //         case KeyEvent.VK_UP:
+            //             ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.ACCÉLÉRER);
+            //             break;
+            //         case KeyEvent.VK_DOWN:
+            //             ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.RALENTIR);
+            //             break;
+            //         case KeyEvent.VK_LEFT:
+            //             ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.TOURNER_GAUCHE);
+            //             break;
+            //         case KeyEvent.VK_RIGHT:
+            //             ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.TOURNER_DROITE);
+            //             break;
+            //         case KeyEvent.VK_SPACE:
+            //             ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.DEMI_TOUR);
+            //             break;
+            //     }
+            // }
+
+        //     @Override
+        //     public void keyReleased(KeyEvent k){
+        //         switch(k.getExtendedKeyCode()){
+        //             case KeyEvent.VK_UP:
+        //             case KeyEvent.VK_DOWN:
+        //             case KeyEvent.VK_LEFT:
+        //             case KeyEvent.VK_RIGHT:
+        //             case KeyEvent.VK_SPACE:
+        //                 ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.LÂCHER);
+        //                 break;
+        //         }
+        //     }
+        // });
     }
 
     private static void ajouterDestination(Destination destination, JPanel liste, Fenêtre fenêtre, Réseau réseau){
@@ -290,8 +357,13 @@ public class GestionnaireContrôles {
         recalculerItinéraire(fenêtre, réseau);
     }
 
-    private static void recalculerItinéraire(Fenêtre fenêtre, Réseau réseau){
-        // TODO coupler avec le Navigateur manuel
+    public static void recalculerItinéraire(Fenêtre fenêtre, Réseau réseau){
+        
+        if(destinations.size() == 0){
+            réseau.véhicules[0].avoirNavigateur().donnerRoutine(null);
+            return;
+        }
+
         destinations.get(0).changerType(Type.DÉPART);
         destinations.get(0).changerDurée(-1);
         for (int i = 1; i < destinations.size()-1; i++) {

@@ -2,6 +2,7 @@ package org.Traffix.circulation;
 
 import java.util.ArrayList;
 
+import org.Traffix.circulation.GestionnaireAccidents.Accident;
 import org.Traffix.maths.Vec2;
 import org.checkerframework.checker.units.qual.min;
 
@@ -32,7 +33,7 @@ public class Route {
 
     private ArrayList<String> accès = new ArrayList<>();
 
-    public ArrayList<ÉcouteurAccidentRetiré> écouteurAccidentRetirés = new ArrayList<>();
+    private ArrayList<Accident> accidents = new ArrayList<>();
     
     public Route(String nom, int limiteVitesseKmH, Intersection intersectionA, Intersection intersectionB) {
         this.nom = nom.toLowerCase();
@@ -408,7 +409,28 @@ public class Route {
         }
     }
 
-    public void surAccidentRetiré(){
-        
+    public void ajouterAccident(Accident a){
+        accidents.add(a);
+        facteurRalentissement = Math.min(facteurRalentissement, (1f-a.pourcentageRalentissement));
+    }
+
+    public void retirerAccident(Accident a){
+        accidents.remove(a);
+        this.facteurRalentissement = 1f;
+        for(int i = 0; i < accidents.size(); i++){
+            facteurRalentissement = Math.min(facteurRalentissement, (1f-a.pourcentageRalentissement));
+        }
+    }
+
+    public Accident avoirPireAccident(){
+        float maxRalentissement = -Float.MAX_VALUE;
+        Accident maxAccident = null;
+        for (int i = 0; i < accidents.size(); i++) {
+            if(accidents.get(i).pourcentageRalentissement > maxRalentissement){
+                maxRalentissement = accidents.get(i).pourcentageRalentissement;
+                maxAccident = accidents.get(i);
+            }
+        }
+        return maxAccident;
     }
 }

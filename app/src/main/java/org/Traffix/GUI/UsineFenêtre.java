@@ -126,6 +126,7 @@ public class UsineFenêtre {
         sectionCarte.setOpaque(false);
         sectionCarte.setLayout(new BorderLayout());
         coucheBase.add(sectionCarte, BorderLayout.CENTER);
+        fenêtre.ajouterÉlémentParID(sectionCarte, "sectionCarte");
 
         JPanel carteCouches = new JPanel();
         carteCouches.setLayout(new OverlayLayout(carteCouches));
@@ -166,20 +167,13 @@ public class UsineFenêtre {
         carteInfosGauche.add(carteInfosGaucheHaut, BorderLayout.NORTH);
 
         JPanel carteInfoTournantBoîte = new JPanel();
-        //carteInfoTournantBoîte.borderRadius = 50;
-        carteInfoTournantBoîte.setBackground(Color.GREEN);
-        //carteInfoTournantBoîte.setMixingCutoutShape(carteInfoTournantBoîte.getBounds());  // TODO trouver un moyen d'acoir des coins ronds
+        carteInfoTournantBoîte.setBackground(new Color(22,173,65));  // TODO trouver un moyen d'avoir des coins ronds
         JEditorPane carteInfoTournant = new JEditorPane("text/html","");
         carteInfoTournant.setOpaque(false);
         carteInfoTournant.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));       // Crée un espace entre le contenu et les bords du contenant
         String path = UsineFenêtre.class.getClassLoader().getResource("test.png").toString();
         carteInfoTournant.setText(
-            "<html>"+
-            "<body>"+
-            "<img width='200' height='auto' src='"+path+"'>"+
-            "<h2 width='200' style='text-align:center;'>The quick brown fox jumps over the lazy dog.</h2>"+
-            "</body>"+
-            "</html>"
+            "<h2 width='200' style='text-align:center;'>Veuillez entrer un itinéraire</h2>"
             );
         carteInfoTournantBoîte.add(carteInfoTournant);
         fenêtre.ajouterÉlémentParID(carteInfoTournant, "carteInfoTournant");
@@ -188,25 +182,18 @@ public class UsineFenêtre {
         // Crée un espace entre les deux boîtes de contenu
         JPanel espace = new JPanel();
         espace.setPreferredSize(new Dimension(0, 10));
-        espace.setBackground(new Color(0,0,0,0));
         espace.setOpaque(false);
         espace.setMixingCutoutShape(espace.getBounds());
         carteInfosGaucheHaut.add(espace);
 
         JPanel carteInfoTempsBoîte = new JPanel();
-        //carteInfoTempsBoîte.borderRadius = 50;
-        carteInfoTempsBoîte.setBackground(Color.GREEN);
+        carteInfoTempsBoîte.setBackground(new Color(22,173,65));
         carteInfoTempsBoîte.setMixingCutoutShape(carteInfoTempsBoîte.getBounds());
         JEditorPane carteInfoTemps = new JEditorPane("text/html","");
         carteInfoTemps.setOpaque(false);
-        carteInfoTemps.setBackground(new Color(0,0,0,0));
         carteInfoTemps.setBorder(BorderFactory.createEmptyBorder(10,10,10,10)); // Crée un espace entre le contenu et les bords du contenant
         carteInfoTemps.setText(
-            "<html>"+
-            "<body>"+
-            "<h2 width='200' style='text-align:center;'>The quick brown fox jumps over the lazy dog.</h2>"+
-            "</body>"+
-            "</html>"
+            "<h2 width='200' style='text-align:center;'>Veuillez entrer un itinéraire</h2>"
             );
         carteInfoTempsBoîte.add(carteInfoTemps);
         fenêtre.ajouterÉlémentParID(carteInfoTemps, "carteInfoTemps");

@@ -51,60 +51,65 @@ public class Vec4 implements Animable{
      * Additionne b à ce vecteur (a+b)
      * @param b - Vecteur à additionner
      */
-    public void addi(Vec4 b){
+    public Vec4 addi(Vec4 b){
         x += b.x;
         y += b.y;
         z += b.z;
         w += b.w;
+        return this;
     }
 
     /**
      * Soustrait b à ce vecteur (a-b)
      * @param b - Vecteur à soustraire
      */
-    public void sous(Vec4 b){
+    public Vec4 sous(Vec4 b){
         x -= b.x;
         y -= b.y;
         z -= b.z;
         w -= b.w;
+        return this;
     }
 
     /**
      * Multiplie ce vecteur par le scalaire s (a*s)
      * @param s - Facteur multiplicateur
      */
-    public void mult(float s){
+    public Vec4 mult(float s){
         x *= s;
         y *= s;
         z *= s;
         w *= s;
+        return this;
     }
 
     /**
      * Multiplie les composantes de ce vecteur par les composantes de m (a.x*m.x; a.y*m.y)
      * @param m - Vecteur multiplicateur
      */
-    public void mult(Vec4 m){
+    public Vec4 mult(Vec4 m){
         x *= m.x;
         y *= m.y;
         z *= m.z;
+        return this;
     }
 
     /**
      * Divise les composantes de ce vecteur par les composantes de d (a.x/d.x; a.y/d.y)
      * @param d
      */
-    public void div(Vec4 d){
+    public Vec4 div(Vec4 d){
         x = x/d.x;
         y = y/d.y;
         z = z/d.z;
         w = w/d.w;
+        return this;
     }
 
     /**
      * Normalise ce vecteur
      */
-    public void norm(){
+    public Vec4 norm(){
         if(longueur() > 0){
             x = x/ longueur();
             y = y/ longueur();
@@ -113,6 +118,7 @@ public class Vec4 implements Animable{
         }else{
             System.err.println("Normalisation de vecteur nul. Les composantes resteront 0");
         }
+        return this;
     }
 
 
