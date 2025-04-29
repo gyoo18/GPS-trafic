@@ -10,12 +10,13 @@ import org.Traffix.maths.Vec2;
 public class IntersectionArrêt extends Intersection {
 
     private ArrayList<Route> demandesPassage = new ArrayList<>();
+    private boolean passageAccordé = false;
 
     public IntersectionArrêt(Vec2 pos){
         super(pos);
     }
 
-    public IntersectionArrêt(Vec2 pos, ArrayList routes){
+    public IntersectionArrêt(Vec2 pos, ArrayList<Route> routes){
         super(pos, routes);
     }
 
@@ -27,14 +28,14 @@ public class IntersectionArrêt extends Intersection {
     public boolean peutEngager(Route routeDépart, Route routeDestination) {
         if (routeDépart == null || routeDestination == null){
             System.err.println("[ERREUR] routeDépart et routeDestination ne peuvent pas être null");
-            System.err.println(Thread.currentThread().getStackTrace());
+            for (StackTraceElement s : Thread.currentThread().getStackTrace()) {
+                System.err.println(s);
+            }
             return false;
         }
 
-        if (demandesPassage.size() == 0 || demandesPassage.get(0) == routeDépart){
-            if(demandesPassage.size() != 0){
-                demandesPassage.remove(0);
-            }
+        if (demandesPassage.size() > 0 && demandesPassage.get(0) == routeDépart){
+            passageAccordé = true;
             return true;
         }else if(!demandesPassage.contains(routeDépart)){
             demandesPassage.add(routeDépart);
@@ -49,6 +50,11 @@ public class IntersectionArrêt extends Intersection {
     }
 
     @Override
-    public void miseÀJour() {}
+    public void miseÀJour() {
+        if(demandesPassage.size() != 0 && passageAccordé){
+            demandesPassage.remove(0);
+            passageAccordé = false;
+        }
+    }
     
 }

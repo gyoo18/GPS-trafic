@@ -103,7 +103,7 @@ public class UsineFenêtre {
         JPanel coucheDéplacement = new JPanel();
         coucheDéplacement.setOpaque(false);
         coucheDéplacement.setPreferredSize(fenêtre.jframe.getPreferredSize());
-        coucheDéplacement.setLayout(new BorderLayout());
+        coucheDéplacement.setLayout(null);
         coucheDéplacement.setMixingCutoutShape(coucheDéplacement.getBounds());  // Empêche les couches supérieures de cacher les objets « Heavyweight » des couches inférieures
         couchesPrincipales.add(coucheDéplacement);
         fenêtre.ajouterÉlémentParID(coucheDéplacement, "coucheDéplacement");
@@ -126,6 +126,7 @@ public class UsineFenêtre {
         sectionCarte.setOpaque(false);
         sectionCarte.setLayout(new BorderLayout());
         coucheBase.add(sectionCarte, BorderLayout.CENTER);
+        fenêtre.ajouterÉlémentParID(sectionCarte, "sectionCarte");
 
         JPanel carteCouches = new JPanel();
         carteCouches.setLayout(new OverlayLayout(carteCouches));
@@ -166,20 +167,13 @@ public class UsineFenêtre {
         carteInfosGauche.add(carteInfosGaucheHaut, BorderLayout.NORTH);
 
         JPanel carteInfoTournantBoîte = new JPanel();
-        //carteInfoTournantBoîte.borderRadius = 50;
-        carteInfoTournantBoîte.setBackground(Color.GREEN);
-        //carteInfoTournantBoîte.setMixingCutoutShape(carteInfoTournantBoîte.getBounds());  // TODO trouver un moyen d'acoir des coins ronds
+        carteInfoTournantBoîte.setBackground(new Color(22,173,65));  // TODO trouver un moyen d'avoir des coins ronds
         JEditorPane carteInfoTournant = new JEditorPane("text/html","");
         carteInfoTournant.setOpaque(false);
         carteInfoTournant.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));       // Crée un espace entre le contenu et les bords du contenant
         String path = UsineFenêtre.class.getClassLoader().getResource("test.png").toString();
         carteInfoTournant.setText(
-            "<html>"+
-            "<body>"+
-            "<img width='200' height='auto' src='"+path+"'>"+
-            "<h2 width='200' style='text-align:center;'>The quick brown fox jumps over the lazy dog.</h2>"+
-            "</body>"+
-            "</html>"
+            "<h2 width='200' style='text-align:center;'>Veuillez entrer un itinéraire</h2>"
             );
         carteInfoTournantBoîte.add(carteInfoTournant);
         fenêtre.ajouterÉlémentParID(carteInfoTournant, "carteInfoTournant");
@@ -188,25 +182,18 @@ public class UsineFenêtre {
         // Crée un espace entre les deux boîtes de contenu
         JPanel espace = new JPanel();
         espace.setPreferredSize(new Dimension(0, 10));
-        espace.setBackground(new Color(0,0,0,0));
         espace.setOpaque(false);
         espace.setMixingCutoutShape(espace.getBounds());
         carteInfosGaucheHaut.add(espace);
 
         JPanel carteInfoTempsBoîte = new JPanel();
-        //carteInfoTempsBoîte.borderRadius = 50;
-        carteInfoTempsBoîte.setBackground(Color.GREEN);
+        carteInfoTempsBoîte.setBackground(new Color(22,173,65));
         carteInfoTempsBoîte.setMixingCutoutShape(carteInfoTempsBoîte.getBounds());
         JEditorPane carteInfoTemps = new JEditorPane("text/html","");
         carteInfoTemps.setOpaque(false);
-        carteInfoTemps.setBackground(new Color(0,0,0,0));
         carteInfoTemps.setBorder(BorderFactory.createEmptyBorder(10,10,10,10)); // Crée un espace entre le contenu et les bords du contenant
         carteInfoTemps.setText(
-            "<html>"+
-            "<body>"+
-            "<h2 width='200' style='text-align:center;'>The quick brown fox jumps over the lazy dog.</h2>"+
-            "</body>"+
-            "</html>"
+            "<h2 width='200' style='text-align:center;'>Veuillez entrer un itinéraire</h2>"
             );
         carteInfoTempsBoîte.add(carteInfoTemps);
         fenêtre.ajouterÉlémentParID(carteInfoTemps, "carteInfoTemps");
@@ -229,6 +216,7 @@ public class UsineFenêtre {
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         gbc.gridheight = 1;
+        boutonHaut.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         carteInfosGaucheBas.add(boutonHaut,gbc);
         fenêtre.ajouterÉlémentParID(boutonHaut, "boutonAccélérer");
 
@@ -237,6 +225,7 @@ public class UsineFenêtre {
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
+        boutonGauche.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         carteInfosGaucheBas.add(boutonGauche,gbc);
         fenêtre.ajouterÉlémentParID(boutonGauche, "boutonTournerGauche");
         
@@ -245,6 +234,7 @@ public class UsineFenêtre {
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
+        boutonDroite.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         carteInfosGaucheBas.add(boutonDroite,gbc);
         fenêtre.ajouterÉlémentParID(boutonDroite, "boutonTournerDroit");
 
@@ -253,8 +243,18 @@ public class UsineFenêtre {
         gbc.gridy = 2;
         gbc.gridwidth = 2;
         gbc.gridheight = 1;
+        boutonBas.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         carteInfosGaucheBas.add(boutonBas,gbc);
         fenêtre.ajouterÉlémentParID(boutonBas, "boutonRalentir");
+
+        Bouton boutonDemiTour = new Bouton("🗘");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.gridheight = 1;
+        boutonDemiTour.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        carteInfosGaucheBas.add(boutonDemiTour,gbc);
+        fenêtre.ajouterÉlémentParID(boutonDemiTour, "boutonDemiTour");
 
         //////////////////////////////////////////////////////////////////////////////////////////////
         /// Paramètres                                                                             ///
@@ -303,26 +303,17 @@ public class UsineFenêtre {
         adresseConteneur.add(adresseChercherBouton, BorderLayout.EAST);
         fenêtre.ajouterÉlémentParID(adresseChercherBouton, "adresseChercherBouton");
 
+        JLabel adresseEntréeMessageErreur = new JLabel();
+        adresseEntréeMessageErreur.setForeground(Color.RED);
+        adresseEntréeMessageErreur.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 9));
+        paramètresTrajets.add(adresseEntréeMessageErreur);
+        fenêtre.ajouterÉlémentParID(adresseEntréeMessageErreur, "adresseEntréeMessageErreur");
+
         JPanel espace2 = new JPanel();
         espace2.setBackground(new Color(0,0,0,0));
         espace2.setOpaque(false);
         espace2.setPreferredSize(new Dimension(10,10));
         paramètresTrajets.add(espace2);
-
-        Destination destinationA = new Destination("Maison", Destination.Type.DÉPART);
-        destinationA.changerDurée(3665);
-        paramètresTrajets.add(destinationA);
-        fenêtre.ajouterÉlémentParID(destinationA, "destinationA");
-
-        Destination destinationB = new Destination("Maison", Destination.Type.ARRÊT);
-        destinationB.changerDurée(3665);
-        paramètresTrajets.add(destinationB);
-        fenêtre.ajouterÉlémentParID(destinationB, "destinationB");
-
-        Destination destinationC = new Destination("Maison", Destination.Type.FIN);
-        destinationC.changerDurée(3665);
-        paramètresTrajets.add(destinationC);
-        fenêtre.ajouterÉlémentParID(destinationC, "destinationC");
 
         //////////////////////////////////////////////////////////////////////////////////////////////
         /// Mini-Carte                                                                             ///
@@ -333,23 +324,25 @@ public class UsineFenêtre {
         miniCarteCouches.setBackground(new Color(0,0,0,0));
         miniCarteCouches.setOpaque(false);
         coucheMiniCarte.add(miniCarteCouches);
+        fenêtre.ajouterÉlémentParID(miniCarteCouches, "miniCarteCouches");
+        fenêtre.ajouterDrapeau("miniCarte minimisé", true);
 
         JPanel miniCarteConteneur = new JPanel();
         miniCarteConteneur.setOpaque(false);
         miniCarteConteneur.setLayout(new BorderLayout());
         miniCarteCouches.add(miniCarteConteneur);
-        fenêtre.ajouterÉlémentParID(miniCarteConteneur, "miniCarteConteneur");
 
         GLCanvas GLCanvas2 = new GLCanvas();
         GLCanvas2.setOpaque(false);
         miniCarteConteneur.add(GLCanvas2,BorderLayout.CENTER);
+        fenêtre.ajouterÉlémentParID(GLCanvas2, "GLCarte2");
 
         JPanel boutonMiniCarteConteneur = new JPanel();
-        boutonMiniCarteConteneur.setBackground(new Color(0,0,0,0));
         boutonMiniCarteConteneur.setOpaque(false);
         boutonMiniCarteConteneur.setMixingCutoutShape(boutonMiniCarteConteneur.getBounds());
         boutonMiniCarteConteneur.setLayout(new GridBagLayout());
         miniCarteCouches.add(boutonMiniCarteConteneur);
+        fenêtre.ajouterÉlémentParID(boutonMiniCarteConteneur, "boutonMiniCarteConteneur");
 
         miniCarteCouches.setComponentZOrder(miniCarteConteneur, 1);
         miniCarteCouches.setComponentZOrder(boutonMiniCarteConteneur, 0);
@@ -383,8 +376,12 @@ public class UsineFenêtre {
                 carteCoucheCarte.setSize(sectionCarteTaille);
                 carteCoucheGUI.setSize(sectionCarteTaille);
                 sectionParamètres.setPreferredSize( new Dimension( Math.max((int)(coucheBase.getSize().width * 0.2f),300), coucheBase.getSize().height ) );
-                int minTaille = Math.min(coucheMiniCarte.getSize().width, coucheMiniCarte.getSize().height);
-                miniCarteCouches.setBounds( (int)(jfdim.width * 0.8f - (minTaille * 0.15f)), (int)(jfdim.height * 0.75f - (minTaille * 0.15f)), (int)(minTaille * 0.3f), (int)(minTaille * 0.3f) );
+                if((Boolean)fenêtre.avoirDrapeau("miniCarte minimisé")){
+                    int minTaille = Math.min(coucheMiniCarte.getSize().width, coucheMiniCarte.getSize().height);
+                    miniCarteCouches.setBounds( (int)(jfdim.width * 0.8f - (minTaille * 0.15f)), (int)(jfdim.height * 0.75f - (minTaille * 0.15f)), (int)(minTaille * 0.3f), (int)(minTaille * 0.3f) );
+                }else{
+                    miniCarteCouches.setBounds( 30, 30, jfdim.width-60, jfdim.height-60 );
+                }
                 Dimension miniCarteDimension = new Dimension(miniCarteCouches.getSize().width-20, miniCarteCouches.getSize().height-20);
                 miniCarteConteneur.setBounds(10,10,miniCarteDimension.width, miniCarteDimension.height);
                 //boutonMiniCarteConteneur.setBounds(10,10,miniCarteDimension.width, miniCarteDimension.height);
@@ -401,14 +398,16 @@ public class UsineFenêtre {
         Runnable renderLoop = new Runnable() {
 			@Override
             public void run() {
-				if (carte.canvas.isValid()) {
+				if (carte.canvas.isValid() && carte.continuer) {
                     carte.canvas.render();
                 }
 
-                if (GLCanvas2.canvas.isValid()) {
+                if (GLCanvas2.canvas.isValid() && GLCanvas2.continuer) {
                     GLCanvas2.canvas.render();
                 }
-                SwingUtilities.invokeLater(this);
+                if(carte.continuer || GLCanvas2.continuer){
+                    SwingUtilities.invokeLater(this);
+                }
 			}
 		};
 		SwingUtilities.invokeLater(renderLoop);

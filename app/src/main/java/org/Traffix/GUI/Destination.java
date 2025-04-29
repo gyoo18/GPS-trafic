@@ -23,8 +23,12 @@ public class Destination extends JPanel {
         FIN
     }
 
+    public String adresse;
+
     public Bouton attraper;
     public Bouton détruire;
+
+    public boolean estAttrapé = false;
     
     private RoundPane conteneurPrincipal;
     private RoundPane cercle;
@@ -37,9 +41,12 @@ public class Destination extends JPanel {
     private int durée;
     private int heureArrivée;
 
-    public Destination(String nom, Type type){
+    private String tempsHTML = "";
+
+    public Destination(String nom, String adresse, Type type){
         super();
 
+        this.adresse = adresse;
         this.type = type;
         this.nom = nom;
         this.durée = 0;
@@ -79,7 +86,7 @@ public class Destination extends JPanel {
 
         nomPane = new JEditorPane("text/html","");
         nomPane.setOpaque(false);
-        nomPane.setText("<h3 style='text-align:center'>"+nom+"</h3>");
+        nomPane.setText("<b style='text-align:center;n'>"+nom+"</b>");
         texte.add(nomPane);
 
         tempsPane = new JEditorPane("text/html","");
@@ -117,15 +124,22 @@ public class Destination extends JPanel {
 
     public void changerDurée(int duréeSec){
         this.durée = duréeSec;
-        Calendar date = Calendar.getInstance();
-        this.heureArrivée = date.get(Calendar.SECOND) + date.get(Calendar.MINUTE)*60 + date.get(Calendar.HOUR)*3600 + this.durée;
-        this.heureArrivée = Math.floorMod(duréeSec, 86400); // S'assurer que l'heure d'arrivée ne dépasse pas 24h
-        tempsPane.setText("<div style='text-align:center;'>"+formatterTemps(durée, false)+"<br>"+formatterTemps(this.heureArrivée, true)+"</div>");
+        if(duréeSec != -1){
+            Calendar date = Calendar.getInstance();
+            this.heureArrivée = date.get(Calendar.SECOND) + date.get(Calendar.MINUTE)*60 + date.get(Calendar.HOUR)*3600 + this.durée;
+            this.heureArrivée = Math.floorMod(this.heureArrivée, 86400); // S'assurer que l'heure d'arrivée ne dépasse pas 24h
+            this.tempsHTML = "<div style='text-align:center;'>"+formatterTemps(durée, false)+"<br>"+formatterTemps(this.heureArrivée, true)+"</div>";
+            tempsPane.setContentType("text/html");
+            tempsPane.setText(tempsHTML);
+        }else{
+            tempsPane.setContentType("text/html");
+            tempsPane.setText("");
+        }
     }
 
     private String formatterTemps(int tempsSec, boolean formatHeure){
-        int tempsMin = Math.floorMod(tempsSec/60,60); //Temps en minutes
-        int tempsH = Math.floorMod(tempsSec/3600, 60); //Temps en heures
+        int tempsMin = (tempsSec/60)%60; //Temps en minutes
+        int tempsH = (tempsSec/3600)%60; //Temps en heures
         char sép = formatHeure?'h':':';
         return ""+tempsH+sép+tempsMin;
     }
@@ -143,5 +157,9 @@ public class Destination extends JPanel {
                 cercle.setBackground(Color.RED);
                 break;
         }
+    }
+
+    public String avoirTempsHTML(){
+        return tempsHTML;
     }
 }

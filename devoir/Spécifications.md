@@ -1,67 +1,44 @@
-# Spécification du programme
+<h1 style="text-align:center; padding: 0.1em; border: 2px solid black">TRAFFIX</h1>
 
-## Description générale
+<h2 style="text-align: center">TRAFFIX - Phase 1 : Analyse et Spécifications<h2>
 
-Nous devons créer un système de modélisation de trafic routier ainsi qu'une interface de navigation manuelle afin que l'utilisateur puisses naviguer à travers le réseau routier manuellement.
+### 1. Description générale du système
+Le projet consiste à développer un système de navigation GPS intelligent en Java, doté d’une interface graphique Swing, capable de :
+- Visualiser un réseau routier dynamique (routes, intersections, état du trafic),
+- Guider en temps réel un véhicule jusqu’à sa destination,
+- Réagir automatiquement à des événements tels que la congestion ou les accidents en recalculant l’itinéraire optimal.
+Le système vise à offrir une expérience de navigation fluide, précise et réactive, en utilisant une approche orientée objet.
 
-## Liste de spécifications
+### 2. Liste des spécifications fonctionnelles
+- Système de réseau routier : représentation graphique des routes et intersections sous forme de graphe.
+- Système de création de réseau : possibilité de construire manuellement ou automatiquement un réseau routier.
+- Interface graphique (Swing) : affichage clair de la carte, de la position du véhicule et des indications GPS.
+- Système de navigation : calcul du chemin optimal entre deux points à l’aide de Dijkstra ou A*.
+- Guidage en temps réel : instructions précises (« Tournez à droite », « Continuez tout droit ») en fonction de la position du véhicule.
+- Réaction aux événements : recalcul automatique de l’itinéraire en cas d’obstacle ou de congestion.
+- Système de gestion de congestion : détection et affichage des zones impactées, et impact sur le calcul d’itinéraire.
 
-- Système de modélisation de trafic routier
-  - Système de représentation de réseau routier
-  - Système de représentation de véhicules
-  - Système de mouvement des véhicules
-  - Système de navigation automatique
-- Système de navigation manuelle
-  - Système de recherche de chemins
-  - Système de GUI à l'aide de swing
-  - Système de représentation des informations
-  - Système de contrôle du véhicule
+### 3. Exemple d’utilisation
+1. L'utilisateur sélectionne une destination sur la carte.
+2. Le GPS calcule le meilleur chemin.
+3. Le véhicule commence son trajet avec un affichage temps réel des instructions.
+4. Une congestion survient sur la route.
+5. Le système détecte l'événement, met à jour l'état du graphe routier et recalcule un itinéraire.
+6. Le GPS affiche de nouvelles instructions et redirige le véhicule.
+<!--[](//_Ces_sauts_sont_présents_pour_faire_un_saut_de_page_au_bon_endroit_lorsqu'imprimés_en_pdf)
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>-->
 
-## Identification des classes
+### 4. Schéma fonctionnel global du système
+Voici un résumé visuel du fonctionnement général : 
+![Shéma fonctionnel global du système](Schéma_fonctionnel.svg)
 
-- Réseau routier
-  - Graphe représentant les routes du réseau.
-  - Contient des intersections reliées par des routes
-
-- Intersection
-  - Relie plus d'une route entre elles et s'occupe de transférer les véhicules d'une intersection à l'autre.
-  - Référence de routes.
-  - Possède une position physique
-
-- Route
-  - Relie deux intersections et s'occupe de faire naviguer les véhicules sur sa longueur
-  - Possède deux intersections
-  - Possède une longueur
-  - Possède un nombre de voies
-  - Possède une vitesse maximale
-  - Possède un nom
-  - Possède des numéros de rue sur sa longueur
-  - Référence aux voitures
-
-- Véhicule
-  - Se promène sur le réseau routier selon sa routine habituelle pour causer de la congestion.
-  - Possède une longueur
-  - Possède une destination cible
-  - Possède une liste de destinations en fonction de l'heure de la journée pour former une routine
-  - Possède un navigateur
-
-- Système de recherche de chemin
-  - Communique avec le réseau routier pour trouver le chemin le plus rapide, le plus court ou le moins énergivore entre deux points sur le réseau.
-
-- Navigateur (Système de navigation automatique)
-  - Communique avec le système de recherche de chemin, le véhicule et le réseau routier pour trouver et exécuter le chemin le plus court, en fonction des voitures environnantes.
-
-- Système de GUI avec swing
-  - Système qui implémente les objets swing et contient l'interface graphique. Reçoit et traite les événements et appelle les fonctions nécessaires à l'exécution de la logique du système.
-
-- *(Potentiel)* Système de représentation routier
-  - Il se peut que swing ne soit pas suffisant pour représenter le réseau routier ou la vue GPS. Il se peut qu'un système séparé pour cette fin soie nécessaire. Le système de GUI le posséderait et le traiterait comme une composante swing.
-
-- Système de représentation des informations
-  - Communique avec le système de GUI et le réseau routier pour aller chercher les informations nécessaires à l'affichage et les traduire pour l'affichage
-
-- Système de contrôle du véhicule
-  - Système qui reçoit les événements du GUI pour contrôler un véhicule spécialisé pour le contrôle de l'utilisateur.
-
-- Système de génération de réseau routier
-  - Créé un réseau aléatoirement au démarrage du programme et créé les routines des véhicules
+### 5. Maquette de l'interface
+![Maquette de l'interface principale du programme](Maquette_1.png)

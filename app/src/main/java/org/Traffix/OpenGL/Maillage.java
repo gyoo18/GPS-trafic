@@ -686,4 +686,22 @@ public class Maillage {
 
         return résultat;
     }
+
+    public Maillage copier(){
+        Maillage m = new Maillage(Map.of(), this.estIndexé);
+        estConstruit = false;
+        m.estIndexé         = this.estIndexé;
+        m.NSommets          = this.NSommets;
+        m.attributsIndexes  = this.attributsIndexes;
+        m.attributsTypes    = this.attributsTypes;
+        m.attributsDimensions=this.attributsDimensions;
+        m.attributsBytes    = this.attributsBytes;
+        m.attributsShorts   = this.attributsShorts;
+        m.attributsInts     = this.attributsInts;
+        m.attributsLongs    = this.attributsLongs;
+        m.attributsFloats   = this.attributsFloats;
+        m.attributsDoubles  = this.attributsDoubles;
+        m.indexes           = this.indexes;
+        return m;
+    }
 }

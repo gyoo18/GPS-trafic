@@ -16,13 +16,13 @@ public class IntersectionLaissezPasser extends Intersection {
     private Route routeB = null;
 
     // Temps minimum pour lequel l'intersection doit être libre pour que les véhicules non-prioritaires puissent passer, en secondes.
-    private final float TEMPS_MANŒUVRE = 5f;
+    private static final float TEMPS_MANŒUVRE = 5f;
 
     public IntersectionLaissezPasser(Vec2 pos){
         super(pos);
     }
 
-    public IntersectionLaissezPasser(Vec2 pos, ArrayList routes){
+    public IntersectionLaissezPasser(Vec2 pos, ArrayList<Route> routes){
         super(pos, routes);
     }
 
@@ -38,7 +38,9 @@ public class IntersectionLaissezPasser extends Intersection {
 
         if (routeDépart == null || routeDestination == null){
             System.err.println("[ERREUR] routeDépart et routeDestination ne peuvent pas être null");
-            System.err.println(Thread.currentThread().getStackTrace());
+            for (StackTraceElement s : Thread.currentThread().getStackTrace()) {
+                System.err.println(s);
+            }
             return false;
         }
 
@@ -59,12 +61,12 @@ public class IntersectionLaissezPasser extends Intersection {
             }
         }
 
-        // Si les véhicules ne sont pas sur le tronçon prioritaire et tournent à droite.
+        // Si les véhicules ne sont pas sur le tronçon prioritaire et tournent à droite, sur le tronçon prioritaire.
         if (routeDépart != routeA && routeDépart != routeB){
             Vec2 directionDépart = Vec2.sous(routeDépart.intersectionA.position,routeDépart.intersectionB.position).mult(this==routeDépart.intersectionA?1f:-1f);
             Vec2 directionDestination = Vec2.sous(routeDestination.intersectionA.position,routeDestination.intersectionB.position).mult(this==routeDestination.intersectionA?1f:-1f);
-            if( directionDestination.x*directionDépart.y - directionDestination.y*directionDépart.x < 0){
-                return estIntersectionLibre(routeDestination==routeA?routeB:routeA); // Ne compter que la voie qui s'en vient à gauche.
+            if( directionDestination.x*directionDépart.y - directionDestination.y*directionDépart.x < 0 && (routeDestination == routeA || routeDestination == routeB)){
+                return estIntersectionLibre(routeDestination==routeA?routeA:routeB); // Ne compter que la voie qui s'en vient à droite.
             }else{
                 // Si les véhicules tournent à gauche
                 return estIntersectionLibre(null);
@@ -83,7 +85,9 @@ public class IntersectionLaissezPasser extends Intersection {
 
         if (routeDépart == null || routeDestination == null){
             System.err.println("[ERREUR] routeDépart et routeDestination ne peuvent pas être null");
-            System.err.println(Thread.currentThread().getStackTrace());
+            for (StackTraceElement s : Thread.currentThread().getStackTrace()) {
+                System.err.println(s);
+            }
             return false;
         }
 
@@ -105,7 +109,7 @@ public class IntersectionLaissezPasser extends Intersection {
             Véhicule premierVéhicule = this==routeA.intersectionA?routeA.avoirPremierVéhiculeSensA():routeA.avoirPremierVéhiculeSensB();
             if(premierVéhicule != null){
                 float distance = Vec2.distance(premierVéhicule.position(), position);
-                if (distance/premierVéhicule.vitesse < TEMPS_MANŒUVRE){
+                if (premierVéhicule.vitesse != 0 && distance/premierVéhicule.vitesse < TEMPS_MANŒUVRE){
                     return false;
                 }
             }
@@ -114,7 +118,7 @@ public class IntersectionLaissezPasser extends Intersection {
             Véhicule premierVéhicule = this==routeB.intersectionA?routeB.avoirPremierVéhiculeSensA():routeB.avoirPremierVéhiculeSensB();
             if(premierVéhicule != null){
                 float distance = Vec2.distance(premierVéhicule.position(), position);
-                if(distance/premierVéhicule.vitesse < TEMPS_MANŒUVRE){
+                if(premierVéhicule.vitesse != 0 && distance/premierVéhicule.vitesse < TEMPS_MANŒUVRE){
                     return false;
                 }
             }

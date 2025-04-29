@@ -3,21 +3,23 @@ package org.Traffix.circulation;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.Traffix.maths.Maths;
 import org.Traffix.maths.Vec2;
 
 public class Réseau {
     public ArrayList<Route> routes = new ArrayList<>();
     public ArrayList<Intersection> intersections = new ArrayList<>();
     public HashMap<String, ArrayList<Route>> tronçons = new HashMap<>(); // Liste de routes portants le même nom
+    public Véhicule[] véhicules;
 
     public void construireTronçons(){
         System.out.println("Construction des tronçons...");
         for (int i = 0; i < routes.size(); i++) {
             if(!tronçons.containsKey(routes.get(i).nom)){
-                // Vérifier que ce tronçon est un bout
+                // Vérifier que cette route est un bout
                 boolean estABout = true;
                 for (int j = 0; j < routes.get(i).intersectionA.routes.size(); j++) {
-                    if(routes.get(i).intersectionA.routes.get(j) != routes.get(i) && routes.get(i).intersectionA.routes.get(j).nom == routes.get(i).nom){
+                    if(routes.get(i).intersectionA.routes.get(j) != routes.get(i) && routes.get(i).intersectionA.routes.get(j).nom.equals(routes.get(i).nom)){
                         estABout = false;
                         break;
                     }
@@ -25,7 +27,7 @@ public class Réseau {
 
                 boolean estBBout = true;
                 for (int j = 0; j < routes.get(i).intersectionB.routes.size(); j++) {
-                    if(routes.get(i).intersectionB.routes.get(j) != routes.get(i) && routes.get(i).intersectionB.routes.get(j).nom == routes.get(i).nom){
+                    if(routes.get(i).intersectionB.routes.get(j) != routes.get(i) && routes.get(i).intersectionB.routes.get(j).nom.equals(routes.get(i).nom)){
                         estBBout = false;
                         break;
                     }
@@ -52,7 +54,7 @@ public class Réseau {
         if(estAFait){
             for (int i = 0; i < route.intersectionB.routes.size(); i++) {
                 Route routeB = route.intersectionB.routes.get(i);
-                if(routeB != route && routeB.nom == route.nom){
+                if(routeB != route && routeB.nom.equals(route.nom)){
                     tronçon.add(routeB);
                     boolean estAFaitB = routeB.intersectionA==route.intersectionB;
                     ajouterConnexionÀTronçon(routeB, estAFaitB, tronçon);
@@ -62,7 +64,7 @@ public class Réseau {
         }else{
             for (int i = 0; i < route.intersectionA.routes.size(); i++) {
                 Route routeB = route.intersectionA.routes.get(i);
-                if(routeB != route && routeB.nom == route.nom){
+                if(routeB != route && routeB.nom.equals(route.nom)){
                     tronçon.add(routeB);
                     boolean estAFaitB = routeB.intersectionA==route.intersectionA;
                     ajouterConnexionÀTronçon(routeB, estAFaitB, tronçon);
@@ -70,6 +72,16 @@ public class Réseau {
                 }
             }
         }
+    }
+
+    public void miseÀJour(float deltaTempsSecondes, boolean debug){
+        for (int i = 0; i < véhicules.length; i++) {
+            véhicules[i].miseÀJour(deltaTempsSecondes, debug && i==0);
+        }
+        for(int i = 0; i < intersections.size(); i++){
+            intersections.get(i).miseÀJour();
+        }
+        nettoyer();
     }
 
     public String avoirAdresse(Vec2 position){
@@ -152,7 +164,7 @@ public class Réseau {
         }
 
         if(!tronçons.containsKey(nom)){
-            System.out.println("Aucune route de ce nom");
+            System.out.println("Aucune route de ce nom : "+adresse);
             return null;
         }
 
@@ -176,6 +188,50 @@ public class Réseau {
             System.out.println("Aucune adresse correspondante sur cette rue");
         }
         return null;
+    }
+
+    public void nettoyer(){
+        for (int i = 0; i < véhicules.length; i++) {
+            if(véhicules[i].avoirNavigateur().estBrisé){
+                recyclerVéhicule(véhicules[i]);
+            }
+        }
+    }
+
+    private void recyclerVéhicule(Véhicule v){
+        System.out.print("Recyclage de "+v+", adresse originale : "+v.avoirAdresse());
+        String[] routine = new String[5];
+        for (int k = 0; k < routine.length; k++) {
+            while(true){
+                String adresse = avoirAdresse(new Vec2((float)(Math.random()*2.0 -1.0)*3000f,(float)(Math.random()*2.0 -1.0)*3000f));
+                for (int k2 = 0; k2 < k; k2++) {
+                    if(routine[k2] == adresse){
+                        adresse = "";
+                        break;
+                    }
+                }
+                if(adresse.equals("")){
+                    continue;
+                }
+                routine[k] = adresse;
+                break;
+            }
+        }
+        Route routeActuelle = v.routeActuelle;
+        routeActuelle.retirerVéhiculeSensA(v);
+        routeActuelle.retirerVéhiculeSensB(v);
+        while(v.routeActuelle == null){
+            Route r = routes.get(Maths.randint(0,routes.size()-1));
+            if(r.sensAPossèdePlace(v.longueur)){
+                r.ajouterVéhiculeSensA(v);
+            }else if(r.sensBPossèdePlace(v.longueur)){
+                r.ajouterVéhiculeSensB(v);
+            }
+        }
+        v.avoirNavigateur().donnerRoutine(routine);
+        v.avoirNavigateur().estBrisé = false;
+        v.vitesseMoyenne = 40;
+        System.out.println(", nouvelle adresse : "+v.avoirAdresse());
     }
 
     // Merci à Jonas K sur StackOverFlow.

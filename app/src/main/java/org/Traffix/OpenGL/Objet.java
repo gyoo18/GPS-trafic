@@ -77,11 +77,18 @@ public class Objet implements Animable{
         if (aMaillage && !maillage.estConstruit){maillage.construire();}
         if (aNuanceur && !nuanceur.estConstruit){nuanceur.construire();}
         if (aTexture && !texture.estConstruit) {texture.construire();}
+        //System.out.println(nom+":"+nuanceur.ID);
         estConstruit = true;
     }
 
     public Objet copier(){
         Objet o = new Objet(nom, maillage, nuanceur, couleur, texture, transformée!=null?transformée.copier():null);
+        o.dessiner = dessiner;
+        return o;
+    }
+
+    public Objet copierProfond(){
+        Objet o = new Objet(nom, maillage!=null?maillage.copier():null, nuanceur!=null?nuanceur.copier():null, couleur!=null?couleur.copier():null, texture!=null?texture.copier():null, transformée!=null?transformée.copier():null);
         o.dessiner = dessiner;
         return o;
     }

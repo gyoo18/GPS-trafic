@@ -166,7 +166,7 @@ public class Vec2 implements Animable{
      * @return ||a||
      */
     public float longueur(){
-        return (float) Math.sqrt(Math.pow(x,2.0)+Math.pow(y,2.0));
+        return (float) Math.sqrt(x*x+y*y);
     }
 
     /**
@@ -176,7 +176,7 @@ public class Vec2 implements Animable{
      * @return ||a-b||
      */
     public static float distance(Vec2 a, Vec2 b){
-        return (float) Math.sqrt(Math.pow(a.x-b.x,2.0)+Math.pow(a.y-b.y,2.0));
+        return (float) Math.sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));
     }
 
     /**
@@ -241,5 +241,10 @@ public class Vec2 implements Animable{
     public void terminerAnimation(Object[] cléB) {
         x = (float)cléB[0];
         y = (float)cléB[1];
+    }
+
+    @Override
+    public String toString(){
+        return "["+x+";"+y+"]";
     }
 }

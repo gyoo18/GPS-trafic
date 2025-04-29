@@ -28,11 +28,25 @@ public class Scène {
 
     public Objet obtenirObjet(String nom){
         for (Objet o : objets){
-            if (o.nom == nom){
+            if (o.nom.equals(nom)){
                 return o;
             }
         }
         return null;
+    }
+
+    public void retirerObjet(Objet o){
+        objets.remove(o);
+    }
+
+    public ArrayList<Objet> retirerObjet(String nom){
+        ArrayList<Objet> retour = new ArrayList<>();
+        for (int i = objets.size()-1; i >= 0; i--) {
+            if(objets.get(i).nom.equals(nom)){
+                retour.add(objets.remove(i));
+            }
+        }
+        return retour;
     }
 
     public Objet[] obtenirObjets(int[] ID){
@@ -58,7 +72,7 @@ public class Scène {
         LinkedList<Objet> résultatLL = new LinkedList<>();
         for (Objet o : objets){
             for (String nom : noms){
-                if (o.nom == nom){
+                if (o.nom.equals(nom)){
                     résultatLL.add(o);
                     break;
                 }

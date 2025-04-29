@@ -2,6 +2,7 @@ package org.Traffix.circulation;
 
 import java.util.ArrayList;
 
+import org.Traffix.circulation.GestionnaireAccidents.Accident;
 import org.Traffix.maths.Vec2;
 import org.checkerframework.checker.units.qual.min;
 
@@ -21,17 +22,21 @@ public class Route {
     public float facteurRalentissement; // facteur de ralentissement dû aux accidents, en %
 
     // La voie A est la voie en direction de l'intersection A et vice-versa.
-    private ArrayList<Véhicule> véhiculesSensA = new ArrayList<>();
-    private ArrayList<Véhicule> véhiculesSensB = new ArrayList<>();
+    public ArrayList<Véhicule> véhiculesSensA = new ArrayList<>();
+    public ArrayList<Véhicule> véhiculesSensB = new ArrayList<>();
 
     // Les adresses du sens A sont du côté droit lorsqu'en direction vers A et vice-versa.
     public int[] adressesSensANuméro;
     private Vec2[] adressesSensAPosition;
     public int[] adressesSensBNuméro;
     private Vec2[] adressesSensBPosition;
+
+    private ArrayList<String> accès = new ArrayList<>();
+
+    private ArrayList<Accident> accidents = new ArrayList<>();
     
     public Route(String nom, int limiteVitesseKmH, Intersection intersectionA, Intersection intersectionB) {
-        this.nom = nom;
+        this.nom = nom.toLowerCase();
         this.limiteVitesse = (float)limiteVitesseKmH/3.6f; // transformer la limite de vitesse de km/h en m/s
         this.facteurRalentissement = 1f;
         this.intersectionA = intersectionA;
@@ -71,11 +76,30 @@ public class Route {
      */
     public float avoirLimiteEffective(){
         // TODO gestionnaireAccidents
+
         return limiteVitesse*facteurRalentissement;
     }
 
+    public float avoirVitesseVéhicules(boolean dansSensA){
+        float vitesseVéhicules = Float.MAX_VALUE;
+        if(dansSensA && véhiculesSensA.size() > 2){
+            vitesseVéhicules = 0;
+            for (int i = 0; i < véhiculesSensA.size(); i++) {
+                vitesseVéhicules += véhiculesSensA.get(i).vitesseMoyenne;
+            }
+            vitesseVéhicules = vitesseVéhicules/véhiculesSensA.size();
+        }else if(!dansSensA && véhiculesSensB.size() > 2){
+            vitesseVéhicules = 0;
+            for (int i = 0; i < véhiculesSensB.size(); i++) {
+                vitesseVéhicules += véhiculesSensB.get(i).vitesseMoyenne;
+            }
+            vitesseVéhicules = vitesseVéhicules/véhiculesSensB.size();
+        }
+        return vitesseVéhicules;
+    }
+
     /**
-     * Renvoie la limite de vitesse effective en km/h. Voir `avoirLimiteEffective()`.
+     * Renvoie la limite de vitesse effective en km/h. Voir `avoirLimiteEffective()
      * @return int limite effective en km/h
      */
     public int avoirLimiteEffectiveKmH(){
@@ -152,7 +176,7 @@ public class Route {
         return (
             dernierVéhicule.positionRelative - (dernierVéhicule.longueur/(2f*avoirLongueur())) -
             espace -
-            longueur
+            (longueur/(2f*avoirLongueur()))
             > 0f);
     }
 
@@ -171,7 +195,7 @@ public class Route {
         return (
             dernierVéhicule.positionRelative - (dernierVéhicule.longueur/(2f*avoirLongueur())) -
             espace -
-            longueur
+            (longueur/(2f*avoirLongueur()))
             > 0f);
     }
 
@@ -181,6 +205,10 @@ public class Route {
      * @param véhicule véhicule à ajouter
      */
     public void ajouterVéhiculeSensA(Véhicule véhicule){
+        // accès.add("===== ajouterVéhiculeSensA( Véhicule : "+véhicule+" ) ===== t: "+System.currentTimeMillis());
+        // for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+        //     accès.add(element.toString());
+        // }
         if(!sensAPossèdePlace(véhicule.longueur)){
             System.err.println("[ERREUR] impossible d'ajouter un véhicule à la voie A.");
             for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
@@ -190,6 +218,9 @@ public class Route {
         }
 
         véhiculesSensA.add(véhicule);
+        véhicule.positionRelative = 0;
+        véhicule.estSensA = true;
+        véhicule.routeActuelle = this;
     }
 
     /**
@@ -198,6 +229,10 @@ public class Route {
      * @param véhicule véhicule à ajouter
      */
     public void ajouterVéhiculeSensB(Véhicule véhicule){
+        // accès.add("===== ajouterVéhiculeSensB( Véhicule : "+véhicule+" ) ===== t: "+System.currentTimeMillis());
+        // for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+        //     accès.add(element.toString());
+        // }
         if(!sensBPossèdePlace(véhicule.longueur)){
             System.err.println("[ERREUR] impossible d'ajouter un véhicule à la voie B.");
             for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
@@ -207,6 +242,9 @@ public class Route {
         }
 
         véhiculesSensB.add(véhicule);
+        véhicule.positionRelative = 0;
+        véhicule.estSensA = false;
+        véhicule.routeActuelle = this;
     }
 
     /**
@@ -214,6 +252,10 @@ public class Route {
      * @return Véhicule à l'avant de la file ou `null` si la file est vide. 
      */
     public Véhicule retirerVéhiculeSensA(){
+        // accès.add("===== retirerVéhiculeSensA -> "+(véhiculesSensA.size()>0?véhiculesSensA.get(0).toString():"null")+" ===== t: "+System.currentTimeMillis());
+        // for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+        //     accès.add(element.toString());
+        // }
         if (véhiculesSensA.size() > 0){
             return véhiculesSensA.remove(0);
         }else{
@@ -226,6 +268,10 @@ public class Route {
      * @return Véhicule à l'avant de la file ou `null` si la file est vide. 
      */
     public Véhicule retirerVéhiculeSensB(){
+        // accès.add("===== retirerVéhiculeSensB -> "+(véhiculesSensB.size()>0?véhiculesSensB.get(0).toString():"null")+" ===== t: "+System.currentTimeMillis());
+        // for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+        //     accès.add(element.toString());
+        // }
         if (véhiculesSensB.size() > 0){
             return véhiculesSensB.remove(0);
         }else{
@@ -234,14 +280,26 @@ public class Route {
     }
 
     public void retirerVéhiculeSensA(Véhicule v){
+        // accès.add("===== retirerVéhiculeSensA( "+v+" ) ===== t: "+System.currentTimeMillis());
+        // for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+        //     accès.add(element.toString());
+        // }
         if (véhiculesSensA.contains(v)){
             véhiculesSensA.remove(v);
+            v.routeActuelle = null;
+            v.positionRelative = -1;
         }
     }
 
     public void retirerVéhiculeSensB(Véhicule v){
+        // accès.add("===== retirerVéhiculeSensB( "+v+" ) ===== t: "+System.currentTimeMillis());
+        // for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+        //     accès.add(element.toString());
+        // }
         if (véhiculesSensB.contains(v)){
             véhiculesSensB.remove(v);
+            v.routeActuelle = null;
+            v.positionRelative = -1;
         }
     }
 
@@ -264,6 +322,30 @@ public class Route {
     public Véhicule avoirPremierVéhiculeSensB(){
         if(véhiculesSensB.size() > 0){
             return véhiculesSensB.get(0);
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * Renvoie le véhicule à la tête de la file sur la voie A
+     * @return Véhicule
+     */
+    public Véhicule avoirDernierVéhiculeSensA(){
+        if(véhiculesSensA.size() > 0){
+            return véhiculesSensA.getLast();
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * Renvoie le véhicule à la tête de la file sur la voie B
+     * @return Véhicule
+     */
+    public Véhicule avoirDernierVéhiculeSensB(){
+        if(véhiculesSensB.size() > 0){
+            return véhiculesSensB.getLast();
         }else{
             return null;
         }
@@ -325,5 +407,30 @@ public class Route {
             System.err.println(Thread.currentThread().getStackTrace());
             return null;
         }
+    }
+
+    public void ajouterAccident(Accident a){
+        accidents.add(a);
+        facteurRalentissement = Math.min(facteurRalentissement, (1f-a.pourcentageRalentissement));
+    }
+
+    public void retirerAccident(Accident a){
+        accidents.remove(a);
+        this.facteurRalentissement = 1f;
+        for(int i = 0; i < accidents.size(); i++){
+            facteurRalentissement = Math.min(facteurRalentissement, (1f-a.pourcentageRalentissement));
+        }
+    }
+
+    public Accident avoirPireAccident(){
+        float maxRalentissement = -Float.MAX_VALUE;
+        Accident maxAccident = null;
+        for (int i = 0; i < accidents.size(); i++) {
+            if(accidents.get(i).pourcentageRalentissement > maxRalentissement){
+                maxRalentissement = accidents.get(i).pourcentageRalentissement;
+                maxAccident = accidents.get(i);
+            }
+        }
+        return maxAccident;
     }
 }
