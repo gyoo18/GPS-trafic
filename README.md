@@ -27,6 +27,45 @@ Afin de sortir les exécutables et les installer :
 
 Dans le dossier `app/distributions` se trouveront deux fichier : `Traffix.zip` et `Traffix.tar`. Déplacez-les dans un dossier qui convient pour des programmes, décompressez-les et dans `Traffix/bin/` exécutez `Traffix` sur *Unix/MacOSX ou `Traffix.bat` sur Windows.
 
+## Comment utiliser
+
+### Interface utilisateur
+
+![L'interface montre 5 zones importantes, qui sont détaillées ci-dessous](./devoir/Cap1.png)
+Lors de l'ouverture du programme, vous serez présenté avec l'image ci-haut.
+1. L'utilisation du programme consiste à naviguer à travers un réseau routier généré procéduralement à l'aide d'un GPS. Vous pouvez voir votre voitre au centre, ainsi que les voitures qui vous accompagnent autour.
+2. Des boutons de navigations vous sont offerts en bas à gauche de l'écran. Vous pouvez accélérer, ralentir, tourner à gaucher, tourner à droite et faire demi-tour. Ces boutons sont aussi disponible sur votre clavier, il suffit simplement d'utiliser les flèches et la barre d'espace.
+3. Une minicarte vous est présenté. Vous pouvez zoomer/dézoomer en utilisant la molette de la souris. Le haut de la carte pointera toujours dans votre direction de voyage.
+4. Vous pouvez maximiser/minimiser la minicarte afin d'avoir un meilleur apperçu des alentours.
+5. Une barre de recherche vous est offerte afin de marquer votre itinéraire. L'utilisation de plusieurs destinations est supportée. *Vous devez cliquer sur le bouton « rechercher » à droite afin de confirmer votre destination*.
+
+![Un exemple de la minicarte maximisée](./devoir/Cap2.png)
+
+1. Vous pouvez minimiser la minicarte après l'avoir maximisé.
+2. Vous pouvez cliquer sur la carte afin de sélectionner votre destination. Cette action remplira la barre de recherche, comme montré plus bas, afin que vous puissiez confirmer votre destination en appuyant sur le bouton de recherche. De plus, si vous cliquez avec le bouton `Ctrl` enfoncé, vous pourrez créer un accident à l'endroit de votre clic.
+
+![Le champ de recherche s'est remplis pour vous permettre de confirmer votre destination](./devoir/Cap3.png)
+
+Une fois la destination confirmée, vous aurez accès à votre itinéraire :
+
+![plusieurs éléments, qui sont décrits ci-dessous, sont apparus](./devoir/Cap4.png)
+
+1. Une carte résumant votre destination est apparue sous la barre de recherche. Elle comporte plusieurs éléments d'information : 
+   1. La couleur du cercle indique le type de destination : Vert indique départ, Orange indique un arrêt en chemin et Rouge la destination finale.
+   2. L'adresse de la destination
+   3. La durée du trajet et l'heure d'arrivée
+2. 4. Un bouton pour supprimer la destination
+   5. En cliquant sur le bouton de réordonnancement, vous pourrez glisser les cartes pour réorganiser votre itinéraire. Ces changements prendront effets immédiatement et vous pourrez commencer à suivre le trajet sans tarder.
+3. Vous pouvez observer votre trajet en bleu sur la route devant vous et sur la minicarte. Il se mettra à jour automatiquement, réagissant à la congestion, aux accidents et à vos propres décisions.
+4. Des indications de trajets se trouvent en haut à gauche. Une flèche indique le prochain tournant, ainsi que le nom de la prochaine rue, et une boîte d'indication affiche le temps restant avant d'atteindre la prochaine destination ainsi que l'heure d'arrivée.
+
+![Une route avec des contours sombres](./devoir/Cap5.png)
+![Une zone d'accident en cercle](./devoir/Cap6.png)
+
+1. On peut observer sur les deux images ci-dessus, des zones d'accidents qui ralentissent les véhicules par un certain pourcentage. Leur couleur rouge foncé indiquent la gravité de l'accident, le plus foncé indiquant les accidents qui ralentissent le plus.
+2. On peut observer que lorsque le véhicule pénètre une zone d'accident, des informations à son propos s'affichent en dessous des informations de temps de trajet, à gauche.
+3. Vous pouvez à tout moment faire `Ctrl+clic` sur la carte afin de créer un nouvel accident.
+
 ## Organisation du répertoire
 
 Ce projet utilise [Gradle](https://gradle.org/) comme outil de build.
