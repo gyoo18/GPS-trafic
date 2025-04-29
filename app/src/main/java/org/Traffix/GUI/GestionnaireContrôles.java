@@ -25,6 +25,7 @@ import org.Traffix.GUI.Destination.Type;
 import org.Traffix.OpenGL.Caméra;
 import org.Traffix.OpenGL.GLCanvas;
 import org.Traffix.circulation.AÉtoile;
+import org.Traffix.circulation.GestionnaireAccidents;
 import org.Traffix.circulation.NavigateurManuel;
 import org.Traffix.circulation.Route;
 import org.Traffix.circulation.Réseau;
@@ -108,14 +109,14 @@ public class GestionnaireContrôles {
                 Vec3 pointeurDir = Maths.curseurPosÀPointeur3D(miniCarte.scène.caméra, e.getX(), e.getY(), miniCarte.getWidth(), miniCarte.getHeight());
                 Vec3 pointeurPos = Maths.intersectionPlan(new Vec3(0), new Vec3(0,1,0), pointeurDir, camPos);
 
-                // miniCarte.scène.obtenirObjet("pointeur").avoirTransformée().positionner(pointeurPos);
-                
                 Vec2 positionCarte = new Vec2(pointeurPos.x,pointeurPos.z);
-                String adresse = réseau.avoirAdresse(positionCarte);
+                if(e.isControlDown()){
+                    GestionnaireAccidents.ajouterAccident(positionCarte);
+                }else{
+                    String adresse = réseau.avoirAdresse(positionCarte);
 
-                ((TexteEntrée) fenêtre.obtenirÉlémentParID("adresseEntrée")).setText(adresse);
-
-                //TODO GestionnaireAccidents
+                    ((TexteEntrée) fenêtre.obtenirÉlémentParID("adresseEntrée")).setText(adresse);
+                }
             }
         };
         miniCarte.canvas.addMouseListener(ma);
@@ -203,40 +204,6 @@ public class GestionnaireContrôles {
                 return false;
             }
         });
-            //  @Override
-            // public void keyPressed(KeyEvent k){
-            //     switch (k.getExtendedKeyCode()) {
-            //         case KeyEvent.VK_UP:
-            //             ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.ACCÉLÉRER);
-            //             break;
-            //         case KeyEvent.VK_DOWN:
-            //             ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.RALENTIR);
-            //             break;
-            //         case KeyEvent.VK_LEFT:
-            //             ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.TOURNER_GAUCHE);
-            //             break;
-            //         case KeyEvent.VK_RIGHT:
-            //             ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.TOURNER_DROITE);
-            //             break;
-            //         case KeyEvent.VK_SPACE:
-            //             ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.DEMI_TOUR);
-            //             break;
-            //     }
-            // }
-
-        //     @Override
-        //     public void keyReleased(KeyEvent k){
-        //         switch(k.getExtendedKeyCode()){
-        //             case KeyEvent.VK_UP:
-        //             case KeyEvent.VK_DOWN:
-        //             case KeyEvent.VK_LEFT:
-        //             case KeyEvent.VK_RIGHT:
-        //             case KeyEvent.VK_SPACE:
-        //                 ((NavigateurManuel) réseau.véhicules[0].avoirNavigateur()).donnerCommande(Commande.LÂCHER);
-        //                 break;
-        //         }
-        //     }
-        // });
     }
 
     private static void ajouterDestination(Destination destination, JPanel liste, Fenêtre fenêtre, Réseau réseau){

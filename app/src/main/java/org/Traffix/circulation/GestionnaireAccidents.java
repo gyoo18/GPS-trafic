@@ -285,6 +285,10 @@ public class GestionnaireAccidents {
         }
     }
 
+    public static void ajouterAccident(Vec2 pos){
+        accidents.add(new Accident(null, pos, -1, -1, -1));
+    }
+
     private static String formatterTemps(int tempsSec, boolean formatHeure){
         int sec = tempsSec%60;
         int tempsMin = (tempsSec/60)%60; //Temps en minutes
