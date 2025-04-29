@@ -14,6 +14,7 @@ import org.Traffix.OpenGL.Objet;
 import org.Traffix.circulation.Réseau;
 import org.Traffix.circulation.UsineRéseau;
 import org.Traffix.circulation.AÉtoile;
+import org.Traffix.circulation.GestionnaireAccidents;
 import org.Traffix.circulation.Intersection;
 import org.Traffix.circulation.IntersectionArrêt;
 import org.Traffix.circulation.IntersectionLaissezPasser;
@@ -51,6 +52,7 @@ public class App {
             }
         }
         AÉtoile.donnerRéseau(réseau);
+        GestionnaireAccidents.donnerRéseau(réseau);
         GestionnaireContrôles.initialiserGPS(fenêtre,réseau);
         Véhicule joueur = réseau.véhicules[0];
 
@@ -119,6 +121,7 @@ public class App {
             long deltaTempsMillis = System.currentTimeMillis()-tempsA;
             tempsA = System.currentTimeMillis();
             réseau.miseÀJour(1f*(float)deltaTempsMillis/1000f, false);
+            GestionnaireAccidents.miseÀJour();
 
             caméra.positionner(Vec3.addi( Vec3.mult(joueur.objetRendus.avoirTransformée().avoirPos(), 0.1f), caméra.avoirPos().mult(0.9f)));
             caméra.faireRotation(Vec3.addi( new Vec3((float)Math.toRadians(-45f), joueur.objetRendus.avoirTransformée().avoirRot().y+(float)Math.PI,0f).mult(0.1f), caméra.avoirRot().mult(0.9f)));

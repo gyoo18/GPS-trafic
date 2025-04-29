@@ -100,7 +100,7 @@ public class GestionnaireContrôles {
                 
                 // Obtenir la position du curseur sur la carte
                 Vec3 camPos = Mat4.mulV(miniCarte.scène.caméra.avoirVue().avoirInv(), new Vec3(0));
-                Vec3 pointeurDir = Maths.avoirDirPointeurCurseurMonde(miniCarte.scène.caméra, e.getX(), e.getY(), miniCarte.getWidth(), miniCarte.getHeight());
+                Vec3 pointeurDir = Maths.curseurPosÀPointeur3D(miniCarte.scène.caméra, e.getX(), e.getY(), miniCarte.getWidth(), miniCarte.getHeight());
                 Vec3 pointeurPos = Maths.intersectionPlan(new Vec3(0), new Vec3(0,1,0), pointeurDir, camPos);
 
                 // miniCarte.scène.obtenirObjet("pointeur").avoirTransformée().positionner(pointeurPos);

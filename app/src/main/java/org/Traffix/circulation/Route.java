@@ -31,6 +31,8 @@ public class Route {
     private Vec2[] adressesSensBPosition;
 
     private ArrayList<String> accès = new ArrayList<>();
+
+    public ArrayList<ÉcouteurAccidentRetiré> écouteurAccidentRetirés = new ArrayList<>();
     
     public Route(String nom, int limiteVitesseKmH, Intersection intersectionA, Intersection intersectionB) {
         this.nom = nom.toLowerCase();
@@ -404,5 +406,9 @@ public class Route {
             System.err.println(Thread.currentThread().getStackTrace());
             return null;
         }
+    }
+
+    public void surAccidentRetiré(){
+        
     }
 }
